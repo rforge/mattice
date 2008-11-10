@@ -1,9 +1,10 @@
-# ---------------------------------------------------------------------
-# FUNCTIONS FOR TRAVERSING AN S4 OUCH TREE AND PAINTING REGIMES
-# ---------------------------------------------------------------------
+# ---------------------------------------------------------------
+# FUNCTIONS FOR TRAVERSING AN S4 OUCH TREE AND PAINTING REGIMES #
+# ---------------------------------------------------------------
+
 # Modified from functions used in Hipp 2007 Evolution paper
 # Last checked on ouch v 1.2-4
-# 9 November 2008: changed everything to read the tree as a data.frame, otherwise functions the same
+# 10 November 2008: changed everything to operate on an ouchtree object (ouch >= v2), otherwise functions the same
 # functions included in this file:
 # 1. paintBranches
 # 2. mrcaOUCH
@@ -22,13 +23,19 @@ paintBranches <-
 #                   in order of description in "regimeShiftNodes", except that the root is listed first in "regimeTitles"
 #                   but not at all in "regimeShiftNodes"... defaults to "node[x]regime
 # Value: a vector of regimes that can be plopped right into an OUCH-style tree data frame
-function(tree = NULL, node = NULL, ancestor = NULL, times = NULL, regimeShiftNodes, regimeTitles) {
-# added nov 08
-if (!identical(tree,NULL)) {
-    tree <- as(tree, 'data.frame')
-    node <- tree$nodes
-    ancestor <- tree$ancestors
-    times <- tree$times }
+function(tree, regimeShiftNodes, regimeTitles) {
+  ## ------------------ begin ouchtree block -----------------
+  ## check to see if tree inherits 'ouchtree'
+  if (!is(tree,'ouchtree')) 
+	stop(paste('This function has been rewritten to use the new S4 ', sQuote('ouchtree'), ' class.',
+	'\nYou can generate a tree of this class by calling ', sQuote('ouchtree()'), '.', sep = ""))
+  ## get the vectors we need:
+  ancestor <- tree@ancestors # class = "character"
+  node <- tree@nodes # class = "character"
+  species <- tree@nodelabels # class = "character" -- note that nodelabels is more general than this indicates and the name should be changed throughout at some point
+  times <- tree@times # class = "numeric"
+  ## ------------------ end ouchtree block -------------------
+  
   names(regimeTitles) = regimeShiftNodes
   colorsVector = vector("character", length(node))
   for (i in 1:length(ancestor)) {
@@ -74,14 +81,19 @@ mrcaOUCH <-
 #  "cladeVector" = vector of species for which you want to find the most recent common ancestor
 # Value: the node number (as an integer) of the most recent common ancestor
 # Works! 3-31-06
-function(tree = NULL, node = NULL, ancestor = NULL, times = NULL, species, cladeVector) {
-  # added nov 08
-  if (!identical(tree,NULL)) {
-      tree <- as(tree, 'data.frame')
-      node <- tree$nodes
-      ancestor <- tree$ancestors
-      times <- tree$times 
-      species <- tree$labels}
+function(tree, cladeVector) {
+  ## ------------------ begin ouchtree block -----------------
+  ## check to see if tree inherits 'ouchtree'
+  if (!is(tree,'ouchtree')) 
+	stop(paste('This function has been rewritten to use the new S4 ', sQuote('ouchtree'), ' class.',
+	'\nYou can generate a tree of this class by calling ', sQuote('ouchtree()'), '.', sep = ""))
+  ## get the vectors we need:
+  ancestor <- tree@ancestors # class = "character"
+  node <- tree@nodes # class = "character"
+  species <- tree@nodelabels # class = "character" -- note that nodelabels is more general than this indicates and the name should be changed throughout at some point
+  times <- tree@times # class = "numeric"
+  ## ------------------ end ouchtree block -------------------
+  
   tips = match(cladeVector, species)
   listOfAncestorLines = lapply(tips, ancestorLine, node = node, ancestor = ancestor)
   latestMatch = listOfAncestorLines[[1]]
@@ -97,15 +109,22 @@ function(tree = NULL, node = NULL, ancestor = NULL, times = NULL, species, clade
 ancestorLine <-
 # Creates a vector of ancestral nodes for a tip
 # Arguments:
-#  "node" and "ancestor" = the standard tree specification vectors of the OUCH-style tree
+#  CHANGED to "tree" 10 nov 08: "node" and "ancestor" = the standard tree specification vectors of the OUCH-style tree
 #  "tip" = the tip node to trace back
 # Value: a vector of nodes leading from a tip to the root
-function(node, ancestor, tip) {
-  # added nov 08
-  if (!identical(tree,NULL)) {
-      tree <- as(tree, 'data.frame')
-      node <- tree$nodes
-      ancestor <- tree$ancestors}
+function(tree, tip) {
+  ## ------------------ begin ouchtree block -----------------
+  ## check to see if tree inherits 'ouchtree'
+  if (!is(tree,'ouchtree')) 
+	stop(paste('This function has been rewritten to use the new S4 ', sQuote('ouchtree'), ' class.',
+	'\nYou can generate a tree of this class by calling ', sQuote('ouchtree()'), '.', sep = ""))
+  ## get the vectors we need:
+  ancestor <- tree@ancestors # class = "character"
+  node <- tree@nodes # class = "character"
+  species <- tree@nodelabels # class = "character" -- note that nodelabels is more general than this indicates and the name should be changed throughout at some point
+  times <- tree@times # class = "numeric"
+  ## ------------------ end ouchtree block -------------------
+  
   nodesVector = vector("character")
   counter = 0
   repeat {
@@ -121,21 +140,37 @@ allPossibleRegimes <-
 # NOTE: This routine returns all possible permutations, ignoring the fact that the root must be included as a changeNode
 #  for paintBranches to work properly. Exclude the root when calling this routine.
 # Arguments:
-#  "changeNodes" = vector of all change nodes in all possible scenarios
-# Value: a list of changeNode vectors (assumes type = "character"), one for each possible scenario
-function(changeNodes) {
-  numberOfRegimes = ifelse(length(changeNodes) == 1, 2, 2^length(changeNodes))
-  regime = vector("list", numberOfRegimes)
-  for (i in 1:(numberOfRegimes - 1)) {
-    remainder = i
-    n = NULL
-    for (j in as.integer(log2(i)):0) {
-      if (2^j > remainder) n[j+1] = NA
-      else {n[j+1] = changeNodes[j+1]
-            remainder = remainder %% 2^j }}
-    regime[[i]] = sort(n[!is.na(n)]) }
-  regime[[numberOfRegimes]] = rep("0", times = as.integer(log2(i)) + 1)
-  return(regime) }
+#  "changeNodes" = vector of all change nodes in all possible scenarios, or number of regimes assumed if nodeMatrix = T
+#  "nodeMatrix" = indicates whether to return a binary table for interp or a list of changeNode vectors for analysis
+# Value:
+#    if nodeMatrix = F: a list of changeNode vectors (assumes type = "character"), one for each possible scenario
+#    if nodeMatrix = T: a binary table indicating whether a regime node is present or absent based on allPossibleRegimes output; 
+#                       presumes nodes are labelled 1:n
+# 10 nov 08: this function now takes over regimeNodes
+function(changeNodes, nodeMatrix = F) {
+  if(nodeMatrix) {
+    n <- changeNodes[1]
+    regimesList = allPossibleRegimes(1:n)
+      regimesNameMatrix = matrix(data = NA, ncol = n, nrow = length(regimesList), dimnames = list(as.character(1:length(regimesList)), as.character(1:n)))
+      for (i in 1:length(regimesList)) {
+        for (j in 1:n) {
+          if (is.na(match(j,regimesList[[i]]))) regimesNameMatrix[i,j] = 0
+       else regimesNameMatrix[i,j] = 1 }}
+    outdata <- regimesNameMatrix }
+  else {  
+    numberOfRegimes = ifelse(length(changeNodes) == 1, 2, 2^length(changeNodes))
+    regime = vector("list", numberOfRegimes)
+    for (i in 1:(numberOfRegimes - 1)) {
+      remainder = i
+      n = NULL
+      for (j in as.integer(log2(i)):0) {
+        if (2^j > remainder) n[j+1] = NA
+        else {n[j+1] = changeNodes[j+1]
+              remainder = remainder %% 2^j }}
+      regime[[i]] = sort(n[!is.na(n)]) }
+    regime[[numberOfRegimes]] = rep("0", times = as.integer(log2(i)) + 1) 
+    outdata <- regime }
+  return(outdata) }
 
 regimeVectors <-
 # Generates the list of painted branches representing all possible selective regimes for OU analyses, taking as argument
@@ -145,13 +180,18 @@ regimeVectors <-
 #  "cladeMembersList" = list of vectors containing names of the members of each clade (except for the root of the tree)
 # Value: list of vectors that can each be plugged directly into OU analysis as the "regimes" argument
 function(node, ancestor, times, species, cladeMembersList) {
-  # added nov 08
-  if (!identical(tree,NULL)) {
-      tree <- as(tree, 'data.frame')
-      node <- tree$nodes
-      ancestor <- tree$ancestors
-      times <- tree$times 
-      species <- tree$labels}
+  ## ------------------ begin ouchtree block -----------------
+  ## check to see if tree inherits 'ouchtree'
+  if (!is(tree,'ouchtree')) 
+	stop(paste('This function has been rewritten to use the new S4 ', sQuote('ouchtree'), ' class.',
+	'\nYou can generate a tree of this class by calling ', sQuote('ouchtree()'), '.', sep = ""))
+  ## get the vectors we need:
+  ancestor <- tree@ancestors # class = "character"
+  node <- tree@nodes # class = "character"
+  species <- tree@nodelabels # class = "character" -- note that nodelabels is more general than this indicates and the name should be changed throughout at some point
+  times <- tree@times # class = "numeric"
+  ## ------------------ end ouchtree block -------------------
+      
   changeNodesList = lapply(cladeMembersList, mrcaOUCH, node = node, ancestor = ancestor, times = times, species = species) #Returns a list of length-1 character vectors, each containing a single changeNode -- the fact that this is a list causes problems in paintBranches if not changed to a 1-d vector
   changeNodesVector = vector("character", length(changeNodesList))
   for (i in 1:length(changeNodesList)) # Changing cladeMemberList to a 1-d vector
@@ -162,16 +202,3 @@ function(node, ancestor, times, species, cladeMembersList) {
     allRegimes[[i]] = c("1", allRegimes[[i]])
     regimePaintings[[i]] = paintBranches(node, ancestor, times, allRegimes[[i]], as.character(allRegimes[[i]])) }
   return(regimePaintings) }
-
-regimeNodes <-
-# Returns a binary table indicating whether a regime node is present or absent based on allPossibleRegimes output;
-#  presumes nodes are labelled 1:n)
-# ONLY NEEDED FOR LABELLING AND INTERPRETATION; not actually used in the analysis
-function(n) {
-  regimesList = allPossibleRegimes(1:n)
-  regimesNameMatrix = matrix(data = NA, ncol = n, nrow = length(regimesList), dimnames = list(as.character(1:length(regimesList)), as.character(1:n)))
-  for (i in 1:length(regimesList)) {
-    for (j in 1:n) {
-      if (is.na(match(j,regimesList[[i]]))) regimesNameMatrix[i,j] = 0
-       else regimesNameMatrix[i,j] = 1 }}
-  return(regimesNameMatrix) }
