@@ -1,1 +1,1 @@
-For tree traversal functions: take new 'ouchtree' objects, change to data.frame as needed.
+It turns out everything is rather unstable in the old version of ouch... move everything to new ouch format
