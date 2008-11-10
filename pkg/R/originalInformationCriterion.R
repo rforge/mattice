@@ -1,5 +1,6 @@
 informationCriterion <- function(u = NULL, lnL = NULL, K, n = 0, names = NULL) {
 ## Returns information criterion values + weights for a vector of u or lnL, K (= df), and n (sample size); names for analyses are optional
+
   if(identical(u,NULL)) u <- -2 * lnL
   AIC = vector("numeric", length(u))
   BIC = vector("numeric", length(u))

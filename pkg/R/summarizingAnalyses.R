@@ -6,6 +6,7 @@
 # functions included in this file:
 # 1. hansenStats
 
+
 hansenStats <-
 # Returns a list of statistics for a runBatchHansenFit list
 function(hansenRunList) {

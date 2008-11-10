@@ -11,6 +11,7 @@
 # 5. regimeVectors
 # 6. regimeNodes
 
+
 paintBranches <-
 # Reads down an ouch data.frame tree row by row and paints regimes according, with regimes changing at nodes specified
 # arguments

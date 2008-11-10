@@ -3,6 +3,7 @@ apeToOuch <-
 ## Andrew Hipp, February 2005
 ## Generalized to non-ultrametric trees Sept 2006
 # Converts a "phylo" object from APE to a 3-column matrix ordered for OUCH format
+
 function(tree, scalingFactor = 1) {
   numberOfNodes <- length(tree$edge.length)
   treeMatrix <- c(0*1:(5*(numberOfNodes + 1)))
