@@ -32,10 +32,10 @@ runBatchHansen <-
 # Arguments:
 #  "ouchTrees" = list of OUCH-style trees; if a single tree, send as 'list(TREE)'
 #  "characterStates" = vector of character states, either extracted from an ouch-style tree data.frame or a named vector
-#  "SEM"= standard error of the mean, vector extracted from an ouch-style tree data.frame
-#  "scalingFactor" = factor to multiply against (times / max(times)) -- choose based on trial analyses
+#  REMOVED: "SEM"= standard error of the mean, vector extracted from an ouch-style tree data.frame
+#  REMOVED: "scalingFactor" = factor to multiply against (times / max(times)) -- choose based on trial analyses
 #  "cladeMembersList" = list of vectors containing names of the members of each clade (except for the root of the tree)
-function(ouchTrees, characterStates, cladeMembersList, SEM = rep(0, length(characterStates)), scalingFactor = 1, logData = FALSE) {
+function(ouchTrees, characterStates, cladeMembersList, regimeNames = NULL, logData = FALSE) {
   ## do all the objects in ouchTrees inherit ouchtree?
   treeCheck <- unlist(lapply(ouchTrees, function(x) is(x,'ouchtree')))
   if(F %in% treeCheck) 
@@ -56,19 +56,26 @@ function(ouchTrees, characterStates, cladeMembersList, SEM = rep(0, length(chara
   if(stopFlag) stop("Correct discrepancies between trees and data and try again!")
   stopFlag <- F  
 
+  if(logData) characterStates <- log(characterStates)
+  if(identical(regimeNames, NULL)) regimeNames <- c(as.character(1:length(regimesList)), "brown")
+  
   hansenBatch = vector("list", length(ouchTrees))
   treeCounter = 0
-  for (i in ouchTrees) {
-    treeCounter = treeCounter + 1
-    i = list(node = as.character(i$node), ancestor = as.character(i$ancestor), times = as.numeric(i$times), species = as.character(i$species))
-    regimesList = regimeVectors(i$node, i$ancestor, i$times, i$species, cladeMembersList)
-    write.table(regimesList, 'regimesList.txt')
-    if (logData) hansenBatch[[treeCounter]] = batchHansenFit(i$node, i$ancestor, i$times, characterStates, error = SEM, scalingFactor, regimesList, c(as.character(1:length(regimesList)), "brown"), numberOfTermini = sum(!is.na(i$species)))
-      else hansenBatch[[treeCounter]] = batchHansenFit(i$node, i$ancestor, i$times, characterStates, error = SEM, scalingFactor, regimesList, c(as.character(1:length(regimesList)), "brown"), numberOfTermini = sum(!is.na(i$species)))
-    message(paste("Tree",treeCounter,"of",length(ouchTrees),"complete"))}
+  for (i in 1:length(ouchTrees)) {
+    tree <- ouchTrees[[i]]
+    regimesList = regimeVectors(tree, cladeMembersList)
+    
+    ## need to revise regimeVectors so that it only returns regimes for nodes that are supported in the tree
+    ## for now, assume nodes of interest are present in all trees
+
+    hansenBatch[[i]] = batchHansen(tree, characterStates, regimesList, regimeNames, numberOfTermini = tree@nterm)
+    message(paste("Tree",i,"of",length(ouchTrees),"complete"))}
+    
+    ## right now no summary is returned; it should be
+  
   return(list(hansens = hansenBatch, regimes = regimesList)) }
 
-batchHansenFit <-
+batchHansen <-
 # Runs hansen.fit and brown.fit on a tree over a batch of selective regimes
 # Arguments:
 #  "node" "ancestor" "times" "data" = the standard tree specification vectors of the OUCH-style tree
@@ -76,7 +83,7 @@ batchHansenFit <-
 #  "scalingFactor" = factor to multiply against (times / max(times)) -- choose based on trial analyses
 # Value: a matrix with nrow = regimes + 1 and columns for u, d.f., all estimated parameters, LRvsBM, AIC, and AIC weight
 # ADDED "error" on 2 march 07 to accomodate the "me" in Pienaar's ouch
-function(node, ancestor, times, data, error, scalingFactor = 1, regimesList, regimeTitles, numberOfTermini = 53) {
+function(tree, data, regimesList, regimeTitles, numberOfTermini) {
   variables = c("loglik", "df", "alpha", "sigma", "theta0", "theta1", "theta2", "theta3", "theta4", "theta5","theta6","theta7","theta8","theta9", "LRvsBM", "AIC", "AICweight", "deltaAIC", "exp(-0.5*deltaAIC)", "AICc", "AICcWeight", "deltaAICc", "exp(-0.5*deltaAICc)")
   treeData = matrix(data = NA, nrow = (length(regimesList) + 1), ncol = length(variables),
              dimnames = list(regimeTitles,variables))
