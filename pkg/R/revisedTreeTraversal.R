@@ -148,16 +148,6 @@ allPossibleRegimes <-
 #                       presumes nodes are labelled 1:n
 # 10 nov 08: this function now takes over regimeNodes
 function(changeNodes, nodeMatrix = F) {
-  if(nodeMatrix) {
-    n <- changeNodes[1]
-    regimesList = allPossibleRegimes(1:n)
-      regimesNameMatrix = matrix(data = NA, ncol = n, nrow = length(regimesList), dimnames = list(as.character(1:length(regimesList)), as.character(1:n)))
-      for (i in 1:length(regimesList)) {
-        for (j in 1:n) {
-          if (is.na(match(j,regimesList[[i]]))) regimesNameMatrix[i,j] = 0
-       else regimesNameMatrix[i,j] = 1 }}
-    outdata <- regimesNameMatrix }
-  else {  
     numberOfRegimes = ifelse(length(changeNodes) == 1, 2, 2^length(changeNodes))
     regime = vector("list", numberOfRegimes)
     for (i in 1:(numberOfRegimes - 1)) {
@@ -169,7 +159,16 @@ function(changeNodes, nodeMatrix = F) {
               remainder = remainder %% 2^j }}
       regime[[i]] = sort(n[!is.na(n)]) }
     regime[[numberOfRegimes]] = rep("0", times = as.integer(log2(i)) + 1) 
-    outdata <- regime }
+    if(nodeMatrix == T) {
+      #n <- ifelse(length(changeNodes) == 1, as.numeric(changeNodes), length(changeNodes))
+      regimesNameMatrix = matrix(data = NA, ncol = numberOfRegimes, nrow = length(regimesList), dimnames = list(as.character(1:length(regimesList)), as.character(1:numberOfRegimes)))
+      for (i in 1:length(regimesList)) {
+        for (j in 1:numberOfRegimes) {
+          if (is.na(match(j,regimesList[[i]]))) regimesNameMatrix[i,j] = 0
+       else regimesNameMatrix[i,j] = 1 }}
+      outdata <- regimesNameMatrix
+      }
+    else outdata <- regime 
   return(outdata) }
 
 regimeVectors <-
