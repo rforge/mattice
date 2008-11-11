@@ -3,19 +3,19 @@
 # ---------------------------------------------------------------
 
 # Modified from functions used in Hipp 2007 Evolution paper
-# Last checked on ouch v 1.2-4
-# 10 November 2008: changed everything to operate on an ouchtree object (ouch >= v2), otherwise functions the same
+# Initially written for ouch v 1.2-4
+# 10 November 2008: changed everything to operate on an ouchtree object (ouch >= v2), otherwise functions the same;
+#  checked on ouch v2.4-2
 # functions included in this file:
 # 1. paintBranches
 # 2. mrcaOUCH
 # 3. ancestorLine
 # 4. allPossibleRegimes
 # 5. regimeVectors
-# 6. regimeNodes
 
 
 paintBranches <-
-# Reads down an ouch data.frame tree row by row and paints regimes according, with regimes changing at nodes specified
+# Paints branches with regimes changing at nodes specified
 # arguments
 #  "node" "ancestor" "times" = the standard tree specification vectors of the OUCH-style tree
 #  "regimeShiftNodes" = a vector of nodes at which selective regimes shift: root must be included, but tips are meaningless in this context
@@ -36,39 +36,39 @@ function(tree, regimeShiftNodes, regimeTitles) {
   times <- tree@times # class = "numeric"
   ## ------------------ end ouchtree block -------------------
   
-  names(regimeTitles) = regimeShiftNodes
-  colorsVector = vector("character", length(node))
+  names(regimeTitles) = as.character(regimeShiftNodes)
+  colorsVector = character(length(node))
   for (i in 1:length(ancestor)) {
     # First three lines fill up the vector for nodes that are hit in order
-    # uncomment the following line if you are using a newer version of OUCH:
-    if (is.na(ancestor[as.integer(i)])) {
-    # and comment the following line:
-    # if (ancestor[as.integer(i)] == 0) {
+    if (is.na(ancestor[i])) {
       colorsVector[i] = regimeTitles["1"]
       next }
-    if (any(ancestor[i] == regimeShiftNodes)) {
-      colorsVector[i] = regimeTitles[as.character(ancestor[as.integer(i)])]
+    if (as.character(ancestor[i]) %in% as.character(regimeShiftNodes)) {
+      colorsVector[i] = regimeTitles[as.character(ancestor[i])]
       next }
     if (colorsVector[as.integer(ancestor[i])] != "") {
       colorsVector[i] = colorsVector[as.integer(ancestor[i])]
       next }
-
     # These lines fill up the vector for nodes run reached before their immediate ancestor
-    nodeQ = vector(integer, length(node))
+    nodeQ = integer(length(node))
     ii = i
     repeat {
       nodeQ = c(ii, nodeQ)
-      ii = ancestor[ii]
-      if (any(ancestor[ii] == regimeShiftNodes)) {
+      ii = as.numeric(ancestor[ii])
+      if (as.character(ancestor[ii]) %in% as.character(regimeShiftNodes)) {
         colorsVector[ii] = colorsVector[as.integer(ancestor[ii])]
         break}
-      if (colorsVector[ancestor[ii]] != "") {
+      if (colorsVector[as.integer(ancestor[ii])] != "") {
         colorsVector[ii] = colorsVector[as.integer(ancestor[ii])]
         break} }
 
     for(j in nodeQ) {
-      colorsVector[j] = colorsVector[as.integer(ancestor[j])] } }
+      colorsVector[j] = colorsVector[as.integer(ancestor[j])] } 
+      
+      } # closes for(i in 1:length(ancestor)) loop 
 
+      # a little hack to fix a problem I don't understand... with the undesired side effect that it colors the stem of some subtrees rather than the crown as originally written
+      for(i in 1:length(colorsVector)) if(colorsVector[i] == "") colorsVector[i] <- as.character(i) 
   return(colorsVector) }
 
 mrcaOUCH <-
@@ -81,7 +81,7 @@ mrcaOUCH <-
 #  "cladeVector" = vector of species for which you want to find the most recent common ancestor
 # Value: the node number (as an integer) of the most recent common ancestor
 # Works! 3-31-06
-function(tree, cladeVector) {
+function(cladeVector, tree) {
   ## ------------------ begin ouchtree block -----------------
   ## check to see if tree inherits 'ouchtree'
   if (!is(tree,'ouchtree')) 
@@ -94,8 +94,8 @@ function(tree, cladeVector) {
   times <- tree@times # class = "numeric"
   ## ------------------ end ouchtree block -------------------
   
-  tips = match(cladeVector, species)
-  listOfAncestorLines = lapply(tips, ancestorLine, node = node, ancestor = ancestor)
+  tips = match(cladeVector, species) 
+  listOfAncestorLines = lapply(tips, ancestorLine, tree = tree) # 10 nov 08: this is identical to the appropriate subset of tree@lineages
   latestMatch = listOfAncestorLines[[1]]
   for (i in listOfAncestorLines) {
     latestMatch = i[match(latestMatch, i, nomatch = 0)] }
@@ -112,27 +112,30 @@ ancestorLine <-
 #  CHANGED to "tree" 10 nov 08: "node" and "ancestor" = the standard tree specification vectors of the OUCH-style tree
 #  "tip" = the tip node to trace back
 # Value: a vector of nodes leading from a tip to the root
-function(tree, tip) {
+# 10 nov 08: changed to just grab the appropriate element from tree@lineages
+function(tip, tree) {
   ## ------------------ begin ouchtree block -----------------
   ## check to see if tree inherits 'ouchtree'
   if (!is(tree,'ouchtree')) 
 	stop(paste('This function has been rewritten to use the new S4 ', sQuote('ouchtree'), ' class.',
 	'\nYou can generate a tree of this class by calling ', sQuote('ouchtree()'), '.', sep = ""))
   ## get the vectors we need:
-  ancestor <- tree@ancestors # class = "character"
-  node <- tree@nodes # class = "character"
-  species <- tree@nodelabels # class = "character" -- note that nodelabels is more general than this indicates and the name should be changed throughout at some point
-  times <- tree@times # class = "numeric"
+  #ancestor <- tree@ancestors # class = "character"
+  #node <- tree@nodes # class = "character"
+  #species <- tree@nodelabels # class = "character" -- note that nodelabels is more general than this indicates and the name should be changed throughout at some point
+  #times <- tree@times # class = "numeric"
   ## ------------------ end ouchtree block -------------------
-  
-  nodesVector = vector("character")
-  counter = 0
-  repeat {
-    if (is.na(tip)) break
-    counter = counter + 1
-    nodesVector[counter] = ancestor[as.integer(tip)]
-    tip = ancestor[as.integer(tip)] }
-  return(nodesVector) }
+  tip <- as.numeric(tip)
+  #nodesVector = vector("character")
+  #counter = 0
+  #repeat {
+  #  if (is.na(tip)) break
+  #  counter = counter + 1
+  #  nodesVector[counter] = ancestor[tip]
+  #  tip = ancestor[tip] }
+  nodesVector <- c(as.character(tree@lineages[[tip]][2:length(tree@lineages[[tip]])]), NA)
+  return(nodesVector) 
+  }
 
 allPossibleRegimes <-
 # Generates a list of vectors of all possible 2^n regimes for a given list of n ancestor nodes, assuming that each node
@@ -178,7 +181,7 @@ regimeVectors <-
 #  "node" "ancestor" "times" "species" = the standard tree specification vectors of the OUCH-style tree
 #  "cladeMembersList" = list of vectors containing names of the members of each clade (except for the root of the tree)
 # Value: list of vectors that can each be plugged directly into OU analysis as the "regimes" argument
-function(node, ancestor, times, species, cladeMembersList) {
+function(tree, cladeMembersList) {
   ## ------------------ begin ouchtree block -----------------
   ## check to see if tree inherits 'ouchtree'
   if (!is(tree,'ouchtree')) 
@@ -191,13 +194,15 @@ function(node, ancestor, times, species, cladeMembersList) {
   times <- tree@times # class = "numeric"
   ## ------------------ end ouchtree block -------------------
       
-  changeNodesList = lapply(cladeMembersList, mrcaOUCH, node = node, ancestor = ancestor, times = times, species = species) #Returns a list of length-1 character vectors, each containing a single changeNode -- the fact that this is a list causes problems in paintBranches if not changed to a 1-d vector
-  changeNodesVector = vector("character", length(changeNodesList))
-  for (i in 1:length(changeNodesList)) # Changing cladeMemberList to a 1-d vector
-    {changeNodesVector[i] = changeNodesList[[i]]}
+  changeNodesList <- lapply(cladeMembersList, mrcaOUCH, tree = tree) #Returns a list of length-1 character vectors, each containing a single changeNode -- the fact that this is a list causes problems in paintBranches if not changed to a 1-d vector
+  changeNodesVector <- unlist(changeNodesList)
+  #changeNodesVector = vector("character", length(changeNodesList))
+  #for (i in 1:length(changeNodesList)) # Changing cladeMemberList to a 1-d vector
+  #  {changeNodesVector[i] = changeNodesList[[i]]}
   allRegimes = allPossibleRegimes(changeNodesVector)
   regimePaintings = vector("list", length(allRegimes))
   for (i in 1:length(allRegimes)) {
     allRegimes[[i]] = c("1", allRegimes[[i]])
-    regimePaintings[[i]] = paintBranches(node, ancestor, times, allRegimes[[i]], as.character(allRegimes[[i]])) }
+    regimePaintings[[i]] = paintBranches(tree, allRegimes[[i]], as.character(allRegimes[[i]])) 
+    message(paste('Created regime',i))}
   return(regimePaintings) }
