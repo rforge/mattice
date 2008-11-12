@@ -49,10 +49,18 @@ function(ouchTrees, characterStates, cladeMembersList, regimeNames = NULL, logDa
     terminals <- tree@nodelabels[(tree@nnodes - tree@nterm + 1):tree@nnodes]
     if(any(F %in% (terminals %in% names(characterStates)))) {
       message(paste("Not every terminal branch in tree", i, "has a corresponding name in", sQuote("characterStates")))
-      if(length(characterStates) == tree@nterm) message("Data assumed to be in the same order as terminals")
-      else if (length(characterStates) == tree@nnodes) message("Data assumed to be in the same order as nodes;\nany data not associated with a terminal branch will be ignored")
+      if(length(characterStates) == tree@nterm) {
+        message("Data assumed to be in the same order as terminals")
+        dataFlag <- 'sameOrderTerminals' 
+        }
+      else if (length(characterStates) == tree@nnodes) {
+        message("Data assumed to be in the same order as nodes;\nany data not associated with a terminal branch will be ignored")
+        dataFlag <- 'sameOrderNodes'
+        }
       else stopFlag <- T}
-      message("-------------------\n") }
+      message("-------------------\n")
+      }
+    else dataFlag <- 'named'
   if(stopFlag) stop("Correct discrepancies between trees and data and try again!")
   stopFlag <- F  
 
@@ -68,7 +76,16 @@ function(ouchTrees, characterStates, cladeMembersList, regimeNames = NULL, logDa
     ## need to revise regimeVectors so that it only returns regimes for nodes that are supported in the tree
     ## for now, assume nodes of interest are present in all trees
 
-    hansenBatch[[i]] = batchHansen(tree, characterStates, regimesList, regimeNames, numberOfTermini = tree@nterm)
+    ## make sure data fits the tree
+    dataIn <- NULL
+    if(dataFlag) == 'sameOrderTerminals' dataIn <- c(rep(NA, tree@nnodes - tree@nterm), characterStates)
+    if(dataFlag) == 'sameOrderNodes' dataIn <- characterStates
+    if(dataFlag) == 'named' dataIn <- characterStates[match(tree@nodelabels), characterStates]
+    if(identical(dataIn, NULL)) stop(paste("There is a problem with your data that I failed to catch at the outset of", sQuote('runBatchHansen()')))
+    
+    ## send it off to batchHansen and just stick the results in hansenBatch... this won't work as the number of regimes gets large, 
+    ##   so there should be some option here to just hang onto the coefficients for each run (i.e., hang onto 'coef(hansen(...))' rather than 'hansen(...)')
+    hansenBatch[[i]] = batchHansen(tree, dataIn, regimesList, regimeNames, numberOfTermini = tree@nterm)
     message(paste("Tree",i,"of",length(ouchTrees),"complete"))}
     
     ## right now no summary is returned; it should be

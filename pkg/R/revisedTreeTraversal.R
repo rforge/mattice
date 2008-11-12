@@ -150,6 +150,7 @@ allPossibleRegimes <-
 #    if nodeMatrix = T: a binary table indicating whether a regime node is present or absent based on allPossibleRegimes output; 
 #                       presumes nodes are labelled 1:n
 # 10 nov 08: this function now takes over regimeNodes
+## TODO: make a maxNodes option, so that only combinations involving changes at maxNodes nodes are generated
 function(changeNodes, nodeMatrix = F) {
     numberOfRegimes = ifelse(length(changeNodes) == 1, 2, 2^length(changeNodes))
     regime = vector("list", numberOfRegimes)
