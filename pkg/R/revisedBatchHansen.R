@@ -21,9 +21,9 @@
 ## 3. Analysis should be conducted over multiple trees, summarizing only over trees for which a given node is present;
 ##    node presence should be checked on each tree by looking to see whether the defining group is monophyletic,
 ##    and probably a matrix created for each multiple-tree analysis that makes summarizing quicker.
-## 4. Max number of simultaneous nodes should be set 
+## 4. DONE -- Max number of simultaneous nodes should be set 
 ## 5. In a better world, allow graphical selection of subtrees to test on a single tree, then extract defining taxa
-##    based on those nodes. This shouldn't be too tricky using locator() or something like it.
+##    based on those nodes, using locator() or something like it.
 ## 6. IT statistics should use informationCriterion or something else to clean up the code
 
 runBatchHansen <-
