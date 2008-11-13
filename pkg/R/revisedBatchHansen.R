@@ -110,14 +110,18 @@ batchHansen <-
 function(tree, data, regimesList, regimeTitles, brown, ...) {
   n <- tree@nterm
   ## set up a matrix that returns lnL, K, sigmasq, theta0, and alpha for every model; thetas will go along into a list that is indexed by model
-  variables <- c("loglik", "dof", "sigma.squared", "theta", "alpha") # it's important that 'alpha' go last so that the matrix fills up right when the brownian motion model is used
+  hansenOptima <- list(length(regimeTitles))
+  variables <- c("loglik", "dof", "sigma.squared", "theta / alpha") # it's important that 'alpha' go last so that the matrix fills up right when the brownian motion model is used
+  brVars <- c("loglik", "dof", "sigma.squared", "theta")
+  haVars <- c("loglik", "dof", "sigma.squared", "alpha")
   treeData <- matrix(data = NA, nrow = length(regimeTitles), ncol = length(variables), dimnames = list(regimeTitles,variables))
   if(brown) br <- brown(data, tree)
-  treeData["brown", ] <- unlist(summary(br)[variables])
+  treeData["brown", ] <- unlist(summary(br)[brVars])
   for (i in seq(regimesList)) {
     message(paste("Running regime",i))
     ## at this point, the user has to give an initial alpha and sigma for hansen to search on... this should be relaxed
     ha = hansen(data, tree, regimesList[[i]], ...)
-    treeData[i, ] <- unlist(summary(ha)[variables])
+    treeData[i, ] <- unlist(summary(ha)[haVars])
+    hansenOptima[[i]] <- summary(ha)$optima[[1]]
   }
   return(treeData) }
