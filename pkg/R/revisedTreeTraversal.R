@@ -203,7 +203,7 @@ regimeVectors <-
 #  "node" "ancestor" "times" "species" = the standard tree specification vectors of the OUCH-style tree
 #  "cladeMembersList" = list of vectors containing names of the members of each clade (except for the root of the tree)
 # Value: list of vectors that can each be plugged directly into OU analysis as the "regimes" argument
-function(tree, cladeMembersList) {
+function(tree, cladeMembersList, maxNodes = NULL) {
   ## ------------------ begin ouchtree block -----------------
   ## check to see if tree inherits 'ouchtree'
   if (!is(tree,'ouchtree')) 
@@ -221,7 +221,7 @@ function(tree, cladeMembersList) {
   #changeNodesVector = vector("character", length(changeNodesList))
   #for (i in 1:length(changeNodesList)) # Changing cladeMemberList to a 1-d vector
   #  {changeNodesVector[i] = changeNodesList[[i]]}
-  allRegimes = allPossibleRegimes(changeNodesVector)
+  allRegimes = allPossibleRegimes(changeNodesVector, maxNodes)
   regimePaintings = vector("list", length(allRegimes))
   for (i in 1:length(allRegimes)) {
     allRegimes[[i]] = c("1", allRegimes[[i]])
