@@ -144,14 +144,15 @@ allPossibleRegimes <-
 #  for paintBranches to work properly. Exclude the root when calling this routine.
 # Arguments:
 #  "changeNodes" = vector of all change nodes in all possible scenarios, or number of regimes assumed if nodeMatrix = T
+#  "maxNodes" = single number indicating the maximum number of nodes at which a regime can change
 #  "nodeMatrix" = indicates whether to return a binary table for interp or a list of changeNode vectors for analysis
 # Value:
 #    if nodeMatrix = F: a list of changeNode vectors (assumes type = "character"), one for each possible scenario
 #    if nodeMatrix = T: a binary table indicating whether a regime node is present or absent based on allPossibleRegimes output; 
 #                       presumes nodes are labelled 1:n
 # 10 nov 08: this function now takes over regimeNodes
-## TODO: make a maxNodes option, so that only combinations involving changes at maxNodes nodes are generated
-function(changeNodes, nodeMatrix = F) {
+function(changeNodes, maxNodes = NULL, nodeMatrix = F) {
+    if(!identical(maxNodes, NULL) && maxNodes > length(changeNodes)) warning(paste(sQuote('maxNodes'), 'cannot be larger than the number of nodes; maxNodes ignored'))
     numberOfRegimes = ifelse(length(changeNodes) == 1, 2, 2^length(changeNodes))
     regime = vector("list", numberOfRegimes)
     for (i in 1:(numberOfRegimes - 1)) {
@@ -159,20 +160,40 @@ function(changeNodes, nodeMatrix = F) {
       n = NULL
       for (j in as.integer(log2(i)):0) {
         if (2^j > remainder) n[j+1] = NA
-        else {n[j+1] = changeNodes[j+1]
-              remainder = remainder %% 2^j }}
-      regime[[i]] = sort(n[!is.na(n)]) }
+        else {
+          n[j+1] = changeNodes[j+1]
+          remainder = remainder %% 2^j 
+        }
+      }
+      regime[[i]] = sort(n[!is.na(n)]) 
+    }
     regime[[numberOfRegimes]] = rep("0", times = as.integer(log2(i)) + 1) 
     if(nodeMatrix == T) {
       #n <- ifelse(length(changeNodes) == 1, as.numeric(changeNodes), length(changeNodes))
-      regimesNameMatrix = matrix(data = NA, ncol = numberOfRegimes, nrow = length(regimesList), dimnames = list(as.character(1:length(regimesList)), as.character(1:numberOfRegimes)))
-      for (i in 1:length(regimesList)) {
-        for (j in 1:numberOfRegimes) {
-          if (is.na(match(j,regimesList[[i]]))) regimesNameMatrix[i,j] = 0
-       else regimesNameMatrix[i,j] = 1 }}
-      outdata <- regimesNameMatrix
+      regimesNameMatrix = matrix(
+        data = NA, nrow = numberOfRegimes, ncol = length(changeNodes), dimnames = list(
+          as.character(seq(numberOfRegimes)), as.character(seq(length(changeNodes)))
+          )
+      )
+      for (i in seq(numberOfRegimes)) {
+        for (j in seq(length(changeNodes))) {
+          if (is.na(match(j,regime[[i]]))) regimesNameMatrix[i,j] = 0
+          else regimesNameMatrix[i,j] = 1 
+        }
       }
-    else outdata <- regime 
+      outdata <- regimesNameMatrix
+      if(!identical(maxNodes, NULL)) {
+        outdata <- outdata[apply(outdata,1,sum) <= maxNodes, ]
+        dimnames(outdata)[[1]] = as.character(seq(dim(outdata)[1]))
+        }
+    }
+    else {
+      outdata <- regime 
+      if(!identical(maxNodes, NULL)) {
+        outdata <- outdata[sapply(outdata, length) <= maxNodes]
+        outdata[[length(outdata) + 1]] <- rep("0", length(changeNodes))
+        }
+      }
   return(outdata) }
 
 regimeVectors <-
