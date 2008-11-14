@@ -21,3 +21,9 @@ function(hansenRunList) {
     hansenStatsTemp[counter, "maxAICweight"] = max(i[0:16, "AICweight"])}
   return(hansenStatsTemp)}
 
+
+summary.hansenBatch <- function(hansenBatch){
+## items in output: hansens, regimeList, regimeMatrix
+## the summary will sum weights over all nodes over all trees
+
+  }

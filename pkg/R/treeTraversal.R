@@ -168,9 +168,9 @@ function(changeNodes, maxNodes = NULL, nodeMatrix = F) {
       regime[[i]] = sort(n[!is.na(n)]) 
     }
     regime[[numberOfRegimes]] = rep("0", times = as.integer(log2(i)) + 1) 
-    if(nodeMatrix == T) {
-      #n <- ifelse(length(changeNodes) == 1, as.numeric(changeNodes), length(changeNodes))
-      regimesNameMatrix = matrix(
+
+    ## make node matrix
+    regimesNameMatrix = matrix(
         data = NA, nrow = numberOfRegimes, ncol = length(changeNodes), dimnames = list(
           as.character(seq(numberOfRegimes)), as.character(seq(length(changeNodes)))
           )
@@ -181,19 +181,20 @@ function(changeNodes, maxNodes = NULL, nodeMatrix = F) {
           else regimesNameMatrix[i,j] = 1 
         }
       }
-      outdata <- regimesNameMatrix
+      outmatrix <- regimesNameMatrix
       if(!identical(maxNodes, NULL)) {
-        outdata <- outdata[apply(outdata,1,sum) <= maxNodes, ]
-        dimnames(outdata)[[1]] = as.character(seq(dim(outdata)[1]))
+        outmatrix <- outmatrix[apply(outmatrix,1,sum) <= maxNodes, ]
+        dimnames(outmatrix)[[1]] = as.character(seq(dim(outmatrix)[1]))
         }
-    }
-    else {
-      outdata <- regime 
+
+    ## prune list
+    outlist <- regime 
       if(!identical(maxNodes, NULL)) {
-        outdata <- outdata[sapply(outdata, length) <= maxNodes]
-        outdata[[length(outdata) + 1]] <- rep("0", length(changeNodes))
+        outlist <- outlist[sapply(outlist, length) <= maxNodes]
+        outlist[[length(outlist) + 1]] <- rep("0", length(changeNodes))
         }
       }
+  outdata <- list(regimeList = outlist, regimeMatrix = outMatrix)
   return(outdata) }
 
 regimeVectors <-
@@ -221,11 +222,14 @@ function(tree, cladeMembersList, maxNodes = NULL) {
   #changeNodesVector = vector("character", length(changeNodesList))
   #for (i in 1:length(changeNodesList)) # Changing cladeMemberList to a 1-d vector
   #  {changeNodesVector[i] = changeNodesList[[i]]}
-  allRegimes = allPossibleRegimes(changeNodesVector, maxNodes)
+  apr = allPossibleRegimes(changeNodesVector, maxNodes)
+  allRegimes <- apr$regimeList
+  regimeMatrix <- apr$regimeMatrix
   regimePaintings = vector("list", length(allRegimes))
   for (i in 1:length(allRegimes)) {
     allRegimes[[i]] = c("1", allRegimes[[i]])
     regimePaintings[[i]] = as.factor(paintBranches(tree, allRegimes[[i]], as.character(allRegimes[[i]])))
     names(regimePaintings[[i]]) <- tree@nodes
     message(paste('Created regime',i))}
-  return(regimePaintings) }
+  outdata <- list(regimeList = regimePaintings, regimeMatrix = regimeMatrix)
+  return(outdata) }

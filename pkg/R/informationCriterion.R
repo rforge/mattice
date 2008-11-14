@@ -17,3 +17,7 @@ informationCriterion <- function(u = NULL, lnL = NULL, K, n = 0, names = NULL) {
   BICwi = as.vector(lapply(deltaBIC, function(x, allDelta) {exp(-0.5 * x) / sum(exp(-0.5 * allDelta))}, allDelta = deltaBIC), mode = "numeric")
   return(list(names = names, u = u, K = K, AIC = AIC, AICc = AICc, BIC = BIC, AICwi = AICwi, AICcwi = AICcwi, BICwi = BICwi)) }
 
+informationCriterion.hansenBatch <- function(hansenBatch)
+## call informationCriterion for a 'hansen.batch' object
+## recall that there are a bunch of trees in here... summarize over these
+

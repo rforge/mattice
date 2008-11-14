@@ -72,9 +72,9 @@ function(ouchTrees, characterStates, cladeMembersList, maxNodes = NULL, regimeTi
   treeCounter = 0
   for (i in 1:length(ouchTrees)) {
     tree <- ouchTrees[[i]]
-    regimesList = regimeVectors(tree, cladeMembersList, maxNodes)
+    rl = regimeVectors(tree, cladeMembersList, maxNodes)
     if(identical(regimeTitles, NULL)) {
-      regimeTitles <- as.character(1:length(regimesList))
+      regimeTitles <- as.character(1:length(rl$regimeList))
       if(brown) regimeTitles <- c(regimeTitles, 'brown')
       }
     
@@ -95,12 +95,13 @@ function(ouchTrees, characterStates, cladeMembersList, maxNodes = NULL, regimeTi
     ## send it off to batchHansen and just stick the results in hansenBatch... this won't work as the number of regimes gets large, 
     ##   so there should be some option here to just hang onto the coefficients for each run (i.e., hang onto 'coef(hansen(...))' rather than 'hansen(...)')
     ##   there could also be an option to save the entire object as a series of files in addition to hanging onto 
-    hansenBatch[[i]] = batchHansen(tree, dataIn, regimesList, regimeTitles, brown, ...)
+    hansenBatch[[i]] = batchHansen(tree, dataIn, rl$regimeList, regimeTitles, brown, ...)
     message(paste("Tree",i,"of",length(ouchTrees),"complete"))}
     
     ## right now no summary is returned; one is needed, summarizing over trees what is summarized for each tree in batchHansen
-  
-  return(list(hansens = hansenBatch, regimes = regimesList)) }
+  outdata <- list(hansens = hansenBatch, regimeList = rl$regimeList, regimeMatrix = rl$regimeMatrix)
+  class(outdata) <- 'hansenBatch'
+  return(outdata)}
 
 batchHansen <-
 # Runs hansen.fit and brown.fit on a tree over a batch of selective regimes
