@@ -1,25 +1,10 @@
 \name{ouSim}
 \alias{ouSim}
-\title{Discrete-time simulation and visualization of Ornstein-Uhlenbeck models on a user tree.}
+\title{Discrete-time simulation of Ornstein-Uhlenbeck models on a user tree.}
 \description{
-  \code{ouSim} simulates the evolution of a single character on an {ape}-style user tree under arbitrarily
+  \code{ouSim} simulates the evolution of a single character on an \code{ape}-style user tree under arbitrarily
   complex Ornstein-Uhlenbeck models.
 }
-
-ouSim <- function(phy, rootState = 0, shiftBranches = NULL, shiftStates = NULL, alpha = 0, variance = 1, theta = rootState, model = "OU", branchMeans = NULL, steps = 1000) {
-## function to plot a simulated dataset under brownian motion or Ornstein-Uhlenbeck (OU) model
-## Arguments:
-##   phy is an ape-style tree
-##   alpha and theta are either single values or vectors of length (length(branchList))
-##   shiftBranches is a vector indicating any branches at which an OU or brownian motion model has a determined shift in ancestral state
-##   shiftStates is a vector of length = length(shiftBranches) indicaing the ancestral states for the determined break points
-## Models:
-##  "OU" is a brownian motion or OU model 
-##  "platt" is the Platt-Molitor model, in which the only phylogenetic effect is the mean and variance for a given branch
-## Andrew Hipp (ahipp@mortonarb.org), January 2008 
-## July 2008: modified to accomodate a vector of alpha and theta corresponding to branches
-
-
 \usage{
 (phy, rootState = 0, shiftBranches = NULL, shiftStates = NULL, alpha = 0, variance = 1, theta = rootState, model = "OU", branchMeans = NULL, steps = 1000)
 }
@@ -30,39 +15,45 @@ ouSim <- function(phy, rootState = 0, shiftBranches = NULL, shiftStates = NULL, 
   \item{rootState}{
     The character state at the root of the tree
   }
-  \item{branch}{
-    An optional named vector specifying the end nodes of branches.
-    The unique branch that terminates at the named node will be painted with the specified regime.
-  }
-  \item{which}{
-    integer;
-    if \code{tree} is a \code{hansentree}, start not with a blank canvas but with the regime specifications \code{tree} contains for the character indicated by \code{which}.
-  }
+  \item{shiftBranches}{
+    An optional vector indicating any branches at which an OU model has a determined shift in ancestral state. 
+    Same order as \code{shiftStates}. This argument and \code{shiftStates} are only needed if you want to specify a model with
+    a disjunction in phenotype, similar to restarting evolution at a new point.
+    }
+  \item{shiftStates}{
+    An optional vector of length = \code{length(shiftStates)} indicating the ancestrat states for the branches at which the state shifts.
+    }
+  \item{alpha}{
+    The strength of attraction toward an equilibrium or optimum. This term is refered to as the rate of evolution by Hansen (1997)
+    and the strength of selection by Butler and King (2004). It is a multiplier by the difference between the character state and the
+    character state optimum. Alpha can be submitted as a single value applied to all branches or as a vector corresponding to branches
+    in the \code{phylo} object. At \code{alpha = 0}, the simulation approximates a Brownian motion process.
+    }
+  \item{variance}{
+    The variance on the stochastic portion of the Ornstein-Uhlenbeck model.
+    }
+  \item{theta}{
+    The character state optimum. \code{theta} can be submitted as a single value or, like \code{alpha}, as a vector corresponding to
+    branches of the tree.
+    }
+  \item{branchMeans}
+    The mean for each branch, utilized only in the Platt model. 
+    }
+  \item{steps}
+    The number of slices into which the tree is divided for simulation.
+    }
 }
 \details{
-  The names of \code{subtree} and \code{branch} must be the names of nodes of \code{tree}.
-  The painting proceeds in a particular order: one can overpaint a branch.
-  The subtrees indicated by the elements of \code{subtree} are painted first, in order.
-  Then the branches indicated by \code{branch} are painted.
-  If \code{tree} is a simple \code{ouchtree} object, then \code{paint} begins with a blank canvas, i.e., a tree painted with the single regime "nonspec".
-  If \code{tree} inherits class \code{hansentree}, then \code{paint} begins with the regimes specified in the \code{regimes} slot of \code{tree}.
-  Note that, if \code{tree} is a multivariate \code{hansentree}, then there are multiple regime specifications contained in \code{tree}.
-  In this case, the argument \code{which} lets you pick which one you wish to begin with;
-  by default, the first is used.
+    XXX
 }
 \value{
-  A vector of class 'factor' with names corresponding to the nodes in \code{tree}, specifying selective regimes.
+  A list of class 'ouSim' that describes the phenotype at the beginning and end of each branch segment, as well as the model.
+  }
+\author{Andrew Hipp ahipp@mortonarb.org}
+\seealso{
+   \code{plot.ouSim} for visualizing simulation
 }
-\author{Aaron A. King kingaa at umich dot edu}
-\seealso{\code{ouchtree}, \code{hansen}}
 \examples{
-data(bimac)
-x <- with(bimac,ouchtree(nodes=node,times=time/max(time),ancestors=ancestor,labels=species))
-r <- paint(x,subtree=c("1"="medium","9"="large","2"="small"),branch=c("38"="large","2"="medium"))
-plot(x,regimes=r,node.names=TRUE)
-# compare to bimac['OU.LP']
-h5 <- hansen(data=log(bimac['size']),tree=x,regimes=bimac['OU.LP'],alpha=1,sigma=1,reltol=1e-5)
-r <- paint(h5,branch=c("18"="large"),subtree=c("9"="small"))
-plot(x,regimes=r,node.names=TRUE)
+XXX
 }
 \keyword{models}
