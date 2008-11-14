@@ -24,6 +24,7 @@ function(hansenRunList) {
 
 summary.hansenBatch <- function(hansenBatch){
 ## items in output: hansens, regimeList, regimeMatrix
-## the summary will sum weights over all nodes over all trees
-
+## the summary will eventually sum weights over all nodes over all trees
+## for now, only doing first tree
+  
   }
