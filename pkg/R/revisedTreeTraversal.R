@@ -225,6 +225,7 @@ function(tree, cladeMembersList, maxNodes = NULL) {
   regimePaintings = vector("list", length(allRegimes))
   for (i in 1:length(allRegimes)) {
     allRegimes[[i]] = c("1", allRegimes[[i]])
-    regimePaintings[[i]] = paintBranches(tree, allRegimes[[i]], as.character(allRegimes[[i]])) 
+    regimePaintings[[i]] = as.factor(paintBranches(tree, allRegimes[[i]], as.character(allRegimes[[i]])))
+    names(regimePaintings[[i]]) <- tree@nodes
     message(paste('Created regime',i))}
   return(regimePaintings) }

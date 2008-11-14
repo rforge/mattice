@@ -30,15 +30,16 @@ runBatchHansen <-
 # 11 nov 08: renamed to runBatchHansen
 # Runs batchHansenFit and brown.fit over a list of ouchTrees
 # Arguments:
-#  "ouchTrees" = list of OUCH-style trees; if a single tree, send as 'list(TREE)'
+#  "ouchTrees" = list of OUCH-style trees
 #  "characterStates" = vector of character states, either extracted from an ouch-style tree data.frame or a named vector
 #  REMOVED: "SEM"= standard error of the mean, vector extracted from an ouch-style tree data.frame
 #  "rescale" = factor to multiply against (times / max(times)) -- choose based on trial analyses; set at <= 0 if you don't want to rescale trees
 #  "cladeMembersList" = list of vectors containing names of the members of each clade (except for the root of the tree)
 #  "brown" = whether to analyse the data under a Brownian motion model
 #  "..." = additional arguments to pass along to hansen
-function(ouchTrees, characterStates, cladeMembersList, maxNodes = NULL, regimeTitles = NULL, logData = FALSE, brown = F, rescale = 1, ...) {
+function(ouchTrees, characterStates, cladeMembersList, maxNodes = NULL, regimeTitles = NULL, brown = F, rescale = 1, ...) {
   ## do all the objects in ouchTrees inherit ouchtree?
+  if(is(ouchTrees,'ouchtree')) ouchTrees <- list(ouchTrees)
   treeCheck <- unlist(lapply(ouchTrees, function(x) is(x,'ouchtree')))
   if(F %in% treeCheck) 
         stop(paste('This function has been rewritten to use the new S4 ', sQuote('ouchtree'), ' class.',
@@ -46,6 +47,7 @@ function(ouchTrees, characterStates, cladeMembersList, maxNodes = NULL, regimeTi
   
   ## Check character states to make sure that they are either named and match names in the trees, or are the same length as the tips
   for (i in 1:length(ouchTrees)) {
+    dataFlag <- NULL
     stopFlag <- F
     tree <- ouchTrees[[i]]
     terminals <- tree@nodelabels[(tree@nnodes - tree@nterm + 1):tree@nnodes]
@@ -55,27 +57,26 @@ function(ouchTrees, characterStates, cladeMembersList, maxNodes = NULL, regimeTi
         message("Data assumed to be in the same order as terminals")
         dataFlag <- 'sameOrderTerminals' 
         }
-      else if (length(characterStates) == tree@nnodes) {
+      if(length(characterStates) == tree@nnodes) {
         message("Data assumed to be in the same order as nodes;\nany data not associated with a terminal branch will be ignored")
         dataFlag <- 'sameOrderNodes'
         }
-      else stopFlag <- T}
+      if(identical(dataFlag, NULL)) stopFlag <- T
       message("-------------------\n")
       }
     else dataFlag <- 'named'
-  if(stopFlag) stop("Correct discrepancies between trees and data and try again!")
-  stopFlag <- F  
+    if(stopFlag) stop("Correct discrepancies between trees and data and try again!")
+    }
 
-  if(logData) characterStates <- log(characterStates)
-  if(identical(regimeTitles, NULL)) {
-    regimeTitles <- as.character(1:length(regimesList))
-    if(brown) regimeTitles <- c(regimeTitles, 'brown')
-  }
   hansenBatch = vector("list", length(ouchTrees))
   treeCounter = 0
   for (i in 1:length(ouchTrees)) {
     tree <- ouchTrees[[i]]
     regimesList = regimeVectors(tree, cladeMembersList, maxNodes)
+    if(identical(regimeTitles, NULL)) {
+      regimeTitles <- as.character(1:length(regimesList))
+      if(brown) regimeTitles <- c(regimeTitles, 'brown')
+      }
     
     ## rescale tree if requested
     if(rescale>0) tree@times <- rescale * tree@times / max(tree@times) 
@@ -85,10 +86,11 @@ function(ouchTrees, characterStates, cladeMembersList, maxNodes = NULL, regimeTi
 
     ## make sure data fits the tree
     dataIn <- NULL
-    if(dataFlag) == 'sameOrderTerminals' dataIn <- c(rep(NA, tree@nnodes - tree@nterm), characterStates)
-    if(dataFlag) == 'sameOrderNodes' dataIn <- characterStates
-    if(dataFlag) == 'named' dataIn <- characterStates[match(tree@nodelabels), characterStates]
+    if(dataFlag == 'sameOrderTerminals') dataIn <- c(rep(NA, tree@nnodes - tree@nterm), characterStates)
+    if(dataFlag == 'sameOrderNodes') dataIn <- characterStates
+    if(dataFlag == 'named') dataIn <- characterStates[match(tree@nodelabels), characterStates]
     if(identical(dataIn, NULL)) stop(paste("There is a problem with your data that I failed to catch at the outset of", sQuote('runBatchHansen()')))
+    else names(dataIn) <- tree@nodes
     
     ## send it off to batchHansen and just stick the results in hansenBatch... this won't work as the number of regimes gets large, 
     ##   so there should be some option here to just hang onto the coefficients for each run (i.e., hang onto 'coef(hansen(...))' rather than 'hansen(...)')
@@ -115,8 +117,10 @@ function(tree, data, regimesList, regimeTitles, brown, ...) {
   brVars <- c("loglik", "dof", "sigma.squared", "theta")
   haVars <- c("loglik", "dof", "sigma.squared", "alpha")
   treeData <- matrix(data = NA, nrow = length(regimeTitles), ncol = length(variables), dimnames = list(regimeTitles,variables))
-  if(brown) br <- brown(data, tree)
-  treeData["brown", ] <- unlist(summary(br)[brVars])
+  if(brown) {
+    br <- brown(data, tree)
+    treeData["brown", ] <- unlist(summary(br)[brVars])
+    }
   for (i in seq(regimesList)) {
     message(paste("Running regime",i))
     ## at this point, the user has to give an initial alpha and sigma for hansen to search on... this should be relaxed
