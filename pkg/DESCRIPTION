@@ -4,7 +4,7 @@ Date: 2008-11-13
 Title: Mapping Transitions in Continuous Character Evolution
 Author: Andrew Hipp <ahipp@mortonarb.org>, with contributions from Marcial Escudero.
 Maintainer: Andrew Hipp <ahipp@mortonarb.org>
-Depends: R (>= 2.8.0), ouch, ape
-Suggests: phylobase
+Depends: ouch (>= 2.4-2), ape
 Description: Tools for an information-theoretic approach to estimating the probability of continuous character transitions on phylogenetic trees. 
+License: GPL
 URL: http://mattice.R-forge.R-project.org

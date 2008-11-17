@@ -18,9 +18,7 @@ informationCriterion <- function(u = NULL, lnL = NULL, K, n = 0, names = NULL) {
 
 informationCriterion.hansenBatch <- function(hansenBatch) {
 ## call informationCriterion for a 'hansen.batch' object
-## recall that there are a bunch of trees in here... summarize over these
 ## for right now, just returns AIC, AICc, and BIC weights for the trees analyzed in a hansenBatch object
-##       loglik dof sigma.squared theta / alpha
   outdata <- list(length(hansenBatch$hansens))
   N = hansenBatch$N
   for(i in 1:length(outdata)) {

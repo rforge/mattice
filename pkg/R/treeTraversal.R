@@ -13,6 +13,11 @@
 # 4. allPossibleRegimes
 # 5. regimeVectors
 
+# To do:
+# 1. add a monophyly checker to screen out nodes not present on a tree -- 
+#    one way to do this would be to hold the ape trees in memory and use them for plotting and checking monophyly
+# 2. make allPossibleRegimes more efficient when maxNodes < length(nodes)
+
 
 paintBranches <-
 # Paints branches with regimes changing at nodes specified
@@ -70,6 +75,11 @@ function(tree, regimeShiftNodes, regimeTitles) {
       # a little hack to fix a problem I don't understand... with the undesired side effect that it colors the stem of some subtrees rather than the crown as originally written
       for(i in 1:length(colorsVector)) if(colorsVector[i] == "") colorsVector[i] <- as.character(i) 
   return(colorsVector) }
+
+isMonophyletic <- 
+# returns T or F on whether a group of taxa is monophyletic in an ouch tree
+function(tree, taxa) {
+  }
 
 mrcaOUCH <-
 # Finds most recent common ancestor for a vector of tips by:
