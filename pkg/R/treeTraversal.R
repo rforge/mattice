@@ -215,6 +215,52 @@ function(changeNodes, maxNodes = NULL, nodeMatrix = F) {
   #    }
   outdata <- list(regimeList = outlist, regimeMatrix = outmatrix)
   return(outdata) }
+  
+regimeMaker <- function(ouchTrees, regMatrix, nodeMembers) {
+## supplants the old 'allPossibleRegimes'
+## Value:
+##  regList = a list of regimes for each tree (i.e., a list of lists)
+##  nodeMatrix = a matrix of trees (rows) by nodes (columns) indicating whether the node is present in each tree
+  nodeMatrix <- lapply(isMonophyletic
+  
+}
+
+
+regimeMatrix <- function(n = NULL, nodeNames = NULL, regimeNames = NULL, maxNodes = NULL) {
+  if(identical(n, NULL) && identical(nodeNames, NULL)) stop("You have to give regimeMatrix the number of nodes, a vector of node names, or both")
+  if(identical(nodeNames, NULL)) nodeNames <- as.character(seq(n))
+  else n <- length(nodeNames)
+  numberOfRegimes <- ifelse(n == 1, 2, 2^n)
+  outmatrix <- matrix(NA, nrow = numberOfRegimes, ncol = n, dimnames = list(regimeNames, nodeNames))
+  for(i in 1:(numberOfRegimes - 1)) outmatrix[i, ] <- as.binary(i, digits = n)
+  outmatrix[numberOfRegimes, ] <- as.binary(0, digits = n)
+  if(!identical(maxNodes, NULL)) {
+    outmatrix <- outmatrix[apply(outmatrix,1,sum) <= maxNodes, ]
+    dimnames(outmatrix)[[1]] = as.character(seq(dim(outmatrix)[1]))
+  }
+  return(outmatrix)
+}
+
+as.binary <- function(n, base = 2, r = FALSE, digits = NULL)
+# Robin Hankin <initialDOTsurname at soc.soton.ac.uk (edit in obvious way; spam precaution)>
+# submitted to R listserv Thu Apr 15 12:27:39 CEST 2004
+# AH added 'digits' to make it work with regimeMatrix
+# https://stat.ethz.ch/pipermail/r-help/2004-April/049419.html
+
+{
+   out <- NULL
+   while(n > 0) {
+     if(r) {
+       out <- c(out , n%%base)
+     } else {
+       out <- c(n%%base , out)
+     }   
+     n <- n %/% base
+   }
+   if(!identical(digits, NULL) && !r) out <- c(rep(0, digits-length(out)), out)
+   if(!identical(digits, NULL) && r) out <- c(out, rep(0, digits-length(out)))
+   return(out)
+}
 
 regimeVectors <-
 # Generates the list of painted branches representing all possible selective regimes for OU analyses, taking as argument

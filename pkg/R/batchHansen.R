@@ -1,34 +1,20 @@
 # ---------------------------------------------------------------------
 # FUNCTIONS FOR PERFORMING A SERIES OF OU ANALYSES ON A BATCH OF TREES
 # ---------------------------------------------------------------------
-# Copied from functions used in Hipp 2007 Evolution paper
-# *** To run a hansen (OU) analysis, call runBatchHansenFit ***
-# Utilizes ouch v 1.2-4
-# This is the original set of functions utilized in Hipp 2007 (Evolution 61: 2175-2194) as modified
-#  for Lumbsch, Hipp et al. 2008 (BMC Evolutionary Biology 8: 257). At the time of uploade to r-forge, 
-#  they have not been checked for compatibility with subsequent versions of ouch.
-
-
-## Project details
-## maticce: Mapping Transitions In Continuous Character Evolution
-## full project name: Continuous Character Shifts on Phylogenies
-## unix name: mattice
-## Project page requested from R-forge on 7 november 2008
 
 ## Changes needed:
-## 1. calls should be to hansen rather than hansen.fit
 ## 2. measurement error portions need to be fixed
 ## 3. Analysis should be conducted over multiple trees, summarizing only over trees for which a given node is present;
 ##    node presence should be checked on each tree by looking to see whether the defining group is monophyletic,
 ##    and probably a matrix created for each multiple-tree analysis that makes summarizing quicker.
-## 4. DONE -- Max number of simultaneous nodes should be set 
 ## 5. In a better world, allow graphical selection of subtrees to test on a single tree, then extract defining taxa
 ##    based on those nodes, using locator() or something like it.
-## 6. IT statistics should use informationCriterion or something else to clean up the code
+
+## to do: make change to deal with phylogenetic uncertainty, by revising how regimeVectors works. Call a new function regimeMatrix once at the outset of the analysis to create a matrix of change nodes (nodes present or absent for each regime), then once for each tree pass that matrix along with the taxa defining the node into a revisedRegime vectors to (1) check which of the nodes are present in the tree and create a new row in a matrix of nodes (columns) by trees (rows), where 1 indicates the node is present in the tree; and (2) make regime vectors for regimes whose nodes are all present in the tree.
 
 runBatchHansen <-
 # 11 nov 08: renamed to runBatchHansen
-# Runs batchHansenFit and brown.fit over a list of ouchTrees
+# Runs batchHansenFit and brown over a list of ouchTrees
 # Arguments:
 #  "ouchTrees" = list of OUCH-style trees
 #  "characterStates" = vector of character states, either extracted from an ouch-style tree data.frame or a named vector
@@ -37,7 +23,8 @@ runBatchHansen <-
 #  "cladeMembersList" = list of vectors containing names of the members of each clade (except for the root of the tree)
 #  "brown" = whether to analyse the data under a Brownian motion model
 #  "..." = additional arguments to pass along to hansen
-function(ouchTrees, characterStates, cladeMembersList, maxNodes = NULL, regimeTitles = NULL, brown = F, rescale = 1, ...) {
+
+function(ouchTrees, characterStates, cladeMembersList, nodeNames <- NULL, maxNodes = NULL, regimeTitles = NULL, brown = F, rescale = 1, ...) {
   ## do all the objects in ouchTrees inherit ouchtree?
   if(is(ouchTrees,'ouchtree')) ouchTrees <- list(ouchTrees)
   treeCheck <- unlist(lapply(ouchTrees, function(x) is(x,'ouchtree')))
@@ -68,9 +55,11 @@ function(ouchTrees, characterStates, cladeMembersList, maxNodes = NULL, regimeTi
     if(stopFlag) stop("Correct discrepancies between trees and data and try again!")
     }
 
+  nnodes <- length(cladeMembersList)
+  regMatrix <- regimeMatrix(nodeNames = ifelse(identical(nodeNames, NULL), seq(nnodes), nodeNames), digits = nnodes) # only make regMatrix once
+  regimeLists <- regimeMaker(ouchTrees = ouchTrees, regMatrix = regMatrix, nodeMembers = cladeMembersList) # new function... get a list of lists
   hansenBatch <- list(length(ouchTrees))
-  regimeLists <- list(length(ouchTrees))
-  regimeMatrices <- list(length(ouchTrees))
+  # regimeMatrices <- list(length(ouchTrees))
   for (i in 1:length(ouchTrees)) {
     tree <- ouchTrees[[i]]
     rl = regimeVectors(tree, cladeMembersList, maxNodes)
