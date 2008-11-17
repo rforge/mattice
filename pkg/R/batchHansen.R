@@ -68,8 +68,9 @@ function(ouchTrees, characterStates, cladeMembersList, maxNodes = NULL, regimeTi
     if(stopFlag) stop("Correct discrepancies between trees and data and try again!")
     }
 
-  hansenBatch = vector("list", length(ouchTrees))
-  treeCounter = 0
+  hansenBatch <- list(length(ouchTrees))
+  regimeLists <- list(length(ouchTrees))
+  regimeMatrices <- list(length(ouchTrees))
   for (i in 1:length(ouchTrees)) {
     tree <- ouchTrees[[i]]
     rl = regimeVectors(tree, cladeMembersList, maxNodes)
@@ -95,11 +96,15 @@ function(ouchTrees, characterStates, cladeMembersList, maxNodes = NULL, regimeTi
     ## send it off to batchHansen and just stick the results in hansenBatch... this won't work as the number of regimes gets large, 
     ##   so there should be some option here to just hang onto the coefficients for each run (i.e., hang onto 'coef(hansen(...))' rather than 'hansen(...)')
     ##   there could also be an option to save the entire object as a series of files in addition to hanging onto 
-    hansenBatch[[i]] = batchHansen(tree, dataIn, rl$regimeList, regimeTitles, brown, ...)
-    message(paste("Tree",i,"of",length(ouchTrees),"complete"))}
+    hansenBatch[[i]] <- batchHansen(tree, dataIn, rl$regimeList, regimeTitles, brown, ...)
+    regimeLists[[i]] <- rl$regimeList
+    regimeMatrices[[i]] <- rl$regimeMatrix
+    message(paste("Tree",i,"of",length(ouchTrees),"complete"))
+  }
     
     ## right now no summary is returned; one is needed, summarizing over trees what is summarized for each tree in batchHansen
-  outdata <- list(hansens = hansenBatch, regimeList = rl$regimeList, regimeMatrix = rl$regimeMatrix)
+    ## the below returns presuppose a single tree
+  outdata <- list(hansens = hansenBatch, regimeLists = regimeLists, regimeMatrices = regimeMatrices, brown = brown, N = ouchTrees[[i]]@nterm, analysisDate = date(), call = match.call())
   class(outdata) <- 'hansenBatch'
   return(outdata)}
 
@@ -114,7 +119,7 @@ function(tree, data, regimesList, regimeTitles, brown, ...) {
   n <- tree@nterm
   ## set up a matrix that returns lnL, K, sigmasq, theta0, and alpha for every model; thetas will go along into a list that is indexed by model
   hansenOptima <- list(length(regimeTitles))
-  variables <- c("loglik", "dof", "sigma.squared", "theta / alpha") # it's important that 'alpha' go last so that the matrix fills up right when the brownian motion model is used
+  variables <- c("loglik", "dof", "sigma.squared", "theta / alpha") # only display variables... set the selecting variables in the next two lines
   brVars <- c("loglik", "dof", "sigma.squared", "theta")
   haVars <- c("loglik", "dof", "sigma.squared", "alpha")
   treeData <- matrix(data = NA, nrow = length(regimeTitles), ncol = length(variables), dimnames = list(regimeTitles,variables))

@@ -112,7 +112,7 @@ ancestorLine <-
 #  CHANGED to "tree" 10 nov 08: "node" and "ancestor" = the standard tree specification vectors of the OUCH-style tree
 #  "tip" = the tip node to trace back
 # Value: a vector of nodes leading from a tip to the root
-# 10 nov 08: changed to just grab the appropriate element from tree@lineages
+# 10 nov 08: changed to just grab tree@lineages and make a vector that fits the old code
 function(tip, tree) {
   ## ------------------ begin ouchtree block -----------------
   ## check to see if tree inherits 'ouchtree'
@@ -147,9 +147,9 @@ allPossibleRegimes <-
 #  "maxNodes" = single number indicating the maximum number of nodes at which a regime can change
 #  "nodeMatrix" = indicates whether to return a binary table for interp or a list of changeNode vectors for analysis
 # Value:
-#    if nodeMatrix = F: a list of changeNode vectors (assumes type = "character"), one for each possible scenario
-#    if nodeMatrix = T: a binary table indicating whether a regime node is present or absent based on allPossibleRegimes output; 
-#                       presumes nodes are labelled 1:n
+#    regimeList = a list of changeNode vectors (assumes type = "character"), one for each possible scenario
+#    regimeMatrix = : a binary table indicating whether a regime node is present or absent based on allPossibleRegimes output; 
+#                     presumes nodes are labeled 1:n
 # 10 nov 08: this function now takes over regimeNodes
 function(changeNodes, maxNodes = NULL, nodeMatrix = F) {
     if(!identical(maxNodes, NULL) && maxNodes > length(changeNodes)) warning(paste(sQuote('maxNodes'), 'cannot be larger than the number of nodes; maxNodes ignored'))
@@ -177,7 +177,7 @@ function(changeNodes, maxNodes = NULL, nodeMatrix = F) {
       )
       for (i in seq(numberOfRegimes)) {
         for (j in seq(length(changeNodes))) {
-          if (is.na(match(j,regime[[i]]))) regimesNameMatrix[i,j] = 0
+          if (is.na(match(changeNodes[j],regime[[i]]))) regimesNameMatrix[i,j] = 0 # changed this so that j indexes changeNodes
           else regimesNameMatrix[i,j] = 1 
         }
       }
@@ -193,8 +193,8 @@ function(changeNodes, maxNodes = NULL, nodeMatrix = F) {
         outlist <- outlist[sapply(outlist, length) <= maxNodes]
         outlist[[length(outlist) + 1]] <- rep("0", length(changeNodes))
         }
-      }
-  outdata <- list(regimeList = outlist, regimeMatrix = outMatrix)
+  #    }
+  outdata <- list(regimeList = outlist, regimeMatrix = outmatrix)
   return(outdata) }
 
 regimeVectors <-
@@ -227,8 +227,8 @@ function(tree, cladeMembersList, maxNodes = NULL) {
   regimeMatrix <- apr$regimeMatrix
   regimePaintings = vector("list", length(allRegimes))
   for (i in 1:length(allRegimes)) {
-    allRegimes[[i]] = c("1", allRegimes[[i]])
-    regimePaintings[[i]] = as.factor(paintBranches(tree, allRegimes[[i]], as.character(allRegimes[[i]])))
+    allRegimes[[i]] <- c("1", allRegimes[[i]])
+    regimePaintings[[i]] <- as.factor(paintBranches(tree, allRegimes[[i]], as.character(allRegimes[[i]])))
     names(regimePaintings[[i]]) <- tree@nodes
     message(paste('Created regime',i))}
   outdata <- list(regimeList = regimePaintings, regimeMatrix = regimeMatrix)
