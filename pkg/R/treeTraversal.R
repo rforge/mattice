@@ -14,8 +14,6 @@
 # 5. regimeVectors
 
 # To do:
-# 1. add a monophyly checker to screen out nodes not present on a tree -- 
-#    one way to do this would be to hold the ape trees in memory and use them for plotting and checking monophyly
 # 2. make allPossibleRegimes more efficient when maxNodes < length(nodes)
 
 
@@ -76,10 +74,21 @@ function(tree, regimeShiftNodes, regimeTitles) {
       for(i in 1:length(colorsVector)) if(colorsVector[i] == "") colorsVector[i] <- as.character(i) 
   return(colorsVector) }
 
-isMonophyletic <- 
-# returns T or F on whether a group of taxa is monophyletic in an ouch tree
-function(tree, taxa) {
+nodeDescendents <- function(tree, startNode) {
+## Recursive function to find all the descendents of a node on an 'ouchtree' object
+  startNode <- as.character(startNode) # just to be safe
+  daughterBranches <- as.character(tree@nodes[tree@ancestors %in% startNode])
+  nodeNames <- tree@nodelabels[tree@nodes %in% daughterBranches]
+  if(!identical(as.character(daughterBranches), character(0))) {
+    for(i in daughterBranches) nodeNames <- c(nodeNames, nodeDescendents(tree, i))
   }
+  return(nodeNames[!is.na(nodeNames)])
+}
+  
+isMonophyletic <- function(tree, taxa) {
+# returns T or F on whether a group of taxa is monophyletic in an ouch tree
+  identical(sort(taxa), sort(nodeDescendents(tree, mrcaOUCH(taxa, tree))))
+}
 
 mrcaOUCH <-
 # Finds most recent common ancestor for a vector of tips by:
