@@ -9,16 +9,16 @@
 # FINISH REGIME MAKER
 
 
-paintBranches <-
-# Paints branches with regimes changing at nodes specified
-# arguments
-#  "node" "ancestor" "times" = the standard tree specification vectors of the OUCH-style tree
-#  "regimeShiftNodes" = a vector of nodes at which selective regimes shift: root must be included, but tips are meaningless in this context
-#  "regimeTitles" = a vector of titles for the regimes that begin at the root and at the nodes indicated in "regimeShiftNodes",
-#                   in order of description in "regimeShiftNodes", except that the root is listed first in "regimeTitles"
-#                   but not at all in "regimeShiftNodes"... defaults to "node[x]regime
-# Value: a vector of regimes that can be plopped right into an OUCH-style tree data frame
-function(tree, regimeShiftNodes, regimeTitles) {
+regimeVectors <-
+# Generates the list of painted branches representing all possible selective regimes for OU analyses, taking as argument
+# species vectors that describe the clades at the bases of which regimes are specified to change.
+# Arguments:
+#  "tree" = the standard tree specification vectors of the OUCH-style tree
+#  "cladeMembersList" = list of vectors containing names of the members of each clade (except for the root of the tree)
+# Value: list of vectors that can each be plugged directly into OU analysis as the "regimes" argument
+# 19 nov 08: changing to accept a list of trees
+
+function(ouchTrees, cladeMembersList, maxNodes = NULL) {
   ## ------------------ begin ouchtree block -----------------
   ## check to see if tree inherits 'ouchtree'
   if (!is(tree,'ouchtree')) 
@@ -31,6 +31,48 @@ function(tree, regimeShiftNodes, regimeTitles) {
   times <- tree@times # class = "numeric"
   ## ------------------ end ouchtree block -------------------
   
+  nnode <- length(cladeMembersList)
+  regMatrix <- regimeMatrix(n = nnode)
+  apr = regimeMaker(ouchTrees, regMatrix, cladeMembersList) ## HOLD IT! NOW REGIME MAKER WORKS ON ALL TREES AT ONCE... RETHINK THIS
+  # apr$regList = a list of vectors, each indicating changeNodes
+  # apr$nodeMatrix = a matrix of trees (rows) by nodes (columns) indicating whether the node is present in each tree
+  nodeMatri <- unlist(changeNodesList)
+  #changeNodesVector = vector("character", length(changeNodesList))
+  #for (i in 1:length(changeNodesList)) # Changing cladeMemberList to a 1-d vector
+  #  {changeNodesVector[i] = changeNodesList[[i]]}
+  allRegimes <- regimesList
+  regimePaintings = vector("list", length(allRegimes))
+  for (i in 1:length(allRegimes)) {
+    allRegimes[[i]] <- c("1", allRegimes[[i]])
+    regimePaintings[[i]] <- as.factor(paintBranches(tree, allRegimes[[i]], as.character(allRegimes[[i]])))
+    names(regimePaintings[[i]]) <- tree@nodes
+    message(paste('Created regime',i))}
+  outdata <- list(regimeList = regimePaintings, regimeMatrix = regMatrix)
+  return(outdata) }
+
+paintBranches <-
+# Paints branches with regimes changing at nodes specified
+# arguments
+#  "node" "ancestor" "times" = the standard tree specification vectors of the OUCH-style tree
+#  "regimeShiftNodes" = a vector of nodes at which selective regimes shift: root must be included, but tips are meaningless in this context
+#  "regimeTitles" = a vector of titles for the regimes that begin at the root and at the nodes indicated in "regimeShiftNodes",
+#                   in order of description in "regimeShiftNodes", except that the root is listed first in "regimeTitles"
+#                   but not at all in "regimeShiftNodes"... defaults to "node[x]regime
+# Value: a vector of regimes that can be plopped right into an OUCH-style tree data frame
+function(regimeShiftNodes, tree, regimeTitles = NULL) {
+  ## ------------------ begin ouchtree block -----------------
+  ## check to see if tree inherits 'ouchtree'
+  if (!is(tree,'ouchtree')) 
+	stop(paste('This function has been rewritten to use the new S4 ', sQuote('ouchtree'), ' class.',
+	'\nYou can generate a tree of this class by calling ', sQuote('ouchtree()'), '.', sep = ""))
+  ## get the vectors we need:
+  ancestor <- tree@ancestors # class = "character"
+  node <- tree@nodes # class = "character"
+  species <- tree@nodelabels # class = "character" -- note that nodelabels is more general than this indicates and the name should be changed throughout at some point
+  times <- tree@times # class = "numeric"
+  ## ------------------ end ouchtree block -------------------
+  
+  if(identical(regimeTitles, NULL)) regimeTitles <- asCharacter(regimeShiftNodes)
   names(regimeTitles) = as.character(regimeShiftNodes)
   colorsVector = character(length(node))
   for (i in 1:length(ancestor)) {
@@ -141,10 +183,13 @@ regimeMaker <- function(ouchTrees, regMatrix, nodeMembers) {
   changeNodes <- list(numTrees)
   regList <- list(numTrees)
   
-  # fill outData
+  # fill outdata
   for(i in seq(numNodes)) nodeMatrix[, i] <- unlist(lapply(ouchTrees, isMonophyletic, taxa = nodeMembers[[i]]))
-  for(i in seq(numTrees)) changeNodes[[i]] <- unlist(lapply(nodeMembers[as.logical(nodeMatrix[i, ], mrcaOUCH, tree = ouchTrees[[i]])]))
-  FILL UP regList .. should be a list (trees) of lists (regimes)
+  for(i in seq(numTrees)) {
+    changeNodes[[i]] <- c("1", unlist(lapply(nodeMembers[as.logical(nodeMatrix[i, ], mrcaOUCH, tree = ouchTrees[[i]])]))) # adds the root as a change so that paintBranches will work correctly
+    numNodesTemp <- sum(nodeMatrix[i, ])
+    regList[[i]] <- lapply(changeNodes, paintBranches, tree = ouchTrees[[i]])
+  }
   outdata <- list(regList = regList, nodeMatrix = nodeMatrix)
   return(outdata)
 }
@@ -185,42 +230,3 @@ as.binary <- function(n, base = 2, r = FALSE, digits = NULL)
    if(!identical(digits, NULL) && r) out <- c(out, rep(0, digits-length(out)))
    return(out)
 }
-
-regimeVectors <-
-# Generates the list of painted branches representing all possible selective regimes for OU analyses, taking as argument
-# species vectors that describe the clades at the bases of which regimes are specified to change.
-# Arguments:
-#  "tree" = the standard tree specification vectors of the OUCH-style tree
-#  "cladeMembersList" = list of vectors containing names of the members of each clade (except for the root of the tree)
-# Value: list of vectors that can each be plugged directly into OU analysis as the "regimes" argument
-# 19 nov 08: changing to accept a list of trees
-
-function(ouchTrees, cladeMembersList, maxNodes = NULL) {
-  ## ------------------ begin ouchtree block -----------------
-  ## check to see if tree inherits 'ouchtree'
-  if (!is(tree,'ouchtree')) 
-	stop(paste('This function has been rewritten to use the new S4 ', sQuote('ouchtree'), ' class.',
-	'\nYou can generate a tree of this class by calling ', sQuote('ouchtree()'), '.', sep = ""))
-  ## get the vectors we need:
-  ancestor <- tree@ancestors # class = "character"
-  node <- tree@nodes # class = "character"
-  species <- tree@nodelabels # class = "character" -- note that nodelabels is more general than this indicates and the name should be changed throughout at some point
-  times <- tree@times # class = "numeric"
-  ## ------------------ end ouchtree block -------------------
-      
-  changeNodesList <- lapply(cladeMembersList, mrcaOUCH, tree = tree) #Returns a list of length-1 character vectors, each containing a single changeNode -- the fact that this is a list causes problems in paintBranches if not changed to a 1-d vector
-  changeNodesVector <- unlist(changeNodesList)
-  #changeNodesVector = vector("character", length(changeNodesList))
-  #for (i in 1:length(changeNodesList)) # Changing cladeMemberList to a 1-d vector
-  #  {changeNodesVector[i] = changeNodesList[[i]]}
-  regMatrix <- CALL REG MATRIX
-  apr = regimeMaker(xxx) ## HOLD IT! NOW REGIME MAKER WORKS ON ALL TREES AT ONCE... RETHINK THIS
-  allRegimes <- regimesList
-  regimePaintings = vector("list", length(allRegimes))
-  for (i in 1:length(allRegimes)) {
-    allRegimes[[i]] <- c("1", allRegimes[[i]])
-    regimePaintings[[i]] <- as.factor(paintBranches(tree, allRegimes[[i]], as.character(allRegimes[[i]])))
-    names(regimePaintings[[i]]) <- tree@nodes
-    message(paste('Created regime',i))}
-  outdata <- list(regimeList = regimePaintings, regimeMatrix = regMatrix)
-  return(outdata) }
