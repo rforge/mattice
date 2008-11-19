@@ -186,16 +186,15 @@ regimeMaker <- function(ouchTrees, regMatrix, nodeMembers) {
   # fill outdata
   for(i in seq(numNodes)) nodeMatrix[, i] <- unlist(lapply(ouchTrees, isMonophyletic, taxa = nodeMembers[[i]]))
   for(i in seq(numTrees)) {
-    treeRegMatrix <- regMatrix * matrix(nodeMatrix[i, ], dim(regMatrix)[1], dim(regMatrix[2], byrow = T) # multiplies regMatrix by nodes present
+    tree <- ouchTrees[[i]]
+    treeRegMatrix <- regMatrix * matrix(nodeMatrix[i, ], dim(regMatrix)[1], dim(regMatrix)[2], byrow = T) # multiplies regMatrix by nodes present
     treeRegMatrix <- treeRegMatrix[which(apply(treeRegMatrix, 1, sum) > 0), ] # subset for regimes that still have nodes
+    treeRegMatrix <- rbind(treeRegMatrix, treeRegMatrix[1,] * 0) # add one all-zero row for the OU1 model
     numTreeRegs <- dim(treeRegMatrix)[1]
-    treeRegs <- list(numTreeRegs)
-    for(j in seq(numTreeRegs)) {
-      changeNodes[[i]] <- c("1", unlist(lapply(nodeMembers[as.logical(nodeMatrix[i, ])], mrcaOUCH, tree = ouchTrees[[i]]))) # adds the root as a change so that paintBranches will work correctly
-      FINISH! 
-      }
-    numNodesTemp <- sum(nodeMatrix[i, ])
-    regList[[i]] <- lapply(changeNodes, paintBranches, tree = ouchTrees[[i]])
+    treeRegs <- list(numTreeRegs) # this will be assigned to regList[[i]]
+    nodesVector <- unlist(lapply(nodeMembers, mrcaOUCH, tree = ouchTrees[[i]])) # as written, gets the MRCA for even invalid nodes just so indexing stays right
+    for(j in seq(numTreeRegs)) treeRegs[[j]] <- paintBranches(c("1", nodesVector[as.logical(treeRegMatrix[j, ])]), tree)
+    regList[[i]] <- treeRegs
   }
   outdata <- list(regList = regList, nodeMatrix = nodeMatrix)
   return(outdata)
