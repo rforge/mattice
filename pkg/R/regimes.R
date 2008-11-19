@@ -1,3 +1,14 @@
+# ---------------------------------------------------
+# FUNCTIONS FOR PAINTING REGIMES ON AN S4 OUCH TREE #
+# ---------------------------------------------------
+
+# Modified from functions used in Hipp 2007 Evolution paper
+# Initially written for ouch v 1.2-4
+# updated to ouch >= 2.4-2 Nov 2008
+
+# FINISH REGIME MAKER
+
+
 paintBranches <-
 # Paints branches with regimes changing at nodes specified
 # arguments
@@ -117,8 +128,9 @@ function(changeNodes, maxNodes = NULL, nodeMatrix = F) {
   
 regimeMaker <- function(ouchTrees, regMatrix, nodeMembers) {
 ## supplants the old 'allPossibleRegimes'
+## takes a list of ouchtree objects, a regimeMatrix ouput, and a list of nodeMembers (the taxa definining each node of interest)
 ## Value:
-##  regList = a list of regimes for each tree (i.e., a list of lists)
+##  regList = a list of nodes defining the change points for each tree (i.e., a list of lists)
 ##  nodeMatrix = a matrix of trees (rows) by nodes (columns) indicating whether the node is present in each tree
   
   # set up variables
@@ -126,15 +138,15 @@ regimeMaker <- function(ouchTrees, regMatrix, nodeMembers) {
   numNodes <- length(nodeMembers)
   if(numNodes != dim(regMatrix)[1] stop('Number of nodes (columns) in regMatrix must equal number of items in nodeMembers list')
   nodeMatrix <- matrix(NA, nrow = numTrees, ncol = numNodes, dimnames = list(seq(numTrees), dimnames(regMatrix)[2]))
+  changeNodes <- list(numTrees)
   regList <- list(numTrees)
   
-  # fill nodeMatrix
+  # fill outData
   for(i in seq(numNodes)) nodeMatrix[, i] <- unlist(lapply(ouchTrees, isMonophyletic, taxa = nodeMembers[[i]]))
-  
-  # fill regList
-  for(i in seq(numTrees)) {
-    regList <- XXX
-    STOPPED HERE
+  for(i in seq(numTrees)) changeNodes[[i]] <- unlist(lapply(nodeMembers[as.logical(nodeMatrix[i, ], mrcaOUCH, tree = ouchTrees[[i]])]))
+  FILL UP regList .. should be a list (trees) of lists (regimes)
+  outdata <- list(regList = regList, nodeMatrix = nodeMatrix)
+  return(outdata)
 }
 
 
@@ -178,10 +190,12 @@ regimeVectors <-
 # Generates the list of painted branches representing all possible selective regimes for OU analyses, taking as argument
 # species vectors that describe the clades at the bases of which regimes are specified to change.
 # Arguments:
-#  "node" "ancestor" "times" "species" = the standard tree specification vectors of the OUCH-style tree
+#  "tree" = the standard tree specification vectors of the OUCH-style tree
 #  "cladeMembersList" = list of vectors containing names of the members of each clade (except for the root of the tree)
 # Value: list of vectors that can each be plugged directly into OU analysis as the "regimes" argument
-function(tree, cladeMembersList, maxNodes = NULL) {
+# 19 nov 08: changing to accept a list of trees
+
+function(ouchTrees, cladeMembersList, maxNodes = NULL) {
   ## ------------------ begin ouchtree block -----------------
   ## check to see if tree inherits 'ouchtree'
   if (!is(tree,'ouchtree')) 
@@ -199,14 +213,14 @@ function(tree, cladeMembersList, maxNodes = NULL) {
   #changeNodesVector = vector("character", length(changeNodesList))
   #for (i in 1:length(changeNodesList)) # Changing cladeMemberList to a 1-d vector
   #  {changeNodesVector[i] = changeNodesList[[i]]}
-  apr = allPossibleRegimes(changeNodesVector, maxNodes)
-  allRegimes <- apr$regimeList
-  regimeMatrix <- apr$regimeMatrix
+  regMatrix <- CALL REG MATRIX
+  apr = regimeMaker(xxx) ## HOLD IT! NOW REGIME MAKER WORKS ON ALL TREES AT ONCE... RETHINK THIS
+  allRegimes <- regimesList
   regimePaintings = vector("list", length(allRegimes))
   for (i in 1:length(allRegimes)) {
     allRegimes[[i]] <- c("1", allRegimes[[i]])
     regimePaintings[[i]] <- as.factor(paintBranches(tree, allRegimes[[i]], as.character(allRegimes[[i]])))
     names(regimePaintings[[i]]) <- tree@nodes
     message(paste('Created regime',i))}
-  outdata <- list(regimeList = regimePaintings, regimeMatrix = regimeMatrix)
+  outdata <- list(regimeList = regimePaintings, regimeMatrix = regMatrix)
   return(outdata) }
