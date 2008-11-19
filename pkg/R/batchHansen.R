@@ -24,7 +24,7 @@ runBatchHansen <-
 #  "brown" = whether to analyse the data under a Brownian motion model
 #  "..." = additional arguments to pass along to hansen
 
-function(ouchTrees, characterStates, cladeMembersList, nodeNames <- NULL, maxNodes = NULL, regimeTitles = NULL, brown = F, rescale = 1, ...) {
+function(ouchTrees, characterStates, cladeMembersList, nodeNames = NULL, maxNodes = NULL, regimeTitles = NULL, brown = F, rescale = 1, ...) {
   ## do all the objects in ouchTrees inherit ouchtree?
   if(is(ouchTrees,'ouchtree')) ouchTrees <- list(ouchTrees)
   treeCheck <- unlist(lapply(ouchTrees, function(x) is(x,'ouchtree')))

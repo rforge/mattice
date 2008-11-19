@@ -26,13 +26,14 @@ isMonophyletic <- function(tree, taxa) {
 
 nodeDescendents <- function(tree, startNode) {
 ## Recursive function to find all the descendents of a node on an 'ouchtree' object
+## a bit clunky as written 
   startNode <- as.character(startNode) # just to be safe
   daughterBranches <- as.character(tree@nodes[tree@ancestors %in% startNode])
   nodeNames <- tree@nodelabels[tree@nodes %in% daughterBranches]
   if(!identical(as.character(daughterBranches), character(0))) {
     for(i in daughterBranches) nodeNames <- c(nodeNames, nodeDescendents(tree, i))
   }
-  return(nodeNames[!is.na(nodeNames)])
+  return(nodeNames[nodeNames %in% tree@nodelabels[tree@term]])
 }
   
 mrcaOUCH <-

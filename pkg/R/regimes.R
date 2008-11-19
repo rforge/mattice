@@ -72,7 +72,7 @@ function(regimeShiftNodes, tree, regimeTitles = NULL) {
   times <- tree@times # class = "numeric"
   ## ------------------ end ouchtree block -------------------
   
-  if(identical(regimeTitles, NULL)) regimeTitles <- asCharacter(regimeShiftNodes)
+  if(identical(regimeTitles, NULL)) regimeTitles <- as.character(regimeShiftNodes)
   names(regimeTitles) = as.character(regimeShiftNodes)
   colorsVector = character(length(node))
   for (i in 1:length(ancestor)) {
@@ -178,22 +178,28 @@ regimeMaker <- function(ouchTrees, regMatrix, nodeMembers) {
   # set up variables
   numTrees <- length(ouchTrees)
   numNodes <- length(nodeMembers)
-  if(numNodes != dim(regMatrix)[1] stop('Number of nodes (columns) in regMatrix must equal number of items in nodeMembers list')
-  nodeMatrix <- matrix(NA, nrow = numTrees, ncol = numNodes, dimnames = list(seq(numTrees), dimnames(regMatrix)[2]))
+  if(numNodes != dim(regMatrix)[2]) stop('Number of nodes (columns) in regMatrix must equal number of items in nodeMembers list')
+  nodeMatrix <- matrix(NA, nrow = numTrees, ncol = numNodes, dimnames = list(seq(numTrees), dimnames(regMatrix)[[2]]))
   changeNodes <- list(numTrees)
   regList <- list(numTrees)
   
   # fill outdata
   for(i in seq(numNodes)) nodeMatrix[, i] <- unlist(lapply(ouchTrees, isMonophyletic, taxa = nodeMembers[[i]]))
   for(i in seq(numTrees)) {
-    changeNodes[[i]] <- c("1", unlist(lapply(nodeMembers[as.logical(nodeMatrix[i, ], mrcaOUCH, tree = ouchTrees[[i]])]))) # adds the root as a change so that paintBranches will work correctly
+    treeRegMatrix <- regMatrix * matrix(nodeMatrix[i, ], dim(regMatrix)[1], dim(regMatrix[2], byrow = T) # multiplies regMatrix by nodes present
+    treeRegMatrix <- treeRegMatrix[which(apply(treeRegMatrix, 1, sum) > 0), ] # subset for regimes that still have nodes
+    numTreeRegs <- dim(treeRegMatrix)[1]
+    treeRegs <- list(numTreeRegs)
+    for(j in seq(numTreeRegs)) {
+      changeNodes[[i]] <- c("1", unlist(lapply(nodeMembers[as.logical(nodeMatrix[i, ])], mrcaOUCH, tree = ouchTrees[[i]]))) # adds the root as a change so that paintBranches will work correctly
+      FINISH! 
+      }
     numNodesTemp <- sum(nodeMatrix[i, ])
     regList[[i]] <- lapply(changeNodes, paintBranches, tree = ouchTrees[[i]])
   }
   outdata <- list(regList = regList, nodeMatrix = nodeMatrix)
   return(outdata)
 }
-
 
 regimeMatrix <- function(n = NULL, nodeNames = NULL, regimeNames = NULL, maxNodes = NULL) {
   if(identical(n, NULL) && identical(nodeNames, NULL)) stop("You have to give regimeMatrix the number of nodes, a vector of node names, or both")
