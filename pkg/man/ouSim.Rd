@@ -51,6 +51,9 @@
     to run the simulation; and return results that are scaled correctly for the tree (I believe at this point that the 
     sigma and alpha parameters don't return results that match the distributions you get using \code{simulate} on a \code{hansentree}
     or \code{browntree} object, which you should.
+    
+    To do: split ouSim into two functions, one handling an \code{ape} format tree and the other handling an \code{ouchtree}
+    object, with the option in the latter case of catching a \code{hansentree} or \code{browntree} as discussed above.
 }
 \value{
   A list of class 'ouSim' that describes the phenotype at the beginning and end of each branch segment, as well as the model.
