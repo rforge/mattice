@@ -44,7 +44,7 @@
     }
 }
 \details{
-    XXX
+    ouSim as currently written is a very basic simulation engine, but also very flexible.
 }
 \value{
   A list of class 'ouSim' that describes the phenotype at the beginning and end of each branch segment, as well as the model.
