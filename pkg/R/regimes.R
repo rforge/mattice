@@ -116,19 +116,18 @@ regimeMaker <- function(ouchTrees, regMatrix, nodeMembers) {
   for(i in seq(numTrees)) {
     tree <- ouchTrees[[i]]
     regMatrices[[i]] <- regMatrix * as.numeric(matrix(nodeMatrix[i, ], dim(regMatrix)[1], dim(regMatrix)[2], byrow = T)) # multiplies regMatrix by nodes present
-      if(class(regMatrices[[i]]) != "matrix") regMatrices[[i]] <- matrix(regMatrices[[i]], nrow = 1)
-    regMatrices[[i]] <- regMatrices[[i]][which(apply(regMatrices[[i]], 1, sum) > 0), ] # subset for regimes that still have nodes
-      if(class(regMatrices[[i]]) != "matrix") regMatrices[[i]] <- matrix(regMatrices[[i]], nrow = 1)
-    regMatrices[[i]] <- regMatrices[[i]][!duplicated(apply(regMatrices[[i]], 1, as.decimal)), ] ## gets rid of non-unique regimes
-    if(class(regMatrices[[i]]) == "matrix") dimnames(regMatrices[[i]]) <- list(seq(dim(regMatrices[[i]])[1]), dimnames(regMatrices[[i]])[[2]])
-      else regMatrices[[i]] <- matrix(regMatrices[[i]], nrow = 1)
-    regMatrices[[i]] <- rbind(regMatrices[[i]], regMatrices[[i]][1,] * 0) # add one all-zero row for the OU1 model
+    regMatrices[[i]][1:(dim(regMatrices[[i]])[1] - 1), ][which(apply(regMatrices[[i]][1:(dim(regMatrices[[i]])[1] - 1), ], 1, sum) == 0), ] <- rep(NA, numNodes) # set to NA regimes that have no nodes, except for OU1 model
+    regMatrices[[i]][duplicated(apply(regMatrices[[i]], 1, as.decimal)), ] <- rep(NA, numNodes) ## set to NA non-unique regimes
+    dimnames(regMatrices[[i]]) <- list(seq(dim(regMatrices[[i]])[1]), dimnames(regMatrices[[i]])[[2]])
     numTreeRegs <- dim(regMatrices[[i]])[1]
     treeRegs <- list(numTreeRegs) # this will be assigned to regList[[i]]
     nodesVector <- unlist(lapply(nodeMembers, mrcaOUCH, tree = ouchTrees[[i]])) # as written, gets the MRCA for even invalid nodes just so indexing stays right
     for(j in seq(numTreeRegs)) {
-      treeRegs[[j]] <- as.factor(paintBranches(c("1", nodesVector[as.logical(regMatrices[[i]][j, ])]), tree))
-      names(treeRegs[[j]]) <- tree@nodes
+      if(any(is.na(regMatrices[[i]][j, ]))) treeRegs[[j]] <- NA
+      else {
+        treeRegs[[j]] <- as.factor(paintBranches(c("1", nodesVector[as.logical(regMatrices[[i]][j, ])]), tree))
+        names(treeRegs[[j]]) <- tree@nodes
+      }
     }
     regList[[i]] <- treeRegs
   }

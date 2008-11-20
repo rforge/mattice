@@ -75,14 +75,13 @@ function(ouchTrees, characterStates, cladeMembersList, nodeNames = NULL, maxNode
     message(paste("Tree",i,"of",length(ouchTrees),"complete", "\n-----------------------------"))
   }
     
-    ## right now no summary is returned; one is needed, summarizing over trees what is summarized for each tree in batchHansen
-    ## the below returns presuppose a single tree
+    ## right now no summary is returned; perhaps one is needed, summarizing over trees what is summarized for each tree in batchHansen
   outdata <- list(hansens = hansenBatch, regList = ar$regList, regMatrix = ar$regMatrix, nodeMatrix = ar$nodeMatrix, brown = brown, N = ouchTrees[[i]]@nterm, analysisDate = date(), call = match.call())
   class(outdata) <- 'hansenBatch'
   return(outdata)}
 
 batchHansen <-
-# Runs hansen.fit and brown.fit on a tree over a batch of selective regimes
+# Runs hansen and brown on a tree over a batch of selective regimes
 # Arguments:
 #  "node" "ancestor" "times" "data" = the standard tree specification vectors of the OUCH-style tree
 #  "regimesList" = list of regime-paintings as output from regimeVectors
@@ -101,10 +100,17 @@ function(tree, data, regimesList, regimeTitles, brown, ...) {
     treeData["brown", ] <- unlist(summary(br)[brVars])
     }
   for (i in seq(regimesList)) {
-    message(paste("Running regime",i))
-    ## at this point, the user has to give an initial alpha and sigma for hansen to search on... this should be relaxed
-    ha = hansen(data, tree, regimesList[[i]], ...)
-    treeData[i, ] <- unlist(summary(ha)[haVars])
-    hansenOptima[[i]] <- summary(ha)$optima[[1]]
+    if(any(is.na(regimesList[[i]]))) {
+      message(paste("skipping regime", i))
+      treeData[i, ] <- rep(NA, dim(treeData)[[2]])
+      hansenOptima[[i]] <- NA
+      }
+    else {
+      message(paste("Running regime",i))
+      ## at this point, the user has to give an initial alpha and sigma for hansen to search on... this should be relaxed
+      ha = hansen(data, tree, regimesList[[i]], ...)
+      treeData[i, ] <- unlist(summary(ha)[haVars])
+      hansenOptima[[i]] <- summary(ha)$optima[[1]]
+      }
   }
   return(treeData) }
