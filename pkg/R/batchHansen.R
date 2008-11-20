@@ -1,16 +1,10 @@
 # ---------------------------------------------------------------------
 # FUNCTIONS FOR PERFORMING A SERIES OF OU ANALYSES ON A BATCH OF TREES
 # ---------------------------------------------------------------------
-
 ## Changes needed:
 ## 2. measurement error portions need to be fixed
-## 3. Analysis should be conducted over multiple trees, summarizing only over trees for which a given node is present;
-##    node presence should be checked on each tree by looking to see whether the defining group is monophyletic,
-##    and probably a matrix created for each multiple-tree analysis that makes summarizing quicker.
 ## 5. In a better world, allow graphical selection of subtrees to test on a single tree, then extract defining taxa
 ##    based on those nodes, using locator() or something like it.
-
-## to do: make change to deal with phylogenetic uncertainty, by revising how regimeVectors works. Call a new function regimeMatrix once at the outset of the analysis to create a matrix of change nodes (nodes present or absent for each regime), then once for each tree pass that matrix along with the taxa defining the node into a revisedRegime vectors to (1) check which of the nodes are present in the tree and create a new row in a matrix of nodes (columns) by trees (rows), where 1 indicates the node is present in the tree; and (2) make regime vectors for regimes whose nodes are all present in the tree.
 
 runBatchHansen <-
 # 11 nov 08: renamed to runBatchHansen
@@ -23,7 +17,6 @@ runBatchHansen <-
 #  "cladeMembersList" = list of vectors containing names of the members of each clade (except for the root of the tree)
 #  "brown" = whether to analyse the data under a Brownian motion model
 #  "..." = additional arguments to pass along to hansen
-
 function(ouchTrees, characterStates, cladeMembersList, nodeNames = NULL, maxNodes = NULL, regimeTitles = NULL, brown = F, rescale = 1, ...) {
   ## do all the objects in ouchTrees inherit ouchtree?
   if(is(ouchTrees,'ouchtree')) ouchTrees <- list(ouchTrees)
@@ -55,25 +48,18 @@ function(ouchTrees, characterStates, cladeMembersList, nodeNames = NULL, maxNode
     if(stopFlag) stop("Correct discrepancies between trees and data and try again!")
     }
 
-  nnodes <- length(cladeMembersList)
-  regMatrix <- regimeMatrix(nodeNames = ifelse(identical(nodeNames, NULL), seq(nnodes), nodeNames), digits = nnodes) # only make regMatrix once
-  regimeLists <- regimeMaker(ouchTrees = ouchTrees, regMatrix = regMatrix, nodeMembers = cladeMembersList) # new function... get a list of lists
+  ar = regimeVectors(ouchTrees, cladeMembersList, maxNodes)
   hansenBatch <- list(length(ouchTrees))
-  # regimeMatrices <- list(length(ouchTrees))
   for (i in 1:length(ouchTrees)) {
     tree <- ouchTrees[[i]]
-    rl = regimeVectors(tree, cladeMembersList, maxNodes)
     if(identical(regimeTitles, NULL)) {
-      regimeTitles <- as.character(1:length(rl$regimeList))
+      regimeTitles <- as.character(1:length(ar$regList[[i]]))
       if(brown) regimeTitles <- c(regimeTitles, 'brown')
       }
     
     ## rescale tree if requested
     if(rescale>0) tree@times <- rescale * tree@times / max(tree@times) 
     
-    ## need to revise regimeVectors so that it only returns regimes for nodes that are supported in the tree
-    ## for now, assume nodes of interest are present in all trees
-
     ## make sure data fits the tree
     dataIn <- NULL
     if(dataFlag == 'sameOrderTerminals') dataIn <- c(rep(NA, tree@nnodes - tree@nterm), characterStates)
@@ -85,15 +71,13 @@ function(ouchTrees, characterStates, cladeMembersList, nodeNames = NULL, maxNode
     ## send it off to batchHansen and just stick the results in hansenBatch... this won't work as the number of regimes gets large, 
     ##   so there should be some option here to just hang onto the coefficients for each run (i.e., hang onto 'coef(hansen(...))' rather than 'hansen(...)')
     ##   there could also be an option to save the entire object as a series of files in addition to hanging onto 
-    hansenBatch[[i]] <- batchHansen(tree, dataIn, rl$regimeList, regimeTitles, brown, ...)
-    regimeLists[[i]] <- rl$regimeList
-    regimeMatrices[[i]] <- rl$regimeMatrix
-    message(paste("Tree",i,"of",length(ouchTrees),"complete"))
+    hansenBatch[[i]] <- batchHansen(tree, dataIn, ar$regList[[i]], regimeTitles, brown, ...)
+    message(paste("Tree",i,"of",length(ouchTrees),"complete", "\n-----------------------------"))
   }
     
     ## right now no summary is returned; one is needed, summarizing over trees what is summarized for each tree in batchHansen
     ## the below returns presuppose a single tree
-  outdata <- list(hansens = hansenBatch, regimeLists = regimeLists, regimeMatrices = regimeMatrices, brown = brown, N = ouchTrees[[i]]@nterm, analysisDate = date(), call = match.call())
+  outdata <- list(hansens = hansenBatch, regList = ar$regList, regMatrix = ar$regMatrix, nodeMatrix = ar$nodeMatrix, brown = brown, N = ouchTrees[[i]]@nterm, analysisDate = date(), call = match.call())
   class(outdata) <- 'hansenBatch'
   return(outdata)}
 

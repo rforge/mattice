@@ -7,13 +7,16 @@
 # updated to accommodate multiple trees Nov 2008
 
 regimeVectors <-
+# This is the basic call to get the full range of regimes over a set of trees
 # Generates the list of painted branches representing all possible selective regimes for OU analyses, taking as argument
 # species vectors that describe the clades at the bases of which regimes are specified to change.
 # Arguments:
 #  "tree" = the standard tree specification vectors of the OUCH-style tree
 #  "cladeMembersList" = list of vectors containing names of the members of each clade (except for the root of the tree)
 #  "maxNodes" = maximum number of nodes at which regime is permitted to change
-# Value: list of vectors that can each be plugged directly into OU analysis as the "regimes" argument
+# Value: 
+#  "regList" = list of vectors that can each be plugged directly into OU analysis as the "regimes" argument
+#  "nodeMatrix" = matrix of trees (rows) by nodes (columns) indicating what nodes are present on which trees
 # 19 nov 08: changing to accept a list of trees and trimmed down greatly
 function(ouchTrees, cladeMembersList, maxNodes = NULL) {
   ## ------------------ begin ouchtree block -----------------
@@ -30,8 +33,8 @@ function(ouchTrees, cladeMembersList, maxNodes = NULL) {
   
   nnode <- length(cladeMembersList)
   regMatrix <- regimeMatrix(n = nnode, maxNodes = maxNodes)
-  apr = regimeMaker(ouchTrees, regMatrix, cladeMembersList) ## HOLD IT! NOW REGIME MAKER WORKS ON ALL TREES AT ONCE... RETHINK THIS
-  outdata <- list(regList = apr$regList, nodeMatrix = apr$nodeMatrix)
+  apr = regimeMaker(ouchTrees, regMatrix, cladeMembersList)
+  outdata <- list(regList = apr$regList, regMatrix = apr$regMatrices, nodeMatrix = apr$nodeMatrix)
   return(outdata) }
 
 paintBranches <-
@@ -106,21 +109,30 @@ regimeMaker <- function(ouchTrees, regMatrix, nodeMembers) {
   nodeMatrix <- matrix(NA, nrow = numTrees, ncol = numNodes, dimnames = list(seq(numTrees), dimnames(regMatrix)[[2]]))
   changeNodes <- list(numTrees)
   regList <- list(numTrees)
+  regMatrices <- list(numTrees)
   
   # fill outdata
   for(i in seq(numNodes)) nodeMatrix[, i] <- unlist(lapply(ouchTrees, isMonophyletic, taxa = nodeMembers[[i]]))
   for(i in seq(numTrees)) {
     tree <- ouchTrees[[i]]
-    treeRegMatrix <- regMatrix * matrix(nodeMatrix[i, ], dim(regMatrix)[1], dim(regMatrix)[2], byrow = T) # multiplies regMatrix by nodes present
-    treeRegMatrix <- treeRegMatrix[which(apply(treeRegMatrix, 1, sum) > 0), ] # subset for regimes that still have nodes
-    treeRegMatrix <- rbind(treeRegMatrix, treeRegMatrix[1,] * 0) # add one all-zero row for the OU1 model
-    numTreeRegs <- dim(treeRegMatrix)[1]
+    regMatrices[[i]] <- regMatrix * as.numeric(matrix(nodeMatrix[i, ], dim(regMatrix)[1], dim(regMatrix)[2], byrow = T)) # multiplies regMatrix by nodes present
+      if(class(regMatrices[[i]]) != "matrix") regMatrices[[i]] <- matrix(regMatrices[[i]], nrow = 1)
+    regMatrices[[i]] <- regMatrices[[i]][which(apply(regMatrices[[i]], 1, sum) > 0), ] # subset for regimes that still have nodes
+      if(class(regMatrices[[i]]) != "matrix") regMatrices[[i]] <- matrix(regMatrices[[i]], nrow = 1)
+    regMatrices[[i]] <- regMatrices[[i]][!duplicated(apply(regMatrices[[i]], 1, as.decimal)), ] ## gets rid of non-unique regimes
+    if(class(regMatrices[[i]]) == "matrix") dimnames(regMatrices[[i]]) <- list(seq(dim(regMatrices[[i]])[1]), dimnames(regMatrices[[i]])[[2]])
+      else regMatrices[[i]] <- matrix(regMatrices[[i]], nrow = 1)
+    regMatrices[[i]] <- rbind(regMatrices[[i]], regMatrices[[i]][1,] * 0) # add one all-zero row for the OU1 model
+    numTreeRegs <- dim(regMatrices[[i]])[1]
     treeRegs <- list(numTreeRegs) # this will be assigned to regList[[i]]
     nodesVector <- unlist(lapply(nodeMembers, mrcaOUCH, tree = ouchTrees[[i]])) # as written, gets the MRCA for even invalid nodes just so indexing stays right
-    for(j in seq(numTreeRegs)) treeRegs[[j]] <- paintBranches(c("1", nodesVector[as.logical(treeRegMatrix[j, ])]), tree)
+    for(j in seq(numTreeRegs)) {
+      treeRegs[[j]] <- as.factor(paintBranches(c("1", nodesVector[as.logical(regMatrices[[i]][j, ])]), tree))
+      names(treeRegs[[j]]) <- tree@nodes
+    }
     regList[[i]] <- treeRegs
   }
-  outdata <- list(regList = regList, nodeMatrix = nodeMatrix)
+  outdata <- list(regList = regList, nodeMatrix = nodeMatrix, regMatrices = regMatrices)
   return(outdata)
 }
 
@@ -144,7 +156,6 @@ as.binary <- function(n, base = 2, r = FALSE, digits = NULL)
 # submitted to R listserv Thu Apr 15 12:27:39 CEST 2004
 # AH added 'digits' to make it work with regimeMatrix
 # https://stat.ethz.ch/pipermail/r-help/2004-April/049419.html
-
 {
    out <- NULL
    while(n > 0) {
@@ -158,4 +169,12 @@ as.binary <- function(n, base = 2, r = FALSE, digits = NULL)
    if(!identical(digits, NULL) && !r) out <- c(rep(0, digits-length(out)), out)
    if(!identical(digits, NULL) && r) out <- c(out, rep(0, digits-length(out)))
    return(out)
+}
+
+as.decimal <- function(n) {
+# takes a binary vector and makes it a decimal
+  digits <- length(n)
+  result <- 0
+  for(i in digits:1) result <- result + n[i] * 2 ^ (digits - i)
+  result
 }
