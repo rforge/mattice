@@ -44,7 +44,13 @@
     }
 }
 \details{
-    ouSim as currently written is a very basic simulation engine, but also very flexible.
+    ouSim as currently written is a very basic simulation engine, but also flexible. As written, the user has to specify the 
+    model using two vectors that correspond to the branches in an \code{ape} format tree (a \code{phylo} object). The next
+    iteration of this function will take an ouchtree as input; interface with the \code{regimeVectors} function for painting
+    regimes; accept a \code{hansentree} or \code{ouchtree} object as input, using the actual regimes and estimated paramters 
+    to run the simulation; and return results that are scaled correctly for the tree (I believe at this point that the 
+    sigma and alpha parameters don't return results that match the distributions you get using \code{simulate} on a \code{hansentree}
+    or \code{browntree} object, which you should.
 }
 \value{
   A list of class 'ouSim' that describes the phenotype at the beginning and end of each branch segment, as well as the model.
