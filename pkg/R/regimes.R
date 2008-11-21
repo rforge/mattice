@@ -34,7 +34,7 @@ function(ouchTrees, cladeMembersList, maxNodes = NULL) {
   nnode <- length(cladeMembersList)
   regMatrix <- regimeMatrix(n = nnode, maxNodes = maxNodes)
   apr = regimeMaker(ouchTrees, regMatrix, cladeMembersList)
-  outdata <- list(regList = apr$regList, regMatrix = apr$regMatrices, nodeMatrix = apr$nodeMatrix)
+  outdata <- list(regList = apr$regList, regMatrix = apr$regMatrix, nodeMatrix = apr$nodeMatrix)
   return(outdata) }
 
 paintBranches <-
@@ -131,7 +131,8 @@ regimeMaker <- function(ouchTrees, regMatrix, nodeMembers) {
     }
     regList[[i]] <- treeRegs
   }
-  outdata <- list(regList = regList, nodeMatrix = nodeMatrix, regMatrices = regMatrices)
+  regMatrices$overall <- regMatrix # this is the matrix that includes all regimes without regard to any tree
+  outdata <- list(regList = regList, nodeMatrix = nodeMatrix, regMatrix = regMatrices)
   return(outdata)
 }
 
