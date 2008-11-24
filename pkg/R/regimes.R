@@ -19,17 +19,6 @@ regimeVectors <-
 #  "nodeMatrix" = matrix of trees (rows) by nodes (columns) indicating what nodes are present on which trees
 # 19 nov 08: changing to accept a list of trees and trimmed down greatly
 function(ouchTrees, cladeMembersList, maxNodes = NULL) {
-  ## ------------------ begin ouchtree block -----------------
-  ## check to see if tree inherits 'ouchtree'
-  if (!is(tree,'ouchtree')) 
-	stop(paste('This function has been rewritten to use the new S4 ', sQuote('ouchtree'), ' class.',
-	'\nYou can generate a tree of this class by calling ', sQuote('ouchtree()'), '.', sep = ""))
-  ## get the vectors we need:
-  ancestor <- tree@ancestors # class = "character"
-  node <- tree@nodes # class = "character"
-  species <- tree@nodelabels # class = "character" -- note that nodelabels is more general than this indicates and the name should be changed throughout at some point
-  times <- tree@times # class = "numeric"
-  ## ------------------ end ouchtree block -------------------
   
   nnode <- length(cladeMembersList)
   regMatrix <- regimeMatrix(n = nnode, maxNodes = maxNodes)
