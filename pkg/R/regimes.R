@@ -74,7 +74,7 @@ function(regimeShiftNodes, tree, regimeTitles = NULL) {
       if (colorsVector[as.integer(ancestor[ii])] != "") {
         colorsVector[ii] = colorsVector[as.integer(ancestor[ii])]
         break} }
-
+    
     for(j in nodeQ) {
       colorsVector[j] = colorsVector[as.integer(ancestor[j])] } 
       
@@ -82,6 +82,9 @@ function(regimeShiftNodes, tree, regimeTitles = NULL) {
 
       # a little hack to fix a problem I don't understand... with the undesired side effect that it colors the stem of some subtrees rather than the crown as originally written
       for(i in 1:length(colorsVector)) if(colorsVector[i] == "") colorsVector[i] <- as.character(i) 
+      
+      # colors terminal branches if any terminal branches are in the regimeShiftNodes
+      for(i in regimeShiftNodes) if(i %in% tree@term) colorsVector[as.numeric(i)] <- as.character(i)
   return(colorsVector) }
 
 regimeMaker <- function(ouchTrees, regMatrix, nodeMembers) {

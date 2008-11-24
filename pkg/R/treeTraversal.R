@@ -21,7 +21,8 @@
 
 isMonophyletic <- function(tree, taxa) {
 # returns T or F on whether a group of taxa is monophyletic in an ouch tree
-  identical(sort(taxa), sort(nodeDescendents(tree, mrcaOUCH(taxa, tree))))
+  if(length(taxa) == 1) return(taxa %in% tree@nodelabels[tree@term])
+  else(return(identical(sort(taxa), sort(nodeDescendents(tree, mrcaOUCH(taxa, tree))))))
 }
 
 nodeDescendents <- function(tree, startNode) {
@@ -59,17 +60,21 @@ function(cladeVector, tree) {
   times <- tree@times # class = "numeric"
   ## ------------------ end ouchtree block -------------------
   
-  tips = match(cladeVector, species) 
-  listOfAncestorLines = lapply(tips, ancestorLine, tree = tree) # 10 nov 08: this is identical to the appropriate subset of tree@lineages
-  latestMatch = listOfAncestorLines[[1]]
-  for (i in listOfAncestorLines) {
-    latestMatch = i[match(latestMatch, i, nomatch = 0)] }
-  timesVector = times[as.integer(latestMatch)]
-  if(length(timesVector) == 1) {
-    if (is.na(timesVector)) mrca = "1"
-      else mrca = timesVector}
-    else mrca = latestMatch[match(max(as.double(timesVector), na.rm = TRUE), timesVector)]
-  return(mrca) }
+  if(length(cladeVector) == 1) return(tree@nodes[tree@nodelabels == cladeVector])
+  else {
+    tips = match(cladeVector, species) 
+    listOfAncestorLines = lapply(tips, ancestorLine, tree = tree) # 10 nov 08: this is identical to the appropriate subset of tree@lineages
+    latestMatch = listOfAncestorLines[[1]]
+    for (i in listOfAncestorLines) {
+      latestMatch = i[match(latestMatch, i, nomatch = 0)] }
+    timesVector = times[as.integer(latestMatch)]
+    if(length(timesVector) == 1) {
+      if (is.na(timesVector)) mrca = "1"
+        else mrca = timesVector}
+      else mrca = latestMatch[match(max(as.double(timesVector), na.rm = TRUE), timesVector)]
+    return(mrca) 
+  }
+}
 
 ancestorLine <-
 # Creates a vector of ancestral nodes for a tip
