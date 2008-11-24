@@ -64,7 +64,7 @@ function(ouchTrees, characterStates, cladeMembersList, nodeNames = NULL, maxNode
     dataIn <- NULL
     if(dataFlag == 'sameOrderTerminals') dataIn <- c(rep(NA, tree@nnodes - tree@nterm), characterStates)
     if(dataFlag == 'sameOrderNodes') dataIn <- characterStates
-    if(dataFlag == 'named') dataIn <- characterStates[match(tree@nodelabels), characterStates]
+    if(dataFlag == 'named') dataIn <- characterStates[match(tree@nodelabels, names(characterStates))]
     if(identical(dataIn, NULL)) stop(paste("There is a problem with your data that I failed to catch at the outset of", sQuote('runBatchHansen()')))
     else names(dataIn) <- tree@nodes
     

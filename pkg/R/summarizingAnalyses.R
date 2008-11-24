@@ -13,6 +13,7 @@ summary.hansenBatch <- function(hansenBatch){
   icObject <- informationCriterion.hansenBatch(hansenBatch)
   nmodels <- dim(hansenBatch$hansens[[1]])[1]
   ntrees <- length(hansenBatch$hansens)
+  modelsMatrix <- vector('list', ntrees)
   matrixRows <- c('AIC.weight', 'AICc.weight', 'BIC.weight')
   outMatrix <- matrix(0, nrow = length(icObject[[1]]$AICwi), ncol = length(matrixRows), dimnames = list(icObject[[1]]$names, matrixRows))
   nmodelsMatrix <- outMatrix # a matrix to divide outMatrix by so that average BICwi are only based on trees that have a node
@@ -20,10 +21,10 @@ summary.hansenBatch <- function(hansenBatch){
     aicList <- icObject[[tree]]$AICwi
     aiccList <- icObject[[tree]]$AICcwi
     bicList <- icObject[[tree]]$BICwi
-    modelsMatrix <- cbind(aicList, aiccList, bicList) # value: modelsMatrix
-    temp <- modelsMatrix; temp[!is.na(temp)] <- 1
+    modelsMatrix[[tree]] <- cbind(aicList, aiccList, bicList) # value: modelsMatrix
+    temp <- modelsMatrix[[tree]]; temp[!is.na(temp)] <- 1
     nmodelsMatrix <- nmodelsMatrix + replace.matrix(temp, NA, 0) # nmodelsMatrix gets a 1 for each model present, a 0 for each model not present
-    outMatrix <- outMatrix + replace.matrix(modelsMatrix, NA, 0) # replace NAs with 0 so that sum works correctly at the end
+    outMatrix <- outMatrix + replace.matrix(modelsMatrix[[tree]], NA, 0) # replace NAs with 0 so that sum works correctly at the end
   
     ## the lines below made the weights on branches ignore the fact that the Brownian motion model was part of the
     ##   model set; however, I've removed them b/c support for the Brownian motion model does (and should) contribute 
@@ -36,7 +37,7 @@ summary.hansenBatch <- function(hansenBatch){
     # }
   }
   weightsMatrix.unnormalized <- outMatrix / nmodelsMatrix # in this matrix, the weight for each model is averaged only over trees
-                                                          # that possess that node; weights will not sum to 1.0
+                                                          # that possess that node; weights may not sum to 1.0
   weightsMatrix.allNodes <- outMatrix / ntrees # in this matrix, the weight for each model is averaged over all trees, setting weight
                                                # equal to zero in any trees that lack that model. Weights sum to 1.0, and they
                                                # factor in the posterior probability (or bootstrap proportion) for each model. 
@@ -63,10 +64,11 @@ summary.hansenBatch <- function(hansenBatch){
   kCats <- sort(unique(hansenBatch$hansens[[tree]][, 'dof']))
   kMatrix <- matrix(NA, nrow = length(matrixRows), ncol = length(kCats), dimnames = list(matrixRows, as.character(kCats))) #value: kMatrix
   for(i in as.character(kCats)) {
-    modelsMatrixSubset <- modelsMatrix[hansenBatch$hansens[[tree]][, 'dof'] == i, ]
+    modelsMatrixSubset <- weightsMatrix.allNodes[hansenBatch$hansens[[tree]][, 'dof'] == i, ] # note this is wrong
     if(identical(dim(modelsMatrixSubset), NULL)) kMatrix[, i] <- modelsMatrixSubset
     else kMatrix[, i] <- apply(modelsMatrixSubset, 2, sum) 
   }
+  warning('the K-matrix as currently implemented is only calculated over the all-nodes (normalized) weights.')
   outdata <- list(modelsMatrix = modelsMatrix, weightsMatrix = list(unnormalized = weightsMatrix.unnormalized, allNodes = weightsMatrix.allNodes), nodeWeightsMatrix = list(unnormalized = nodeWeightsMatrix.unnormalized, allNodes = nodeWeightsMatrix.allNodes), kMatrix = kMatrix)
   return(outdata)
 }
