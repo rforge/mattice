@@ -69,12 +69,13 @@ summary.hansenBatch <- function(hansenBatch){
   kCats <- sort(unique(nodeSums)) # and just give us the unique degree-of-freedom categories, sorted
   kMatrix <- matrix(NA, nrow = length(matrixRows), ncol = length(kCats), dimnames = list(matrixRows, as.character(kCats))) # make the empty kMatrix
   for(i in as.character(kCats)) {
-    modelsMatrixSubset <- weightsMatrix.allNodes[nodeSums == i, ] # note this is right!
+    modelsMatrixSubset <- weightsMatrix.allNodes[nodeSums == i, ] 
     if(identical(dim(modelsMatrixSubset), NULL)) kMatrix[, i] <- modelsMatrixSubset # is modelsMatrixSubset a 1-d vector?
     else kMatrix[, i] <- apply(modelsMatrixSubset, 2, sum) 
   }
   warning('the K-matrix as currently implemented is calculated over the all-nodes (normalized) weights.')
   outdata <- list(modelsMatrix = modelsMatrix, weightsMatrix = list(unnormalized = weightsMatrix.unnormalized, allNodes = weightsMatrix.allNodes), nodeWeightsMatrix = list(unnormalized = nodeWeightsMatrix.unnormalized, allNodes = nodeWeightsMatrix.allNodes), kMatrix = kMatrix)
+  class(outdata) <- 'hansenSummary'
   return(outdata)
 }
 
@@ -82,4 +83,16 @@ replace.matrix <- function (x, oldValue, newValue) {
   if(is.na(oldValue)) x[is.na(x)] <- newValue
   else x[x == oldValue] <- newValue
   return(x)
+}
+
+print.hansenSummary <- function(hansenSummary) {
+  message(paste("Summarizing hansenBatch analyses over", length(hansenSummary$modelsMatrix), "trees and", dim(hansenSummary$modelsMatrix[[1]])[1], "models"))
+  message("ESTIMATED SUPPORT FOR CHANGES OCCURRING AT DESIGNATED NODES\nThese estimates are only valid if (1) the maximum number of regimes permitted approximates the actual maximum;\n(2) nodes at which changes actually occurred were included among the nodes being tested; and\n(3) any matrix you may have utilized to conduct analysis was balanced, such that all nodes are present in the same number of models.\n\n")
+  message("Averaged only over models containing that node:")
+  print(hansenSummary$nodeWeightsMatrix$unnormalized)
+  message("\nAveraged over all nodes, thus multiplying the clade distribution by the mean support for the model:")
+  print(hansenSummary$nodeWeightsMatrix$allNodes)
+  message("\nESTIMATED SUPPORT FOR NUMBER OF PARAMETERS IN THE MODEL")
+  message("The properties of this support value have not been studied and are likely to be biased strongly toward the median value of\nK, as K is largest at the median values (they are distributed according to Stirling numbers of the first kind).")
+  print(hansenSummary$kMatrix)
 }
