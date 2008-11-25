@@ -46,29 +46,34 @@ summary.hansenBatch <- function(hansenBatch){
                                                # with model support.
   
   # 1. sum over nodes
-  nodes <- dimnames(hansenBatch$regMatrix[[tree]])[[2]]
+  nodes <- dimnames(hansenBatch$regMatrix$overall)[[2]] # grab the overall regMatrix, which includes all possible nodes, no matter which trees do or don't have them
   nodeWeightsMatrix.unnormalized <- matrix(NA, nrow = length(matrixRows), ncol = length(nodes), dimnames = list(matrixRows, nodes)) # value: nodeWeightsMatrix
-  nodeWeightsMatrix.allNodes <- nodeWeightsMatrix.unnormalized
+  nodeWeightsMatrix.allNodes <- nodeWeightsMatrix.unnormalized # same dimensions, another empty matrix to fill up
   for(i in 1:length(nodes)) {
-    modelsMatrixSubset <- weightsMatrix.allNodes[hansenBatch$regMatrix$overall[, i] == 1, ]
-    if(identical(dim(modelsMatrixSubset), NULL)) nodeWeightsMatrix.allNodes[, i] <- modelsMatrixSubset # because extracting a single row yields a vector, and dim returns NULL for a vector
-    else nodeWeightsMatrix.allNodes[, i] <- apply(modelsMatrixSubset, 2, sum)
+    modelsMatrixSubset <- weightsMatrix.allNodes[hansenBatch$regMatrix$overall[, nodes[i]] == 1, ]
+    if(identical(dim(modelsMatrixSubset), NULL)) # is modelsMatrixSubset a 1-d vector? if so then:
+      nodeWeightsMatrix.allNodes[, nodes[i]] <- modelsMatrixSubset # because extracting a single row yields a vector, and dim returns NULL for a vector
+    else nodeWeightsMatrix.allNodes[, nodes[i]] <- apply(modelsMatrixSubset, 2, sum)
     
-    modelsMatrixSubset <- weightsMatrix.unnormalized[hansenBatch$regMatrix$overall[, i] == 1, ]
-    if(identical(dim(modelsMatrixSubset), NULL)) nodeWeightsMatrix.unnormalized[, i] <- modelsMatrixSubset # because extracting a single row yields a vector, and dim returns NULL for a vector
-    else nodeWeightsMatrix.unnormalized[, i] <- apply(modelsMatrixSubset, 2, sum)
+    modelsMatrixSubset <- weightsMatrix.unnormalized[hansenBatch$regMatrix$overall[, nodes[i]] == 1, ]
+    if(identical(dim(modelsMatrixSubset), NULL)) # again, is modelsMatrixSubset a 1-d vector? 
+      nodeWeightsMatrix.unnormalized[, nodes[i]] <- modelsMatrixSubset # because extracting a single row yields a vector, and dim returns NULL for a vector
+    else nodeWeightsMatrix.unnormalized[, nodes[i]] <- apply(modelsMatrixSubset, 2, sum)
   }
 
   # 2. sum over number of parameters
-  # currently only works when there is no phylogenetic uncertainty
-  kCats <- sort(unique(hansenBatch$hansens[[tree]][, 'dof']))
-  kMatrix <- matrix(NA, nrow = length(matrixRows), ncol = length(kCats), dimnames = list(matrixRows, as.character(kCats))) #value: kMatrix
+  # create a vector of sums that tells us how many categories there are for each model: dof = sum(nodes) + 1 [because a node indicates a change in 
+  #   regime, thus the total number of thetas = nodes + 1] + alpha + sigma = sum(nodes) + 3; for Brownian motion model, dof = 2
+  nodeSums <- apply(hansenBatch$regMatrix$overall, 1, sum) + 3
+  if(hansenBatch$brown) nodeSums['brown'] <- 2
+  kCats <- sort(unique(nodeSums)) # and just give us the unique degree-of-freedom categories, sorted
+  kMatrix <- matrix(NA, nrow = length(matrixRows), ncol = length(kCats), dimnames = list(matrixRows, as.character(kCats))) # make the empty kMatrix
   for(i in as.character(kCats)) {
-    modelsMatrixSubset <- weightsMatrix.allNodes[hansenBatch$hansens[[tree]][, 'dof'] == i, ] # note this is wrong
-    if(identical(dim(modelsMatrixSubset), NULL)) kMatrix[, i] <- modelsMatrixSubset
+    modelsMatrixSubset <- weightsMatrix.allNodes[nodeSums == i, ] # note this is right!
+    if(identical(dim(modelsMatrixSubset), NULL)) kMatrix[, i] <- modelsMatrixSubset # is modelsMatrixSubset a 1-d vector?
     else kMatrix[, i] <- apply(modelsMatrixSubset, 2, sum) 
   }
-  warning('the K-matrix as currently implemented is only calculated over the all-nodes (normalized) weights.')
+  warning('the K-matrix as currently implemented is calculated over the all-nodes (normalized) weights.')
   outdata <- list(modelsMatrix = modelsMatrix, weightsMatrix = list(unnormalized = weightsMatrix.unnormalized, allNodes = weightsMatrix.allNodes), nodeWeightsMatrix = list(unnormalized = nodeWeightsMatrix.unnormalized, allNodes = nodeWeightsMatrix.allNodes), kMatrix = kMatrix)
   return(outdata)
 }
