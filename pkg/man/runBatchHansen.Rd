@@ -39,7 +39,7 @@ runBatchHansen(ouchTrees, characterStates, cladeMembersList, filePrefix = NULL, 
   \item{brown}{
 	Enter \code{T} or \code{F} according to whether you want to run the Brownian motion model.
     }
-  \item{rescale}
+  \item{rescale}{
 	Enter a value > 0 to rescale all trees to length = \code{rescale}.
     }
   \item{...}{
