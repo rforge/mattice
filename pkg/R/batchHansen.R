@@ -17,7 +17,7 @@ runBatchHansen <-
 #  "cladeMembersList" = list of vectors containing names of the members of each clade (except for the root of the tree)
 #  "brown" = whether to analyse the data under a Brownian motion model
 #  "..." = additional arguments to pass along to hansen
-function(ouchTrees, characterStates, cladeMembersList, filePrefix = NULL, di = NULL, nodeNames = NULL, maxNodes = NULL, regimeTitles = NULL, brown = F, rescale = 1, ...) {
+function(ouchTrees, characterStates, cladeMembersList, filePrefix = NULL, di = NULL, nodeNames = NULL, maxNodes = NULL, regimeTitles = NULL, brown = F, rescale = 1, alpha = 1, sigma = 1, ...) {
   ## do all the objects in ouchTrees inherit ouchtree?
   if(is(ouchTrees,'ouchtree')) ouchTrees <- list(ouchTrees)
   treeCheck <- unlist(lapply(ouchTrees, function(x) is(x,'ouchtree')))
@@ -73,7 +73,7 @@ function(ouchTrees, characterStates, cladeMembersList, filePrefix = NULL, di = N
     ## send it off to batchHansen and just stick the results in hansenBatch... this won't work as the number of regimes gets large, 
     ##   so there should be some option here to just hang onto the coefficients for each run (i.e., hang onto 'coef(hansen(...))' rather than 'hansen(...)')
     ##   there could also be an option to save the entire object as a series of files in addition to hanging onto 
-    hansenBatch[[i]] <- batchHansen(tree, dataIn, ar$regList[[i]], regimeTitles, brown, fP, ...)
+    hansenBatch[[i]] <- batchHansen(tree, dataIn, ar$regList[[i]], regimeTitles, brown, fP, alpha, sigma, ...)
     message(paste("Tree",i,"of",length(ouchTrees),"complete", "\n-----------------------------"))
   }
     
@@ -89,7 +89,7 @@ batchHansen <-
 #  "regimesList" = list of regime-paintings as output from regimeVectors
 #  "scalingFactor" = factor to multiply against (times / max(times)) -- choose based on trial analyses
 # Value: a matrix with nrow = regimes (+ 1 if brownian model is included) and columns for u, d.f., all estimated parameters, LRvsBM, AIC, and AIC weight
-function(tree, data, regimesList, regimeTitles, brown, filePrefix, ...) {
+function(tree, data, regimesList, regimeTitles, brown, filePrefix, alpha, sigma, ...) {
   n <- tree@nterm
   ## set up a matrix that returns lnL, K, sigmasq, theta0, and alpha for every model; thetas will go along into a list that is indexed by model
   hansenOptima <- list(length(regimeTitles))
@@ -110,7 +110,7 @@ function(tree, data, regimesList, regimeTitles, brown, filePrefix, ...) {
     else {
       message(paste("Running regime",i))
       ## at this point, the user has to give an initial alpha and sigma for hansen to search on... this should be relaxed
-      ha = hansen(data, tree, regimesList[[i]], ...)
+      ha = hansen(data = data, tree = tree, regimes = regimesList[[i]], alpha = alpha, sigma = sigma, ...)
       if(!identical(filePrefix, NULL)) save(ha, paste(filePrefix, 'r', i, '.Rdata', sep = ""))
       treeData[i, ] <- unlist(summary(ha)[haVars])
       hansenOptima[[i]] <- summary(ha)$optima[[1]]

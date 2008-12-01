@@ -7,7 +7,11 @@
 summary.hansenBatch <- function(hansenBatch){
 ## items in output: hansens, regimeList, regimeMatrix
 ## the summary will eventually sum weights over all nodes over all trees
-## for now, only doing first tree
+
+  # Unimplemented summary ideas
+  # - Check whether there is a single tree
+  # - if so, return everything below, + a model-averaged set of thetas indexed according to branches
+  
   
   # 0. Get information criterion weights for all models
   icObject <- informationCriterion.hansenBatch(hansenBatch)
