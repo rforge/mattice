@@ -19,12 +19,12 @@ regimeVectors <-
 #  "nodeMatrix" = matrix of trees (rows) by nodes (columns) indicating what nodes are present on which trees
 # 19 nov 08: changing to accept a list of trees and trimmed down greatly
 function(ouchTrees, cladeMembersList, maxNodes = NULL) {
-  
   nnode <- length(cladeMembersList)
   regMatrix <- regimeMatrix(n = nnode, maxNodes = maxNodes)
   apr = regimeMaker(ouchTrees, regMatrix, cladeMembersList)
   outdata <- list(regList = apr$regList, regMatrix = apr$regMatrix, nodeMatrix = apr$nodeMatrix)
-  return(outdata) }
+  return(outdata) 
+}
 
 paintBranches <-
 # Paints branches with regimes changing at nodes specified

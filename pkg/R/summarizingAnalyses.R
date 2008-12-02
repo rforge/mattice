@@ -8,12 +8,7 @@ summary.hansenBatch <- function(hansenBatch){
 ## items in output: hansens, regimeList, regimeMatrix
 ## the summary will eventually sum weights over all nodes over all trees
 
-  # Unimplemented summary ideas
-  # - Check whether there is a single tree
-  # - if so, return everything below, + a model-averaged set of thetas indexed according to branches
-  # all that's needed to do now is model average over the theta matrix created for each tree  
-  
-  # 0. Get information criterion weights for all models
+  # Get information criterion weights for all models
   icObject <- informationCriterion.hansenBatch(hansenBatch)
   nmodels <- dim(hansenBatch$hansens[[1]])[1]
   ntrees <- length(hansenBatch$hansens)
@@ -46,6 +41,7 @@ summary.hansenBatch <- function(hansenBatch){
                                  weighted.mean, 
                                  w = w, 
                                  na.rm = T)
+                                 
     ## the lines below made the weights on branches ignore the fact that the Brownian motion model was part of the
     ##   model set; however, I've removed them b/c support for the Brownian motion model does (and should) contribute 
     ##   to reduced probability of change at any of the nodes. You can uncomment them if you feel differently.
@@ -65,7 +61,7 @@ summary.hansenBatch <- function(hansenBatch){
                                                # acting being a proper probability distribution, albeit one that confounds clade support
                                                # with model support.
   
-  # 1. sum over nodes
+  # sum over nodes
   nodes <- dimnames(hansenBatch$regMatrix$overall)[[2]] # grab the overall regMatrix, which includes all possible nodes, no matter which trees do or don't have them
   nodeWeightsMatrix.unnormalized <- matrix(NA, nrow = length(matrixRows), ncol = length(nodes), dimnames = list(matrixRows, nodes)) # value: nodeWeightsMatrix
   nodeWeightsMatrix.allNodes <- nodeWeightsMatrix.unnormalized # same dimensions, another empty matrix to fill up
@@ -81,7 +77,7 @@ summary.hansenBatch <- function(hansenBatch){
     else nodeWeightsMatrix.unnormalized[, nodes[i]] <- apply(modelsMatrixSubset, 2, sum)
   }
 
-  # 2. sum over number of parameters
+  # sum over number of parameters
   # create a vector of sums that tells us how many categories there are for each model: dof = sum(nodes) + 1 [because a node indicates a change in 
   #   regime, thus the total number of thetas = nodes + 1] + alpha + sigma = sum(nodes) + 3; for Brownian motion model, dof = 2
   nodeSums <- apply(hansenBatch$regMatrix$overall, 1, sum) + 3
@@ -108,6 +104,7 @@ replace.matrix <- function (x, oldValue, newValue) {
 }
 
 print.hansenSummary <- function(hansenSummary) {
+## This just formats a hansenSummary object so that it is readable on the screen; you can still store the summary object and extract elements as needed
   message(paste("Summarizing hansenBatch analyses over", length(hansenSummary$modelsMatrix), "trees and", dim(hansenSummary$modelsMatrix[[1]])[1], "models"))
   message("ESTIMATED SUPPORT FOR CHANGES OCCURRING AT DESIGNATED NODES\nThese estimates are only valid if (1) the maximum number of regimes permitted approximates the actual maximum;\n(2) nodes at which changes actually occurred were included among the nodes being tested; and\n(3) any matrix you may have utilized to conduct analysis was balanced, such that all nodes are present in the same number of models.\n\n")
   message("Averaged only over models containing that node:")

@@ -2,23 +2,6 @@
 # FUNCTIONS FOR TRAVERSING AN S4 OUCH TREE #
 # ------------------------------------------
 
-# Modified from functions used in Hipp 2007 Evolution paper
-# Initially written for ouch v 1.2-4
-# 10 November 2008: changed everything to operate on an ouchtree object (ouch >= v2), otherwise functions the same;
-#  checked on ouch v2.4-2
-# functions included in this file:
-# 1. paintBranches
-# 2. mrcaOUCH
-# 3. ancestorLine
-# 4. allPossibleRegimes
-# 5. regimeVectors
-
-# 19 nov 08: moved all regime-involved routines to regimes.R
-
-# To do:
-# 2. make allPossibleRegimes more efficient when maxNodes < length(nodes)
-
-
 isMonophyletic <- function(tree, taxa) {
 # returns T or F on whether a group of taxa is monophyletic in an ouch tree
   if(length(taxa) == 1) return(taxa %in% tree@nodelabels[tree@term])
@@ -27,7 +10,6 @@ isMonophyletic <- function(tree, taxa) {
 
 nodeDescendents <- function(tree, startNode) {
 ## Recursive function to find all the descendents of a node on an 'ouchtree' object
-## a bit clunky as written 
   startNode <- as.character(startNode) # just to be safe
   daughterBranches <- as.character(tree@nodes[tree@ancestors %in% startNode])
   nodeNames <- tree@nodelabels[tree@nodes %in% daughterBranches]
@@ -45,8 +27,7 @@ mrcaOUCH <-
 # Arguments:
 #  "node" "ancestor" "times" "species" = the standard tree specification vectors of the OUCH-style tree
 #  "cladeVector" = vector of species for which you want to find the most recent common ancestor
-# Value: the node number (as an integer) of the most recent common ancestor
-# Works! 3-31-06
+# Value: the node number of the most recent common ancestor
 function(cladeVector, tree) {
   ## ------------------ begin ouchtree block -----------------
   ## check to see if tree inherits 'ouchtree'
@@ -79,31 +60,16 @@ function(cladeVector, tree) {
 ancestorLine <-
 # Creates a vector of ancestral nodes for a tip
 # Arguments:
-#  CHANGED to "tree" 10 nov 08: "node" and "ancestor" = the standard tree specification vectors of the OUCH-style tree
+#  "tree" = an ouch-style (S4) tree
 #  "tip" = the tip node to trace back
 # Value: a vector of nodes leading from a tip to the root
 # 10 nov 08: changed to just grab tree@lineages and make a vector that fits the old code
-# this should really be exluded at some point
 function(tip, tree) {
-  ## ------------------ begin ouchtree block -----------------
   ## check to see if tree inherits 'ouchtree'
   if (!is(tree,'ouchtree')) 
 	stop(paste('This function has been rewritten to use the new S4 ', sQuote('ouchtree'), ' class.',
 	'\nYou can generate a tree of this class by calling ', sQuote('ouchtree()'), '.', sep = ""))
-  ## get the vectors we need:
-  #ancestor <- tree@ancestors # class = "character"
-  #node <- tree@nodes # class = "character"
-  #species <- tree@nodelabels # class = "character" -- note that nodelabels is more general than this indicates and the name should be changed throughout at some point
-  #times <- tree@times # class = "numeric"
-  ## ------------------ end ouchtree block -------------------
   tip <- as.numeric(tip)
-  #nodesVector = vector("character")
-  #counter = 0
-  #repeat {
-  #  if (is.na(tip)) break
-  #  counter = counter + 1
-  #  nodesVector[counter] = ancestor[tip]
-  #  tip = ancestor[tip] }
   nodesVector <- c(as.character(tree@lineages[[tip]][2:length(tree@lineages[[tip]])]), NA)
   return(nodesVector) 
   }
