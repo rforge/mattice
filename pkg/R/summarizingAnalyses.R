@@ -120,6 +120,9 @@ print.hansenSummary <- function(hansenSummary) {
   message("\nMODEL AVERAGED PARAMETERS")
   message(paste("alpha =", hansenSummary$modelAvgAlpha))
   message(paste("sigma^2 =", hansenSummary$modelAvgSigmaSq))
-  message("theta matrix, with branches as the columns and trees as the rows:")
-  print(hansenSummary$thetaMatrix)
+  if(any(dim(hansenSummary$thetaMatrix) > 12)) message(paste("theta matrix is too long to display; access through the summary object"))
+  else {
+    message("theta matrix, with branches as the columns and trees as the rows:")
+    print(hansenSummary$thetaMatrix)
+    }
 }
