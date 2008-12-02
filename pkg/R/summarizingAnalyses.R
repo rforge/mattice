@@ -32,8 +32,8 @@ summary.hansenBatch <- function(hansenBatch){
     for(i in seq(nnodes)) {
       modelsMatrixSubset <- modelsMatrix[[tree]][hansenBatch$regMatrix$overall[, nodes[i]] == 1, ] # subset models that contain node i
       if(identical(dim(modelsMatrixSubset), NULL)) # is modelsMatrixSubset a 1-d vector? if so then:
-        nodeWeightsSummed[, nodes[i]] <- sum(nodeWeightsSummed[, nodes[i]], modelsMatrixSubset, na.rm = T) # because extracting a single row yields a vector, and dim returns NULL for a vector
-      else nodeWeightsSummed[, nodes[i]] <- sum(nodeWeightsSummed[, nodes[i]], colSums(modelsMatrixSubset, na.rm = T), na.rm = T)
+        nodeWeightsSummed[, nodes[i]] <- nodeWeightsSummed[, nodes[i]] + replace.matrix(modelsMatrixSubset, NA, 0) # because extracting a single row yields a vector, and dim returns NULL for a vector
+      else nodeWeightsSummed[, nodes[i]] <- nodeWeightsSummed[, nodes[i]] + colSums(modelsMatrixSubset, na.rm = T)
 	  }
     sigmaSqVector[tree] <- weighted.mean(hansenBatch$hansens[[tree]][, 'sigma.squared'], bic, na.rm = T)
     if(hansenBatch$brown) bicOU <- bic[1: (length(bic) - 1)]
@@ -49,9 +49,8 @@ summary.hansenBatch <- function(hansenBatch){
                                  )
                                  
   }
+  # in this matrix, the weight for each node is averaged only over trees that possess that node; weights may not sum to 1.0
   nodeWeightsMatrix.unnormalized <- nodeWeightsSummed / matrix(nodeSums, nrow = dim(nodeWeightsSummed)[1], ncol = nnodes, byrow = T)
-                                                          # in this matrix, the weight for each node is averaged only over trees
-                                                          # that possess that node; weights may not sum to 1.0
   nodeWeightsMatrix.allNodes <- nodeWeightsSummed / ntrees 
                                                # in this matrix, the weight for each node is averaged over all trees, setting weight
                                                # equal to zero in any trees that lack that node. Weights sum to 1.0, and they
@@ -95,6 +94,8 @@ print.hansenSummary <- function(hansenSummary) {
   message("ESTIMATED SUPPORT FOR CHANGES OCCURRING AT DESIGNATED NODES")
   message("Averaged over all trees, thus multiplying the clade distribution by the mean support for the model:")
   print(hansenSummary$nodeWeightsMatrix$allNodes)
+  message("\nSupport conditioned on trees that possess the node")
+  print(hansenSummary$nodeWeightsMatrix$unnormalized)
   #message("\nESTIMATED SUPPORT FOR NUMBER OF PARAMETERS IN THE MODEL")
   #message("The properties of this support value have not been studied and are likely to be biased strongly toward the median value of\nK, as K is largest at the median values (they are distributed according to Stirling numbers of the first kind).")
   #print(hansenSummary$kMatrix)

@@ -21,7 +21,7 @@ informationCriterion.hansenBatch <- function(hansenBatch) {
 ## Just returns AIC, AICc, and BIC weights for each of the trees analyzed in a hansenBatch object
   outdata <- vector("list", length(hansenBatch$hansens))
   N = hansenBatch$N
-  for(i in 1:length(outdata)) {
+  for(i in seq(outdata)) {
     temp <- hansenBatch$hansens[[i]]
     outdata[[i]] <- informationCriterion(lnL = temp[, 'loglik'], K = temp[, 'dof'], n = N, names = row.names(temp))
     }
