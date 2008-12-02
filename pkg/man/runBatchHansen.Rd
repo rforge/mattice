@@ -51,6 +51,12 @@ runBatchHansen(ouchTrees, characterStates, cladeMembersList, filePrefix = NULL, 
 \details{
     This function is the primary function for estimating the probability of a change in with changes in regime at the nodes
     specified, with changes corresponding to permutations of the nodes fed to the function. See vignette for additional details.
+    
+    Note: summary estimates of the probability of change on a branch are only valid if 
+    (1) the maximum number of regimes permitted approximates the actual maximum;
+    (2) nodes at which changes actually occurred were included among the nodes being tested; and
+    (3) any matrix you may have utilized to conduct analysis was balanced, 
+        such that all nodes are present in the same number of models.
 }
 \value{
   XXX

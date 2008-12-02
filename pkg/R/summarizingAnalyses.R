@@ -25,9 +25,9 @@ summary.hansenBatch <- function(hansenBatch){
   for(tree in 1:ntrees) {
     aicList <- icObject[[tree]]$AICwi
     aiccList <- icObject[[tree]]$AICcwi
-    bicList <- icObject[[tree]]$BICwi
-    modelsMatrix[[tree]] <- cbind(aicList, aiccList, bicList) # value: modelsMatrix
-    temp <- modelsMatrix[[tree]]; temp[!is.na(temp)] <- 1
+    bicList <- icObject[[tree]]$BICwi 
+    modelsMatrix[[tree]] <- cbind(aicList, aiccList, bicList) # grab IC weights for each model in the tree and stick them all into modelsMatrix
+    temp <- modelsMatrix[[tree]]; temp[!is.na(temp)] <- 1 # 
     nmodelsMatrix <- nmodelsMatrix + replace.matrix(temp, NA, 0) # nmodelsMatrix gets a 1 for each model present, a 0 for each model not present
     outMatrix <- outMatrix + replace.matrix(modelsMatrix[[tree]], NA, 0) # replace NAs with 0 so that sum works correctly at the end
     sigmaSqVector[tree] <- weighted.mean(hansenBatch$hansens[[tree]][, 'sigma.squared'], bicList, na.rm = T)
@@ -58,7 +58,7 @@ summary.hansenBatch <- function(hansenBatch){
                                                # equal to zero in any trees that lack that model. Weights sum to 1.0, and they
                                                # factor in the posterior probability (or bootstrap proportion) for each model. 
                                                # Which to use? they are both informative, but this one has the desirable property of
-                                               # acting being a proper probability distribution, albeit one that confounds clade support
+                                               # being a proper probability distribution, albeit one that confounds clade support
                                                # with model support.
   
   # sum over nodes
@@ -92,7 +92,7 @@ summary.hansenBatch <- function(hansenBatch){
   modelAvgAlpha <- mean(alphaVector, na.rm = T)
   modelAvgSigmaSq <- mean(sigmaSqVector, na.rm = T)
   warning('the K-matrix as currently implemented is calculated over the all-nodes (normalized) weights.')
-  outdata <- list(modelsMatrix = modelsMatrix, weightsMatrix = list(unnormalized = weightsMatrix.unnormalized, allNodes = weightsMatrix.allNodes), nodeWeightsMatrix = list(unnormalized = nodeWeightsMatrix.unnormalized, allNodes = nodeWeightsMatrix.allNodes), kMatrix = kMatrix, modelAvgAlpha = modelAvgAlpha, modelAvgSigmaSq = modelAvgSigmaSq, thetaMatrix = thetaMatrix)
+  outdata <- list(modelsMatrix = modelsMatrix, nmodelsMatrix = nmodelsMatrix, weightsMatrix = list(unnormalized = weightsMatrix.unnormalized, allNodes = weightsMatrix.allNodes), nodeWeightsMatrix = list(unnormalized = nodeWeightsMatrix.unnormalized, allNodes = nodeWeightsMatrix.allNodes), kMatrix = kMatrix, modelAvgAlpha = modelAvgAlpha, modelAvgSigmaSq = modelAvgSigmaSq, thetaMatrix = thetaMatrix)
   class(outdata) <- 'hansenSummary'
   return(outdata)
 }
@@ -105,16 +105,15 @@ replace.matrix <- function (x, oldValue, newValue) {
 
 print.hansenSummary <- function(hansenSummary) {
 ## This just formats a hansenSummary object so that it is readable on the screen; you can still store the summary object and extract elements as needed
-  message(paste("Summarizing hansenBatch analyses over", length(hansenSummary$modelsMatrix), "trees and", dim(hansenSummary$modelsMatrix[[1]])[1], "models"))
-  message("ESTIMATED SUPPORT FOR CHANGES OCCURRING AT DESIGNATED NODES\nThese estimates are only valid if (1) the maximum number of regimes permitted approximates the actual maximum;\n(2) nodes at which changes actually occurred were included among the nodes being tested; and\n(3) any matrix you may have utilized to conduct analysis was balanced, such that all nodes are present in the same number of models.\n\n")
-  message("Averaged only over models containing that node:")
-  print(hansenSummary$nodeWeightsMatrix$unnormalized)
-  message("\nAveraged over all nodes, thus multiplying the clade distribution by the mean support for the model:")
+  message(paste("\nSummarizing hansenBatch analyses over", length(hansenSummary$modelsMatrix), "trees and", dim(hansenSummary$modelsMatrix[[1]])[1], "models"))
+  message("-----------------------------------------------------------")
+  message("ESTIMATED SUPPORT FOR CHANGES OCCURRING AT DESIGNATED NODES")
+  message("Averaged over all trees, thus multiplying the clade distribution by the mean support for the model:")
   print(hansenSummary$nodeWeightsMatrix$allNodes)
   message("\nESTIMATED SUPPORT FOR NUMBER OF PARAMETERS IN THE MODEL")
   message("The properties of this support value have not been studied and are likely to be biased strongly toward the median value of\nK, as K is largest at the median values (they are distributed according to Stirling numbers of the first kind).")
   print(hansenSummary$kMatrix)
-  message("\nMODEL AVERAGED PARAMETERS")
+  message("\nMODEL-AVERAGED PARAMETERS")
   message(paste("alpha =", hansenSummary$modelAvgAlpha))
   message(paste("sigma^2 =", hansenSummary$modelAvgSigmaSq))
   if(any(dim(hansenSummary$thetaMatrix) > 12)) message(paste("theta matrix is too long to display; access through the summary object"))
