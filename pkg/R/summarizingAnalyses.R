@@ -11,7 +11,7 @@ summary.hansenBatch <- function(hansenBatch){
   # Unimplemented summary ideas
   # - Check whether there is a single tree
   # - if so, return everything below, + a model-averaged set of thetas indexed according to branches
-  
+  # all that's needed to do now is model average over the theta matrix created for each tree  
   
   # 0. Get information criterion weights for all models
   icObject <- informationCriterion.hansenBatch(hansenBatch)
@@ -23,6 +23,10 @@ summary.hansenBatch <- function(hansenBatch){
   matrixRows <- c('AIC.weight', 'AICc.weight', 'BIC.weight')
   outMatrix <- matrix(0, nrow = length(icObject[[1]]$AICwi), ncol = length(matrixRows), dimnames = list(icObject[[1]]$names, matrixRows))
   nmodelsMatrix <- outMatrix # a matrix to divide outMatrix by so that average BICwi are only based on trees that have a node
+  thetaMatrix <- matrix(NA, nrow = ntrees, 
+                            ncol = dim(hansenBatch$thetas[[1]])[2], 
+                            dimnames = list(1:ntrees, dimnames(hansenBatch$thetas[[1]])[[2]])
+                       )
   for(tree in 1:ntrees) {
     aicList <- icObject[[tree]]$AICwi
     aiccList <- icObject[[tree]]$AICcwi
@@ -32,9 +36,16 @@ summary.hansenBatch <- function(hansenBatch){
     nmodelsMatrix <- nmodelsMatrix + replace.matrix(temp, NA, 0) # nmodelsMatrix gets a 1 for each model present, a 0 for each model not present
     outMatrix <- outMatrix + replace.matrix(modelsMatrix[[tree]], NA, 0) # replace NAs with 0 so that sum works correctly at the end
     sigmaSqVector[tree] <- weighted.mean(hansenBatch$hansens[[tree]][, 'sigma.squared'], bicList, na.rm = T)
+    if(hansenBatch$brown) bicOU <- bicList[1: (length(bicList) - 1)]
     alphaVector[tree] <- ifelse(hansenBatch$brown, 
-                                weighted.mean(hansenBatch$hansens[[tree]][1:(nmodels - 1), 'theta / alpha'], bicList[1: (nmodels - 1)], na.rm = T),
+                                weighted.mean(hansenBatch$hansens[[tree]][1:(nmodels - 1), 'theta / alpha'], bicOU, na.rm = T),
                                 weighted.mean(hansenBatch$hansens[[tree]][ , 'theta / alpha'], bicList, na.rm = T) )
+    if(hansenBatch$brown) w <- bicOU
+    else w <- bicList
+    thetaMatrix[tree, ] <- apply(hansenBatch$thetas[[tree]], 2, 
+                                 weighted.mean, 
+                                 w = w, 
+                                 na.rm = T)
     ## the lines below made the weights on branches ignore the fact that the Brownian motion model was part of the
     ##   model set; however, I've removed them b/c support for the Brownian motion model does (and should) contribute 
     ##   to reduced probability of change at any of the nodes. You can uncomment them if you feel differently.
@@ -85,7 +96,7 @@ summary.hansenBatch <- function(hansenBatch){
   modelAvgAlpha <- mean(alphaVector, na.rm = T)
   modelAvgSigmaSq <- mean(sigmaSqVector, na.rm = T)
   warning('the K-matrix as currently implemented is calculated over the all-nodes (normalized) weights.')
-  outdata <- list(modelsMatrix = modelsMatrix, weightsMatrix = list(unnormalized = weightsMatrix.unnormalized, allNodes = weightsMatrix.allNodes), nodeWeightsMatrix = list(unnormalized = nodeWeightsMatrix.unnormalized, allNodes = nodeWeightsMatrix.allNodes), kMatrix = kMatrix, modelAvgAlpha = modelAvgAlpha, modelAvgSigmaSq = modelAvgSigmaSq)
+  outdata <- list(modelsMatrix = modelsMatrix, weightsMatrix = list(unnormalized = weightsMatrix.unnormalized, allNodes = weightsMatrix.allNodes), nodeWeightsMatrix = list(unnormalized = nodeWeightsMatrix.unnormalized, allNodes = nodeWeightsMatrix.allNodes), kMatrix = kMatrix, modelAvgAlpha = modelAvgAlpha, modelAvgSigmaSq = modelAvgSigmaSq, thetaMatrix = thetaMatrix)
   class(outdata) <- 'hansenSummary'
   return(outdata)
 }
@@ -109,4 +120,6 @@ print.hansenSummary <- function(hansenSummary) {
   message("\nMODEL AVERAGED PARAMETERS")
   message(paste("alpha =", hansenSummary$modelAvgAlpha))
   message(paste("sigma^2 =", hansenSummary$modelAvgSigmaSq))
+  message("theta matrix, with branches as the columns and trees as the rows:")
+  print(hansenSummary$thetaMatrix)
 }
