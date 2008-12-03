@@ -1,8 +1,6 @@
 # ---------------------------------------------------------------------
 # FUNCTIONS FOR SUMMARIZING ANALYSES
 # ---------------------------------------------------------------------
-# functions included in this file:
-# 1. summary.hansenBatch
 
 summary.hansenBatch <- function(hansenBatch){
 ## items in output: hansens, regimeList, regimeMatrix
@@ -17,8 +15,6 @@ summary.hansenBatch <- function(hansenBatch){
   modelsMatrix <- vector('list', ntrees) # list of matrices, indexed by tree, holding the weight for each model
   matrixRows <- c('AIC.weight', 'AICc.weight', 'BIC.weight') # rows in the matrix
   nodeWeightsSummed <- matrix(0, nrow = length(matrixRows), ncol = nnodes, dimnames = list(matrixRows, nodes)) # holds node weights summed
-  ## outMatrix <- matrix(0, nrow = length(icObject[[1]]$AICwi), ncol = length(matrixRows), dimnames = list(icObject[[1]]$names, matrixRows)) # model weights
-  ## nmodelsMatrix <- outMatrix # a matrix to divide outMatrix by so that average BICwi are only based on trees that have a node -- NEEDED?
   thetaMatrix <- matrix(NA, nrow = ntrees, 
                             ncol = dim(hansenBatch$thetas[[1]])[2], 
                             dimnames = list(1:ntrees, dimnames(hansenBatch$thetas[[1]])[[2]])
@@ -26,9 +22,6 @@ summary.hansenBatch <- function(hansenBatch){
   for(tree in 1:ntrees) {
     modelsMatrix[[tree]] <- cbind(icObject[[tree]]$AICwi, icObject[[tree]]$AICcwi, icObject[[tree]]$BICwi)
     bic <- icObject[[tree]]$BICwi
-    ## temp <- modelsMatrix[[tree]]; temp[!is.na(temp)] <- 1  
-    ## nmodelsMatrix <- nmodelsMatrix + replace.matrix(temp, NA, 0) # nmodelsMatrix gets a 1 for each model present, a 0 for each model not present
-    ## outMatrix <- outMatrix + replace.matrix(modelsMatrix[[tree]], NA, 0) # replace NAs with 0 so that sum works correctly at the end    
     for(i in seq(nnodes)) {
       modelsMatrixSubset <- modelsMatrix[[tree]][hansenBatch$regMatrix$overall[, nodes[i]] == 1, ] # subset models that contain node i
       if(identical(dim(modelsMatrixSubset), NULL)) # is modelsMatrixSubset a 1-d vector? if so then:
@@ -49,15 +42,10 @@ summary.hansenBatch <- function(hansenBatch){
                                  )
                                  
   }
-  # in this matrix, the weight for each node is averaged only over trees that possess that node; weights may not sum to 1.0
+  # in this matrix, the weight for each node is averaged only over trees that possess that node
   nodeWeightsMatrix.unnormalized <- nodeWeightsSummed / matrix(nodeSums, nrow = dim(nodeWeightsSummed)[1], ncol = nnodes, byrow = T)
+  # in this matrix, the weight for each node is averaged over all trees
   nodeWeightsMatrix.allNodes <- nodeWeightsSummed / ntrees 
-                                               # in this matrix, the weight for each node is averaged over all trees, setting weight
-                                               # equal to zero in any trees that lack that node. Weights sum to 1.0, and they
-                                               # factor in the posterior probability (or bootstrap proportion) for each model. 
-                                               # Which to use? they are both informative, but this one has the desirable property of
-                                               # being a proper probability distribution, albeit one that confounds clade support
-                                               # with model support.
   
   # sum over number of parameters
   # create a vector of sums that tells us how many categories there are for each model: dof = sum(nodes) + 1 [because a node indicates a change in 
@@ -74,8 +62,6 @@ summary.hansenBatch <- function(hansenBatch){
   #}
   modelAvgAlpha <- mean(alphaVector, na.rm = T)
   modelAvgSigmaSq <- mean(sigmaSqVector, na.rm = T)
-  #warning('the K-matrix as currently implemented is calculated over the all-nodes (normalized) weights.')
-  #kMatrix = kMatrix, 
   outdata <- list(modelsMatrix = modelsMatrix, nodeWeightsMatrix = list(unnormalized = nodeWeightsMatrix.unnormalized, allNodes = nodeWeightsMatrix.allNodes), modelAvgAlpha = modelAvgAlpha, modelAvgSigmaSq = modelAvgSigmaSq, thetaMatrix = thetaMatrix)
   class(outdata) <- 'hansenSummary'
   return(outdata)
