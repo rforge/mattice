@@ -1,1 +1,2 @@
-make allPossibleRegimes more efficient when maxNodes < length(nodes)
+1. make allPossibleRegimes more efficient when maxNodes < length(nodes)
+2. is the k-matrix a sensible statistic? fix it so it works on the revised batchHansen
