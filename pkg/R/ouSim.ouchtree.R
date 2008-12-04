@@ -1,10 +1,8 @@
-ouSim.ouchtree <- function(tree, rootState = 0, shiftBranches = NULL, shiftStates = NULL, alpha = 0, variance = 1, theta = rootState, steps = 1000) {
+ouSim.ouchtree <- function(tree, rootState = 0, alpha = 0, variance = 1, theta = rootState, steps = 1000) {
 ## function to plot a simulated dataset under brownian motion or Ornstein-Uhlenbeck (OU) model
 ## Arguments:
 ##   tree is an ouch-style (S4) tree
 ##   alpha and theta are either single values or vectors of length (length(branchList))
-##   shiftBranches is a vector indicating any branches at which an OU or brownian motion model has a determined shift in ancestral state
-##   shiftStates is a vector of length = length(shiftBranches) indicaing the ancestral states for the determined break points
 
 ##embedded function---------------------
 ##can be released to the wild, but more arguments will need to be passed around
@@ -16,15 +14,12 @@ preorderOU <- function(branchList, tree, startNode, startState, alpha, theta) {
 ## a branch length is the time of a node - the time of its ancestor
 ## not fixed yet for ouchtree
   startBranch <- startNode ## startNode really means start branch... it's the end node of hte branch starting this process
-  if(!identical(shiftStates, NULL)) {
-    if(startBranch %in% shiftBranches) startState <- shiftStates[match(startBranch, shiftBranches)] 
-    }
   message(paste('Working on branch',startBranch,'with starting state',startState))
   workingBranch <- branchList[[startBranch]]
   workingBranch[1] <- startState
   for (brStep in 2:length(workingBranch)) {
     workingBranch[brStep] <- 
-      workingBranch[brStep - 1] + workingBranch[brStep] + alpha[startBranch] / steps * (theta[startBranch] - workingBranch[brStep - 1]) 
+      workingBranch[brStep - 1] + workingBranch[brStep] + alpha[startBranch] / steps * (theta[startBranch] - workingBranch[brStep - 1]) # denom was mult'd by steps... should be? 
     }
   branchList[[startBranch]] <- workingBranch
   endState <- branchList[[startBranch]][length(branchList[[startBranch]])]
