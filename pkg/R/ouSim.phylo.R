@@ -62,14 +62,6 @@ if(model == "OU") {
 if(model == "platt") branchList <- branchList
 
 value <- (list(branchList = branchList, timesList = timesList, steps = steps, parameters = list(rootState = rootState, alpha = alpha, variance = variance, theta = theta))) 
-class(value) <- "ouSim"
-return(value)}
-
-plot.ouSim <- function(ouSim, nodeColor = "blue", nodeDotSize = 1.4, colors = rep("black", length(ouSim$branchList)), ...) {
-## Plot the data by calling plot(ouSimObject)
-## To plot different clades, set the colors vector according to the branches in the original 
-## only passes the ... along to lines
-  branches = length(ouSim$branchList)
-  plot(1:ouSim$steps, ylim = range(unlist(ouSim$branchList)), type = "n", ylab = "Trait value", xlab = "Time")
-  for(i in 1:branches) lines(ouSim$timesList[[i]], ouSim$branchList[[i]], col = colors[i], ...)
-  for(i in 1:branches) points(ouSim$timesList[[i]][1], ouSim$branchList[[i]][1], pch = 19, col = nodeColor, cex = nodeDotSize) }
+class(value) <- "ouSimPhylo"
+return(value)
+}

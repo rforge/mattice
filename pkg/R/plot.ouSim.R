@@ -1,4 +1,4 @@
-plot.ouSim <- function(ouSim, nodeColor = "blue", nodeDotSize = 1.4, colors = rep("black", length(ouSim$branchList)), ...) {
+plot.ouSimPhylo <- function(ouSim, nodeColor = "blue", nodeDotSize = 1.4, colors = rep("black", length(ouSim$branchList)), ...) {
 ## To plot different clades, set the colors vector according to the branches in the original 
 ## only passes the ... along to lines
   branches = length(ouSim$branchList)
