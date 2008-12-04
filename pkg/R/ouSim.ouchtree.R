@@ -1,0 +1,75 @@
+ouchSim.ouchtree <- function(tree, rootState = 0, shiftBranches = NULL, shiftStates = NULL, alpha = 0, variance = 1, theta = rootState, steps = 1000) {
+## function to plot a simulated dataset under brownian motion or Ornstein-Uhlenbeck (OU) model
+## Arguments:
+##   tree is an ouch-style (S4) tree
+##   alpha and theta are either single values or vectors of length (length(branchList))
+##   shiftBranches is a vector indicating any branches at which an OU or brownian motion model has a determined shift in ancestral state
+##   shiftStates is a vector of length = length(shiftBranches) indicaing the ancestral states for the determined break points
+
+  ## 1. initialize
+  if(length(alpha) == 1) alpha <- rep(alpha, tree@nnodes)
+  if(length(theta) == 1) theta <- rep(theta, tree@nnodes)
+  brLengths <- c(0, unlist(lapply(2:tree@nnodes, branchLength, tree = tree))) # assumes first node is root; this should be relaxed
+  names(brLengths) <- tree@nodes # branches are indexed by end node
+
+  ## 2. The following creates a list of random draws from the normal distribution, with standard deviation scaled by total 
+  ##   tree length and the number of draws for each branch equal to the number of steps in that branch. 
+  ##   If there is a separate variance for each branch, I assume the variance is expressed in terms of total tree-length, 
+  ##   so the scaling is the same for all branches
+  sdStep <- sqrt(variance / steps)
+  if(length(variance) == 1) branchList <- lapply(round(brLengths*steps), rnorm, sd = sdStep)
+  else {
+    branchList <- vector("list", length(tree@nnodes)) 
+    for(i in seq(tree@nnodes)) branchList[[i]] <- rnorm(n = brLengths[i], mean = 0, sd = sdStep[i])
+    }
+  names(branchList) <- tree@nodes # branches are indexed by their end nodes
+  timesList <- lapply(branchList, seq) # creates a list of sequential numbers corresponding to the rnorm vectors
+  startTimes <- round(unlist(sapply(tree@nodes, ancestorTime, tree = tree)) * steps) ## ASSUMES ULTRAMETRICITY
+  for (i in 1:length(timesList)) timesList[[i]] <- timesList[[i]] + startTimes[i]
+
+  ## 3. traverse
+  for(i in which(tree@ancestors == tree@root)) {
+    branchList <- preorderOU(branchList, phy, phy$edge[i,2], rootState, alpha, theta) 
+    }
+  value <- (list(branchList = branchList, timesList = timesList, steps = steps, parameters = list(rootState = rootState, alpha = alpha, variance = variance, theta = theta))) 
+  class(value) <- "ouSim"
+  return(value)
+}
+
+preorderOU <- function(branchList, phy, startNode, startState, alpha, theta) {
+## Recursive function to generate the data under a Brownian motion or OU model
+## modified for ouchtree (s4) Dec 08
+## branch times back from each tip are in tree@epochs, indexed by tip number
+## nodes back from each node (including tips) are in tree@lineages, indexed by node number
+## a branch length is the time of a node - the time of its ancestor
+## not fixed yet for ouchtree
+
+  startBranch = which(phy$edge[,2] == startNode)
+  if(!identical(shiftStates, NULL)) {
+    if(startBranch %in% shiftBranches) startState <- shiftStates[match(startBranch, shiftBranches)] }
+  message(paste('Working on branch',startBranch,'with starting state',startState))
+  branchList[[startBranch]][1] <- startState
+  for (i in 2:length(branchList[[startBranch]])) {
+    branchList[[startBranch]][i] <- branchList[[startBranch]][i - 1] + branchList[[startBranch]][i] + alpha[startBranch] / steps * (theta[startBranch] - branchList[[startBranch]][i - 1]) }
+  endState = branchList[[startBranch]][length(branchList[[startBranch]])]
+  daughterBranches <- phy$edge[which(phy$edge[, 1] == startNode), 2]
+  if(!identical(as.integer(daughterBranches), integer(0))) {
+    for(i in daughterBranches) branchList <- preorderOU(branchList, phy, i, endState, alpha, theta) }
+  return(branchList) 
+}  
+
+nodeTime <- function(node, tree) {
+  return(tree@times[which(tree@nodes == node)])
+}
+
+branchLength <- function(endNode, tree) {
+  return(nodeTime(endNode, tree) - ancestorTime(endNode, tree))
+}
+
+ancestorTime <- function(endNode, tree) {
+  endNode <- as.character(endNode)
+  ancestor <- tree@ancestors[which(tree@nodes == endNode)]
+  if(is.na(ancestor)) startTime <- NA
+  else startTime <- tree@times[which(tree@nodes == ancestor)]
+  return(startTime)
+}
