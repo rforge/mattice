@@ -5,8 +5,8 @@ ouSim <- function(tree, ...) {
          ouchtree = ouSim.ouchtree(tree, ...), # completed
          brown = ouSim.brownHansen(tree, ...),
          hansen = ouSim.brownHansen(tree, ...),
-         hansenBatch = ouSim.hansenBatch(tree, ...),
-         hansenSummary = ouSim.hansenBatch(tree, ...),
+         hansenBatch = ouSim.hansenBatch(tree, ...), # completed
+         hansenSummary = ouSim.hansenBatch(tree, ...), # completed
          stop("Unrecognized tree class")
          )
 }
