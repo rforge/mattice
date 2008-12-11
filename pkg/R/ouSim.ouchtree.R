@@ -3,7 +3,7 @@ ouSim.ouchtree <- function(tree, rootState = 0, alpha = 0, variance = 1, theta =
 ## Arguments:
 ##   tree is an ouch-style (S4) tree
 ##   alpha and theta are either single values or vectors of length (length(branchList))
-
+message(paste("running sim with root =", rootState, ", alpha =", mean(alpha), ", var =", variance, "theta =", mean(theta)))
 ##embedded function---------------------
 ##can be released to the wild, but more arguments will need to be passed around
 preorderOU <- function(branchList, tree, startNode, startState, alpha, theta) {
@@ -14,7 +14,7 @@ preorderOU <- function(branchList, tree, startNode, startState, alpha, theta) {
 ## a branch length is the time of a node - the time of its ancestor
 ## not fixed yet for ouchtree
   startBranch <- startNode ## startNode really means start branch... it's the end node of hte branch starting this process
-  message(paste('Working on branch',startBranch,'with starting state',startState))
+  # message(paste('Working on branch',startBranch,'with starting state',startState))
   workingBranch <- branchList[[startBranch]]
   workingBranch[1] <- startState
   for (brStep in 2:length(workingBranch)) {

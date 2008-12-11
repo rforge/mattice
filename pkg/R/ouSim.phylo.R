@@ -7,7 +7,7 @@ ouSim.phylo <- function(phy, rootState = 0, shiftBranches = NULL, shiftStates = 
 ##   shiftStates is a vector of length = length(shiftBranches) indicaing the ancestral states for the determined break points
 ## Models:
 ##  "OU" is a brownian motion or OU model 
-##  "platt" is the Platt-Molitor model, in which the only phylogenetic effect is the mean and variance for a given branch
+##  "meanVar" is a model in which the only phylogenetic effect is the mean and variance for a given branch
 ## Andrew Hipp (ahipp@mortonarb.org), January 2008 
 ## July 2008: modified to accomodate a vector of alpha and theta corresponding to branches
 ## Dec 2008: This function I'm leaving as is for the time being and just letting the phylo method be as raw as always.
@@ -40,7 +40,7 @@ if(model == "OU") {
 	    brLengths <- round(phy$edge.length*steps)
 	    brSD <- sqrt(variance/steps)
 	    for(i in seq(length(brLengths))) branchList[[i]] <- rnorm(n = brLengths[i], mean = 0, sd = brSD[i]) }}
-if(model == "platt") {
+if(model == "meanVar") {
 	if(length(variance) == 1) variance <- rep(variance, length(phy$edge.length))
 	branchList <- vector("list", length(phy$edge.length))
 	if(length(branchMeans) == 1) branchMeans <- rep(branchMeans, length(phy$edge))
@@ -59,7 +59,7 @@ for (i in 1:length(timesList)) timesList[[i]] <- timesList[[i]] + startTimes[i]
 if(model == "OU") {
 	for(i in which(phy$edge[, 1] == rootNode)) {
 	  branchList <- preorderOU(branchList, phy, phy$edge[i,2], rootState, alpha, theta) }}
-if(model == "platt") branchList <- branchList
+if(model == "meanVar") branchList <- branchList
 
 value <- (list(branchList = branchList, timesList = timesList, steps = steps, parameters = list(rootState = rootState, alpha = alpha, variance = variance, theta = theta))) 
 class(value) <- "ouSimPhylo"
