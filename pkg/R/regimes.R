@@ -150,15 +150,19 @@ regimeMatrix <- function(n = NULL, nodeNames = NULL, regimeNames = NULL, maxNode
   return(outmatrix)
 }
 
-#regMatRec <- function(n, maxNodes, dat) {
-#  for (i in 1:n) {
-#    place a 1 in the ith position
-#    temp = regMatRec on the zeros, thus with n = n-1, maxNodes = maxNodes - 1
-#    make a matrix of the results, with the temp and the ith-position 1 concatenated
-#  }
-#  make an all-zero row
-#  return results
-#}
+regMatRec <- function(n, maxNodes) {
+## not working correctly with maxNodes > 1
+  outmat <- matrix(NA, nrow = 0, ncol = n)
+  for (i in 1:(n-1)) {
+    temp <- numeric(n)
+    temp[1:i] <- c(rep(0, (i-1)), 1)
+    if (maxNodes > 1) temp[(i+1):n] <- regMatRec(n - 1, maxNodes - 1)
+    else temp[(i+1):n] <- rep(0, length((i+1):n))
+    outmat <- rbind(outmat, temp)
+  }
+  outmat <- rbind(outmat, c(rep(0, n-1), 1))
+  return(outmat)
+}
     
 
 as.binary <- function(n, base = 2, r = FALSE, digits = NULL)
