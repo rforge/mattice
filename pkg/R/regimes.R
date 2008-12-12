@@ -132,14 +132,18 @@ regimeMatrix <- function(n = NULL, nodeNames = NULL, regimeNames = NULL, maxNode
   if(identical(n, NULL) && identical(nodeNames, NULL)) stop("You have to give regimeMatrix the number of nodes, a vector of node names, or both")
   if(identical(nodeNames, NULL)) nodeNames <- as.character(seq(n))
   else n <- length(nodeNames)
-  numberOfRegimes <- ifelse(n == 1, 2, 2^n)
-  outmatrix <- matrix(NA, nrow = numberOfRegimes, ncol = n, dimnames = list(regimeNames, nodeNames))
-  for(i in 1:(numberOfRegimes - 1)) outmatrix[i, ] <- as.binary(i, digits = n)
-  outmatrix[numberOfRegimes, ] <- as.binary(0, digits = n)
-  if(!identical(maxNodes, NULL)) {
-    outmatrix <- outmatrix[apply(outmatrix,1,sum) <= maxNodes, ]
-    dimnames(outmatrix)[[1]] = as.character(seq(dim(outmatrix)[1]))
-  }
+  if(identical(maxNodes, NULL)) maxNodes <- n
+  outmatrix <- matrix(NA, nrow = 0, ncol = n, dimnames = list(NULL, nodeNames))
+  maxNumberOfRegimes <- ifelse(n == 1, 2, 2^n)
+  counter <- 1
+  repeat {
+    temp <- as.binary(counter, digits = n)
+    if(sum(temp) <= maxNodes) outmatrix <- rbind(outmatrix, temp) 
+    if(counter == maxNumberOfRegimes - 1) break
+    counter <- counter + 1
+    }
+  outmatrix <- rbind(outmatrix, as.binary(0, digits = n))
+  dimnames(outmatrix)[[1]] <- seq(dim(outmatrix)[1])
   return(outmatrix)
 }
 
