@@ -152,11 +152,12 @@ regimeMatrix <- function(n = NULL, nodeNames = NULL, regimeNames = NULL, maxNode
 
 #regMatRec <- function(n, maxNodes, dat) {
 #  for (i in 1:n) {
-#    call(regMatRec) with n = n - 1
-#    for (j in 1:dim(dat)[1]) {
-#      do something!
-#      }
-#    }
+#    place a 1 in the ith position
+#    temp = regMatRec on the zeros, thus with n = n-1, maxNodes = maxNodes - 1
+#    make a matrix of the results, with the temp and the ith-position 1 concatenated
+#  }
+#  make an all-zero row
+#  return results
 #}
     
 
