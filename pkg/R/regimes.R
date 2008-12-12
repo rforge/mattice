@@ -129,6 +129,9 @@ regimeMaker <- function(ouchTrees, regMatrix, nodeMembers) {
 }
 
 regimeMatrix <- function(n = NULL, nodeNames = NULL, regimeNames = NULL, maxNodes = NULL) {
+## a brute-force approach, very inefficient as n and maxNodes diverge
+## I think there's a recursive approach that would be efficient for small maxNodes, but it would probably be slower
+##   than this approach as maxNodes -> n
   if(identical(n, NULL) && identical(nodeNames, NULL)) stop("You have to give regimeMatrix the number of nodes, a vector of node names, or both")
   if(identical(nodeNames, NULL)) nodeNames <- as.character(seq(n))
   else n <- length(nodeNames)
@@ -146,6 +149,16 @@ regimeMatrix <- function(n = NULL, nodeNames = NULL, regimeNames = NULL, maxNode
   dimnames(outmatrix)[[1]] <- seq(dim(outmatrix)[1])
   return(outmatrix)
 }
+
+#regMatRec <- function(n, maxNodes, dat) {
+#  for (i in 1:n) {
+#    call(regMatRec) with n = n - 1
+#    for (j in 1:dim(dat)[1]) {
+#      do something!
+#      }
+#    }
+#}
+    
 
 as.binary <- function(n, base = 2, r = FALSE, digits = NULL)
 # Robin Hankin <initialDOTsurname at soc.soton.ac.uk (edit in obvious way; spam precaution)>
