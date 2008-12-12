@@ -1,0 +1,31 @@
+> for( i in c(5,10,15,20,25,30,35,40,45,50,55,60)) {
++ message(paste("Trying", i, "nodes with maxNodes = 2"))
++ print(system.time(regimeMatrix(i, maxNodes = 2)))
++ message("---------------------------")
++ }
+Trying 5 nodes with maxNodes = 2
+   user  system elapsed 
+      0       0       0 
+---------------------------
+Trying 10 nodes with maxNodes = 2
+   user  system elapsed 
+   0.12    0.00    0.13 
+---------------------------
+Trying 15 nodes with maxNodes = 2
+   user  system elapsed 
+   4.73    0.02    4.77 
+---------------------------
+Trying 20 nodes with maxNodes = 2
+   user  system elapsed 
+ 191.82    0.14  192.64 
+---------------------------
+Trying 25 nodes with maxNodes = 2
+   user  system elapsed 
+7312.90    0.80 7324.96 
+---------------------------
+Trying 30 nodes with maxNodes = 2
+
+Timing stopped at: 47287.74 4.86 47341.94 
+> 13.15 hours!
+Error: unexpected symbol in "13.15 hours"
+> 
