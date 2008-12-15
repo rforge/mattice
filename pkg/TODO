@@ -1,9 +1,9 @@
-1. make allPossibleRegimes more efficient when maxNodes < length(nodes)
-2. DROP or AVERAGE: is the k-matrix a sensible statistic? fix it so it works on the revised batchHansen
-3. change paintBranches so that it automatically adds the root and knows what to do if it is handed a list of node vectors instead of a vector of nodes
+1. DONE: make allPossibleRegimes more efficient when maxNodes < length(nodes)
+2. is the k-matrix a sensible statistic? fix it so it works on the revised batchHansen; average weight, or drop it
+3. DONE: change paintBranches so that it automatically adds the root and knows what to do if it is handed a list of node vectors instead of a vector of nodes
 4. make plot.ouSim smart enough to paint the branches according to the theta vector if no colors are provided
 5. make a "simulate" method for a hansenBatch object that simulates the data using model-averaged parameters (including theta)
-6. make paintBranches return a complete regime ready to plug into hansen, and modify calling functions accordingly
+6. DONE: make paintBranches return a complete regime ready to plug into hansen, and modify calling functions accordingly
 7. give plot.ouSim a way to highlight or circle or otherwise set off changeNodes 
 8. make it easy to pass colors into plot.ouSim... the regime should pop out easily
 9. make it possible to pass in a vector of lty or lwd to plot.ouSim so the branches can be different widths or patterns

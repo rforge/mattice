@@ -24,5 +24,6 @@ ouSim.brownHansen <- function(analysis, ...) {
   variance <- as.vector(su$sigma.squared)
   tree <- ouchtree(analysis@nodes, analysis@ancestors, analysis@times) 
   outdata <- ouSim.ouchtree(tree, rootState, alpha, variance, theta, ...)
+  outdata$colors <- analysis@regimes[[1]]
   return(outdata)
 }

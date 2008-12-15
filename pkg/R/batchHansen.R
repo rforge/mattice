@@ -13,11 +13,11 @@ runBatchHansen <-
 #  "ouchTrees" = list of OUCH-style trees
 #  "characterStates" = vector of character states, either extracted from an ouch-style tree data.frame or a named vector
 #  REMOVED: "SEM"= standard error of the mean, vector extracted from an ouch-style tree data.frame
-#  "rescale" = factor to multiply against (times / max(times)) -- choose based on trial analyses; set at <= 0 if you don't want to rescale trees
+#  REMOVED: "rescale" = factor to multiply against (times / max(times)) -- choose based on trial analyses; set at <= 0 if you don't want to rescale trees
 #  "cladeMembersList" = list of vectors containing names of the members of each clade (except for the root of the tree)
 #  "brown" = whether to analyse the data under a Brownian motion model
 #  "..." = additional arguments to pass along to hansen
-function(ouchTrees, characterStates, cladeMembersList, filePrefix = NULL, di = NULL, nodeNames = NULL, maxNodes = NULL, regimeTitles = NULL, brown = F, rescale = 1, alpha = 1, sigma = 1, ...) {
+function(ouchTrees, characterStates, cladeMembersList, filePrefix = NULL, di = NULL, nodeNames = NULL, maxNodes = length(cladeMembersList), regimeTitles = NULL, brown = F, ...) {
   ## do all the objects in ouchTrees inherit ouchtree?
   if(is(ouchTrees,'ouchtree')) ouchTrees <- list(ouchTrees)
   treeCheck <- unlist(lapply(ouchTrees, function(x) is(x,'ouchtree')))
@@ -48,6 +48,8 @@ function(ouchTrees, characterStates, cladeMembersList, filePrefix = NULL, di = N
     if(stopFlag) stop("Correct discrepancies between trees and data and try again!")
     }
   if(!identical(di, NULL)) dir.create(di)
+  if(class(try(alpha, silent = T)) == 'try-error') alpha = 1
+  if(class(try(sigma, silent = T)) == 'try-error') sigma = 1
   ar = regimeVectors(ouchTrees, cladeMembersList, maxNodes)
   hansenBatch <- list(length(ouchTrees))
   thetas <- list(length(ouchTrees))

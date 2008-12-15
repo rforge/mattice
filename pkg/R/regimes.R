@@ -48,6 +48,8 @@ function(regimeShiftNodes, tree, regimeTitles = NULL) {
   times <- tree@times # class = "numeric"
   ## ------------------ end ouchtree block -------------------
   
+  if(class(regimeShiftNodes) == "list") regimeShiftNodes <- unlist(lapply(regimeShiftNodes, mrcaOUCH, tree = tree))
+  regimeShiftNodes <- unique(c(as.character(tree@root), regimeShiftNodes))
   if(identical(regimeTitles, NULL)) regimeTitles <- as.character(regimeShiftNodes)
   names(regimeTitles) = as.character(regimeShiftNodes)
   colorsVector = character(length(node))
@@ -85,6 +87,8 @@ function(regimeShiftNodes, tree, regimeTitles = NULL) {
       
       # colors terminal branches if any terminal branches are in the regimeShiftNodes
       for(i in regimeShiftNodes) if(i %in% tree@term) colorsVector[as.numeric(i)] <- as.character(i)
+      colorsVector <- as.factor(colorsVector)
+      names(colorsVector) <- tree@nodes
   return(colorsVector) }
 
 regimeMaker <- function(ouchTrees, regMatrix, nodeMembers) {
@@ -158,7 +162,7 @@ regimeMatrix <- function(n, maxNodes) {
     temp <- c(rep(0, (i-1)), 1)
     remainder <- n - i
     if (maxNodes > 1 && remainder > 0) {
-      nextMat <- regMatRec(remainder, maxNodes - 1)
+      nextMat <- regimeMatrix(remainder, maxNodes - 1)
       temp <- cbind(matrix(temp, dim(nextMat)[1], length(temp), byrow = T), nextMat)
       }
     else temp[(i+1):n] <- rep(0, length((i+1):n))
