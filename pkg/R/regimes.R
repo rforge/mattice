@@ -128,10 +128,9 @@ regimeMaker <- function(ouchTrees, regMatrix, nodeMembers) {
   return(outdata)
 }
 
-regimeMatrix <- function(n = NULL, nodeNames = NULL, regimeNames = NULL, maxNodes = NULL) {
+oldRegimeMatrix <- function(n = NULL, nodeNames = NULL, regimeNames = NULL, maxNodes = NULL) {
 ## a brute-force approach, very inefficient as n and maxNodes diverge
-## I think there's a recursive approach that would be efficient for small maxNodes, but it would probably be slower
-##   than this approach as maxNodes -> n
+## I'm leaving this in here only b/c i don't know whether the recursive function will fail at large maxNodes
   if(identical(n, NULL) && identical(nodeNames, NULL)) stop("You have to give regimeMatrix the number of nodes, a vector of node names, or both")
   if(identical(nodeNames, NULL)) nodeNames <- as.character(seq(n))
   else n <- length(nodeNames)
@@ -150,24 +149,26 @@ regimeMatrix <- function(n = NULL, nodeNames = NULL, regimeNames = NULL, maxNode
   return(outmatrix)
 }
 
-regMatRec <- function(n, maxNodes) {
-## not working correctly with maxNodes > 1
+regimeMatrix <- function(n, maxNodes) {
+## recursive function that returns the same thing as oldRegimeMatrix, but much more efficient, at least for small maxNodes
+## actually, it appears to be more efficient even at n = maxNodes
+  if(n == 1) return(matrix(1:0, nrow = 2, ncol = 1))
   outmat <- matrix(NA, nrow = 0, ncol = n)
   for (i in 1:(n-1)) {
     temp <- c(rep(0, (i-1)), 1)
     remainder <- n - i
-    if (maxNodes > 1 && n > 0) {
+    if (maxNodes > 1 && remainder > 0) {
       nextMat <- regMatRec(remainder, maxNodes - 1)
-      temp <- cbind(matrix(temp, dim(nextMat)[2], length(temp), byrow = T), nextMat)
+      temp <- cbind(matrix(temp, dim(nextMat)[1], length(temp), byrow = T), nextMat)
       }
     else temp[(i+1):n] <- rep(0, length((i+1):n))
     outmat <- rbind(outmat, temp)
-  print(outmat)
   }
   outmat <- rbind(outmat, c(rep(0, n-1), 1))
+  outmat <- rbind(outmat, rep(0,n))
+  dimnames(outmat) = list(seq(dim(outmat)[1]), seq(dim(outmat)[2]))
   return(outmat)
 }
-    
 
 as.binary <- function(n, base = 2, r = FALSE, digits = NULL)
 # Robin Hankin <initialDOTsurname at soc.soton.ac.uk (edit in obvious way; spam precaution)>
