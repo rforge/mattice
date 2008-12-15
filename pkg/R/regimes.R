@@ -154,11 +154,15 @@ regMatRec <- function(n, maxNodes) {
 ## not working correctly with maxNodes > 1
   outmat <- matrix(NA, nrow = 0, ncol = n)
   for (i in 1:(n-1)) {
-    temp <- numeric(n)
-    temp[1:i] <- c(rep(0, (i-1)), 1)
-    if (maxNodes > 1) temp[(i+1):n] <- regMatRec(n - 1, maxNodes - 1)
+    temp <- c(rep(0, (i-1)), 1)
+    remainder <- n - i
+    if (maxNodes > 1 && n > 0) {
+      nextMat <- regMatRec(remainder, maxNodes - 1)
+      temp <- cbind(matrix(temp, dim(nextMat)[2], length(temp), byrow = T), nextMat)
+      }
     else temp[(i+1):n] <- rep(0, length((i+1):n))
     outmat <- rbind(outmat, temp)
+  print(outmat)
   }
   outmat <- rbind(outmat, c(rep(0, n-1), 1))
   return(outmat)
