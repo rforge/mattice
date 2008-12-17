@@ -59,20 +59,37 @@ runBatchHansen(ouchTrees, characterStates, cladeMembersList, filePrefix = NULL, 
 \value{
   A list of class \code{hansenBatch} with the following items:
   \item{hansens} {
-  A matrix with rows equal to the number of models analyzed, and four columns: \code{loglik} = log-likelihood of the model;
-  \code{dof} = number of free parameters in the model; \code{sigma.squared} = estimate of the variance parameter;
-  \code{theta / alpha} = estimate of either the root character state (for the brownian motion model) or the \code{alpha}
-  parameter (for Ornstein-Uhlenbeck models).
+    A matrix with rows equal to the number of models analyzed, and four columns: 
+    \code{loglik} = log-likelihood of the model;
+    \code{dof} = number of free parameters in the model; \code{sigma.squared} = estimate of the variance parameter;
+    \code{theta / alpha} = estimate of either the root character state (for the brownian motion model) or the \code{alpha}
+    parameter (for Ornstein-Uhlenbeck models).
   }
-  thetas = thetas
-  regList = ar$regList
-  regMatrix = ar$regMatrix
-  nodeMatrix = ar$nodeMatrix
-  brown = brown
-  N = ouchTrees[[i]]@nterm
-  analysisDate = date()
-  call = match.call())
+  \item{thetas} {
+    A list of vectors with a \code{theta} corresponding to each regime on the tree.
   }
+  \item{regList} {
+    A list indexed by tree of lists indexed by model, with the regime corresponding to each model on each tree. 
+  }
+  \item{regMatrix} {
+    The nodes by regimes matrix returned by \code{regimeMatrix} at the outset of analysis.
+  }
+  \item{nodeMatrix} {
+    A nodes by tree matrix, indicating for each tree which nodes are present.
+  }
+  \item{brown} {
+    A boolean vector of length one indicating whether the brownian motion model was fitted.
+  }
+  \item{N} {
+    The sample size (number of terminals on the trees).
+  }
+  \item{analysisDate} {
+    Data of analysis.
+  }
+  \item{call} {
+    Verbatim call to \code{runBatchHansen}.
+  }
+}
 \author{Andrew Hipp <ahipp@mortonarb.org>}
 \seealso{
    \code{\link{summary.hansenBatch}} for summarizing data

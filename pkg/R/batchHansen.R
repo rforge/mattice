@@ -82,8 +82,6 @@ function(ouchTrees, characterStates, cladeMembersList, filePrefix = NULL, di = N
     thetas[[i]] <- hb$thetas
     message(paste("Tree",i,"of",length(ouchTrees),"complete", "\n-----------------------------"))
   }
-    
-    ## right now no summary is returned; perhaps one is needed, summarizing over trees what is summarized for each tree in batchHansen
   outdata <- list(hansens = hansenBatch, thetas = thetas, regList = ar$regList, regMatrix = ar$regMatrix, nodeMatrix = ar$nodeMatrix, brown = brown, N = ouchTrees[[i]]@nterm, analysisDate = date(), call = match.call())
   class(outdata) <- 'hansenBatch'
   return(outdata)}
