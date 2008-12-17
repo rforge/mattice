@@ -44,10 +44,10 @@
 
 \examples{
   data(carex)
-  carex$tree <- ape2ouch(carex$tree) # tree comes in in \code{phylo} format, but we need an \code{ouchtree} object
+  carex$tree <- ape2ouch(carex$tree) # tree comes in in \code{phylo} format, but we need an ouchtree object
   attach(carex)
   trial <- runBatchHansen(tree, dat, nodes, maxNodes = 3) # for expedience, only allows regime changes at up to 3 nodes
-  summary(trial)
+  summary(trial) # summarizes results using summary.hansenBatch and displays the results using print.hansenSummary
   trialSim <- ouSim(trial, tree) # simulates the evolution of the chromosome number under the model-averaged values
   plot(trialSim) # plots the character simulation, with all branches black
   plot(trialSim, colors = paintBranches(nodes, tree)) # plots the character simulation, with branch colors changing at all 8 nodes
