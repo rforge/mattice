@@ -30,11 +30,11 @@ paintBranches <-
 # Paints branches with regimes changing at nodes specified
 # arguments
 #  "tree" = OUCH-style (S4) tree
-#  "regimeShiftNodes" = a vector of nodes at which selective regimes shift: root must be included, but tips are meaningless in this context
+#  "regimeShiftNodes" = a vector of nodes at which selective regimes shift: root may be included--if not present, will be added--but tips are meaningless in this context
 #  "regimeTitles" = a vector of titles for the regimes that begin at the root and at the nodes indicated in "regimeShiftNodes",
 #                   in order of description in "regimeShiftNodes", except that the root is listed first in "regimeTitles"
 #                   but not at all in "regimeShiftNodes"... defaults to "node[x]regime
-# Value: a vector of regimes that can be plopped right into an OUCH-style tree data frame
+# Value: a vector of regimes that can be handed to hansen
 function(regimeShiftNodes, tree, regimeTitles = NULL) {
   ## ------------------ begin ouchtree block -----------------
   ## check to see if tree inherits 'ouchtree'

@@ -5,5 +5,5 @@
 5. make a "simulate" method for a hansenBatch object that simulates the data using model-averaged parameters (including theta)
 6. DONE: make paintBranches return a complete regime ready to plug into hansen, and modify calling functions accordingly
 7. give plot.ouSim a way to highlight or circle or otherwise set off changeNodes 
-8. make it easy to pass colors into plot.ouSim... the regime should pop out easily
+8. DONE: make it easy to pass colors into plot.ouSim... the regime should pop out easily
 9. make it possible to pass in a vector of lty or lwd to plot.ouSim so the branches can be different widths or patterns
