@@ -1,8 +1,8 @@
 Package: maticce
 Type: Package
 Title: Mapping Transitions in Continuous Character Evolution
-Version: 0.1
-Date: 2008-11-13
+Version: 0.4
+Date: 2008-12-18
 Depends: ouch, ape
 Suggests: phylobase, geiger
 Author: Andrew Hipp <ahipp@mortonarb.org>, with contributions from Marcial Escudero.

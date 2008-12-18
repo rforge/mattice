@@ -1,0 +1,7 @@
+v0.5	18 December 2008
+- All functions working correctly with ouch v2
+- core documentation completed
+
+v0.1	13 November 2008
+- Project initiated
+- Old functions moved to R-Forge, beginning translation to ouch v2

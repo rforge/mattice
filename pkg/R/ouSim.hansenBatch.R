@@ -1,9 +1,9 @@
 ouSim.hansenBatch <- function(analysis, tree, treeNum = 1, rootState = NULL, ...) {
 ## runs ouSim.ouchtree for a hansenBatch or hansenSummary object, using the model-averaged alpha, sigma.squared, and theta vector from one tree
-## tree, rootState = 0, alpha = 0, variance = 1, theta = rootState, steps = 1000
   if(class(analysis) == "hansenBatch") analysis <- summary(analysis)
   if(identical(rootState, NULL)) rootState <- analysis$thetaMatrix[treeNum, ][tree@root] # rootstate taken to be the optimum at the root
   outdata <- ouSim(tree, rootState, alpha = analysis$modelAvgAlpha, variance = analysis$modelAvgSigmaSq, theta = analysis$thetaMatrix[treeNum, ], ...)
+  class(outdata) <- "ouSim"
   return(outdata)
 }
 
@@ -25,5 +25,6 @@ ouSim.brownHansen <- function(analysis, ...) {
   tree <- ouchtree(analysis@nodes, analysis@ancestors, analysis@times) 
   outdata <- ouSim.ouchtree(tree, rootState, alpha, variance, theta, ...)
   outdata$colors <- analysis@regimes[[1]]
+  class(outdata) <- "ouSim"
   return(outdata)
 }

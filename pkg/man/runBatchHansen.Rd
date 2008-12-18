@@ -95,6 +95,3 @@ runBatchHansen(ouchTrees, characterStates, cladeMembersList, filePrefix = NULL, 
    \code{\link{summary.hansenBatch}} for summarizing data
    \code{\link{carex}} for an example
 }
-\examples{
-## See \code{\link{carex}} for example
-}

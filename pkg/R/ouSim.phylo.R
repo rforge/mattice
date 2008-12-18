@@ -62,6 +62,6 @@ if(model == "OU") {
 if(model == "meanVar") branchList <- branchList
 
 value <- (list(branchList = branchList, timesList = timesList, steps = steps, parameters = list(rootState = rootState, alpha = alpha, variance = variance, theta = theta))) 
-class(value) <- "ouSimPhylo"
+class(value) <- "ouSim"
 return(value)
 }
