@@ -4,7 +4,7 @@ Title: Mapping Transitions in Continuous Character Evolution
 Version: 0.4
 Date: 2008-12-18
 Depends: ouch
-Suggests: ape, phylobase
+Suggests: ape
 Enhances: ouch
 Author: Andrew Hipp <ahipp@mortonarb.org>, with contributions from Marcial Escudero.
 Maintainer: Andrew Hipp <ahipp@mortonarb.org>

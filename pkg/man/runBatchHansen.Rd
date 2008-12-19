@@ -92,6 +92,6 @@ runBatchHansen(ouchTrees, characterStates, cladeMembersList, filePrefix = NULL, 
 }
 \author{Andrew Hipp <ahipp@mortonarb.org>}
 \seealso{
-   \code{\link{summary.hansenBatch}} for summarizing data
+   \code{\link{summary.hansenBatch}} for summarizing data;
    \code{\link{carex}} for an example
 }

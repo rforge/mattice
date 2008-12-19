@@ -36,7 +36,7 @@
   \item{hansenSummary} {
     Behaves exactly like a \code{hansenBatch} object.
     }
-  ouSim.phylo is a very basic simulation engine, but also the most flexible. As written, the user has to specify the 
+  \code{ouSim.phylo} is a very basic simulation engine, but also the most flexible. As written, the user has to specify the 
   model using two vectors that correspond to the branches in an \code{ape}-format tree. It is important to note that
   this simulation method is really  heuristic device, not appropriate for estimating parameter distributions. For
   analysis purposes, you should utilize the \code{simulate} and \code{bootstrap} methods in \code{ouch}.
@@ -98,7 +98,7 @@
   }
 \author{Andrew Hipp ahipp@mortonarb.org}
 \seealso{
-   \code{\link{plot.ouSim}} for visualizing simulation
+   \code{\link{plot.ouSim}} for visualizing simulation;
    \code{\link{carex}} for examples
 }
 \references{
@@ -109,5 +109,4 @@
   Butler, M. and A.A. King. (2004) 
   Phylogenetic comparative analysis: a modeling approach for adaptive evolution. 
   American Naturalist 164:683-695.
-  }
-\keyword{simulation}
+}

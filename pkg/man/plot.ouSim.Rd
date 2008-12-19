@@ -26,11 +26,10 @@
     }
 }
 \value{
-    None. Called for its side-effect (plotting).
-    }
+  None. Called for its side-effect (plotting).
+}
 \author{Andrew Hipp ahipp@mortonarb.org}
 \seealso{
-   \code{\link{ouSim}} for simulations
+   \code{\link{ouSim}} for simulations;
    \code{\link{carex}} for examples
 }
-\keyword{simulation}

@@ -27,4 +27,3 @@
 \seealso{
    \code{\link{isMonophyletic}} \code{\link{nodeDescendents}}
 }
-/keyword{tree}

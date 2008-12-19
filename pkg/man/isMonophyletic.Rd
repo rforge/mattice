@@ -19,4 +19,3 @@
 \seealso{
    \code{\link{nodeDescendents}} \code{\link{mrcaOUCH}}
 }
-/keyword{tree}

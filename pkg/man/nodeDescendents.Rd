@@ -23,4 +23,3 @@
 \seealso{
    \code{\link{isMonophyletic}} \code{\link{mrcaOUCH}}
 }
-/keyword{tree}

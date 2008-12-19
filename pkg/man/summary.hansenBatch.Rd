@@ -47,6 +47,3 @@ summary(hansenBatch)
    \code{\link{print.hansenSummary}} for a readable screen output summarizing most of the above
    \code{\link{carex}} for an example
 }
-\examples{
-## See \code{\link{carex}} for example
-}

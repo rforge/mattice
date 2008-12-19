@@ -28,9 +28,6 @@ A list with three items:
 \item{nodeMatrix} A matrix indicating which nodes are presentin each tree.
 \item{regMatrix} A list (by tree) of matrices indicating which nodes are present in each model.
 }
-\examples{
-}
-
 \seealso{
 \code{\link{paintBranches}}
 }
