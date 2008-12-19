@@ -33,3 +33,4 @@
    \code{\link{ouSim}} for simulations
    \code{\link{carex}} for examples
 }
+\keyword{simulation}
