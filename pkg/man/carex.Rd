@@ -18,7 +18,7 @@
 \details{
   \item{phylogeny}{
   Phylogeny (\code{tree}) was estimated for approximately 80 species (Hipp 2006), branch lengths optimized using penalized likelihood
-  in \code{ape}, and then the tree was pruned down to only those taxa for which chromosome counts were available.
+  in \pkg{ape}, and then the tree was pruned down to only those taxa for which chromosome counts were available.
   }
   \item{chromosome counts}{
   Chromosome counts (\code{dat}) were averaged by population, and the means log-transformed for analysis.

@@ -10,7 +10,7 @@
 }
 \arguments{
 \item{ouchTrees}{
-  A list of S4 ouchtree objects
+  A list of S4 \code{ouchtree} objects
   }
 \item{cladeMembersList}{
   A list of taxa defining nodes. 

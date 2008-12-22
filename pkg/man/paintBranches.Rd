@@ -10,7 +10,7 @@
 }
 \arguments{
   \item{tree}{
-   An S4 ouchtree object, generated using \code{ape2ouch} or \code{ouchtree}. 
+   An S4 \code{ouchtree} object, generated using \code{ape2ouch} or \code{ouchtree}. 
    Old-style ouch trees (data frames) will not work but can be translated using \code{ouchtree}.
    }
   \item{regimeShiftNodes}{
@@ -33,5 +33,5 @@
   The regime is formated to input directly into \code{hansen}
 }
 \seealso{
-  \code{\link{regimeVectors}}, \code{\link{isMonophyletic}}, \code{\link{nodeDescendents}}, \code{\link{mrcaOUCH}}
+  \code{\link{regimeVectors}}, \code{\link{isMonophyletic}}
 }

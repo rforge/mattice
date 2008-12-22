@@ -19,10 +19,10 @@
 \details{
   A call to \code{ouSim} detects the class of \code{object} and behaves as follows:
   \item{phylo}{
-    With an \code{ape}-style tree, all parameters of the model are specified by branch. Most flexibility, least convenience.
+    With an \pkg{ape}-style tree, all parameters of the model are specified by branch. Most flexibility, least convenience.
     }
   \item{ouchtree}{
-    With an \code{ouch}-style (S4) tree, again, all parameters of the model are specified by branch. 
+    With an \pkg{ouch}-style (S4) tree, again, all parameters of the model are specified by branch. 
     Somewhat less flexibility than \code{ouSim.phylo} but all the pain. Typically just called by the next two methods.
     }
   \item{browntree}{
