@@ -1,24 +1,32 @@
 \name{summary.hansenBatch}
 \alias{summary.hansenBatch}
+\alias{print.hansenSummary}
 \title{Summarize output from runBatchHansen}
 \description{
   \code{summary.hansenBatch} is a summary method for a \code{hansenBatch} object.
+  \code{print.hansenSummary} is a print method for a \code{hansenSummary} object.
 }
 \usage{
 summary(hansenBatch)
+print(hansenSummary)
 }
 \arguments{
   \item{hansenBatch}{
   Output from \code{runBatchHansen}.
   }
+  \item{hansenSummary}{
+  Output from \code{summary.hansenBatch}.
+  }  
 }
 \details{
-    This function averages parameters over models and over trees, and provides the cumulative information-criterion weight
-    for models containing each node as an estimate of the support for the hypothesis that there was a character shift
-    at that node.
+    \code{summary.hansenBatch} averages parameters over models and over trees, and provides the cumulative 
+    information-criterion weight for models containing each node as an estimate of the support for the hypothesis 
+    that there was a character shift at that node.
+    \code{print.hansenSummary} provides an easy-to-read synopsis of the analysis summary. Called automatically when you simply type
+    in the name of the summary object.
 }
 \value{
-  A list of class \code{hansenSummary} with the following items:
+  For \code{summary.hansenBatch}, a list of class \code{hansenSummary} with the following items:
   \item{modelsMatrix}{
     A list of matrices, indexed by tree, providing the information criterion weights for each model.
   }
@@ -44,5 +52,5 @@ summary(hansenBatch)
   }
 \author{Andrew Hipp <ahipp@mortonarb.org>}
 \seealso{
-   \code{\link{print.hansenSummary}} for a readable screen output summarizing most of the above; \code{\link{carex}} for an example
+   \code{\link{carex}} for an example
 }
