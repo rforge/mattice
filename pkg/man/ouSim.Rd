@@ -1,5 +1,9 @@
 \name{ouSim}
 \alias{ouSim}
+\alias{ouSim.ouchtree}
+\alias{ouSim.brownHansen}
+\alias{ouSim.phylo}
+\alias{ouSim.hansenBatch}
 \title{Discrete-time simulation of Ornstein-Uhlenbeck models on a user tree.}
 \description{
   \code{ouSim} simulates the evolution of a single character for visualization purposes; for parametric bootstrapping,

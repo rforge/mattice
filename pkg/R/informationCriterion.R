@@ -1,6 +1,9 @@
 informationCriterion <- function(u = NULL, lnL = NULL, K, n = 1, names = NULL) {
 ## Returns information criterion values + weights for a vector of u or lnL, a vector of K (= df), and a single n (sample size); names for analyses are optional
+  if(n = 1) warning("Information criterion values calculated assuming sample size = 1; 
+                     if this is accurate, consider additional sampling for future projects.")
   if(identical(u,NULL)) u <- -2 * lnL # deviance (u) needed; take from lnL if not provided, ignore lnL if provided
+  if(identical(names, NULL)) names <- seq(length(u))
   AIC <- vector("numeric", length(u))
   BIC <- vector("numeric", length(u))
   AICc <- vector("numeric", length(u))
@@ -14,7 +17,10 @@ informationCriterion <- function(u = NULL, lnL = NULL, K, n = 1, names = NULL) {
   AICwi <- as.vector(lapply(deltaAIC, function(x, allDelta) {exp(-0.5 * x) / sum(exp(-0.5 * allDelta), na.rm = T)}, allDelta = deltaAIC), mode = "numeric")
   AICcwi <- as.vector(lapply(deltaAICc, function(x, allDelta) {exp(-0.5 * x) / sum(exp(-0.5 * allDelta), na.rm = T)}, allDelta = deltaAICc), mode = "numeric")
   BICwi <- as.vector(lapply(deltaBIC, function(x, allDelta) {exp(-0.5 * x) / sum(exp(-0.5 * allDelta), na.rm = T)}, allDelta = deltaBIC), mode = "numeric")
-  return(list(names = names, u = u, K = K, AIC = AIC, AICc = AICc, BIC = BIC, AICwi = AICwi, AICcwi = AICcwi, BICwi = BICwi)) }
+  outdata <- list(names = names, u = u, K = K, AIC = AIC, AICc = AICc, BIC = BIC, AICwi = AICwi, AICcwi = AICcwi, BICwi = BICwi)
+  class(outdata) <- 'informationCriterion'
+  return(outdata)
+}
 
 informationCriterion.hansenBatch <- function(hansenBatch) {
 ## call informationCriterion for a 'hansen.batch' object
@@ -26,4 +32,11 @@ informationCriterion.hansenBatch <- function(hansenBatch) {
     outdata[[i]] <- informationCriterion(lnL = temp[, 'loglik'], K = temp[, 'dof'], n = N, names = row.names(temp))
     }
   outdata
+}
+
+print.informationCriterion <- function(ic) {
+  items <- c('u', 'K', 'AIC', 'AICc', 'BIC', 'AICwi', 'AICcwi', 'BICwi')
+  out <- matrix(NA, nrow = length(ic$names), ncol = length(items), dimnames = list(ic$names, items))
+  for(i in items) out[, i] <- ic[[i]]
+  print(out) 
 }
