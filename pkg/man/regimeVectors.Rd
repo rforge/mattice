@@ -9,13 +9,13 @@
   regimeVectors(ouchTrees, cladeMembersList, maxNodes = NULL)
 }
 \arguments{
-\item{ouchTrees} {
+\item{ouchTrees}{
   A list of S4 ouchtree objects
   }
-\item{cladeMembersList} {
+\item{cladeMembersList}{
   A list of taxa defining nodes. 
   }
-\item{maxNodes} {
+\item{maxNodes}{
   The maximum number of nodes at which a regime may change.
   } 
 }

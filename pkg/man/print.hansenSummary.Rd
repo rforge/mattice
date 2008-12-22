@@ -17,6 +17,6 @@ print(hansenSummary)
     in the name of the summary object.
 }
 \author{Andrew Hipp <ahipp@mortonarb.org>}
-\examples{
-## See \code{\link{carex}} for example
+\seealso{
+\code{\link{carex}} for example
 }

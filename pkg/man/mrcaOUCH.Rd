@@ -13,10 +13,10 @@
   mrcaOUCH(cladeVector, tree)
 }
 \arguments{
-  \item{cladeVector} {
+  \item{cladeVector}{
     A vector of tip labels.
     }
-  \item{tree} {
+  \item{tree}{
     An \code{ouchtree} object.
     }
 }
@@ -25,5 +25,5 @@
 }
 \author{Andrew Hipp ahipp@mortonarb.org}
 \seealso{
-   \code{\link{isMonophyletic}} \code{\link{nodeDescendents}}
+   \code{\link{isMonophyletic}}; \code{\link{nodeDescendents}}
 }

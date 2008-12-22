@@ -5,10 +5,10 @@
   isMonophyletic(tree, taxa)
 }
 \arguments{
-  \item{tree} {
+  \item{tree}{
     An \code{ouchtree} object.
     }
-  \item{taxa} {
+  \item{taxa}{
     A vector of taxon names.
     }
 }
@@ -17,5 +17,5 @@
     }
 \author{Andrew Hipp ahipp@mortonarb.org}
 \seealso{
-   \code{\link{nodeDescendents}} \code{\link{mrcaOUCH}}
+   \code{\link{nodeDescendents}}; \code{\link{mrcaOUCH}}
 }

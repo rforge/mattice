@@ -9,10 +9,10 @@
   nodeDescendents(tree, startNode) 
 }
 \arguments{
-  \item{tree} {
+  \item{tree}{
     An \code{ouchtree} object.
     }
-  \item{startNode} {
+  \item{startNode}{
     The node of interest; nomenclature follows \code{tree@nodes}.
     }
 }
@@ -21,5 +21,5 @@
 }
 \author{Andrew Hipp ahipp@mortonarb.org}
 \seealso{
-   \code{\link{isMonophyletic}} \code{\link{mrcaOUCH}}
+   \code{\link{isMonophyletic}}; \code{\link{mrcaOUCH}}
 }

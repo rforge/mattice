@@ -58,40 +58,39 @@ runBatchHansen(ouchTrees, characterStates, cladeMembersList, filePrefix = NULL, 
 }
 \value{
   A list of class \code{hansenBatch} with the following items:
-  \item{hansens} {
+  \item{hansens}{
     A matrix with rows equal to the number of models analyzed, and four columns: 
     \code{loglik} = log-likelihood of the model;
     \code{dof} = number of free parameters in the model; \code{sigma.squared} = estimate of the variance parameter;
     \code{theta / alpha} = estimate of either the root character state (for the brownian motion model) or the \code{alpha}
     parameter (for Ornstein-Uhlenbeck models).
   }
-  \item{thetas} {
+  \item{thetas}{
     A list of vectors with a \code{theta} corresponding to each regime on the tree.
   }
-  \item{regList} {
+  \item{regList}{
     A list indexed by tree of lists indexed by model, with the regime corresponding to each model on each tree. 
   }
-  \item{regMatrix} {
+  \item{regMatrix}{
     The nodes by regimes matrix returned by \code{regimeMatrix} at the outset of analysis.
   }
-  \item{nodeMatrix} {
+  \item{nodeMatrix}{
     A nodes by tree matrix, indicating for each tree which nodes are present.
   }
-  \item{brown} {
+  \item{brown}{
     A boolean vector of length one indicating whether the brownian motion model was fitted.
   }
-  \item{N} {
+  \item{N}{
     The sample size (number of terminals on the trees).
   }
-  \item{analysisDate} {
+  \item{analysisDate}{
     Data of analysis.
   }
-  \item{call} {
+  \item{call}{
     Verbatim call to \code{runBatchHansen}.
   }
 }
 \author{Andrew Hipp <ahipp@mortonarb.org>}
 \seealso{
-   \code{\link{summary.hansenBatch}} for summarizing data;
-   \code{\link{carex}} for an example
+   \code{\link{summary.hansenBatch}} for summarizing data; \code{\link{carex}} for an example
 }

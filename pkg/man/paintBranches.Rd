@@ -19,7 +19,7 @@
    nodes you use to call runBatchHansen. This parameter may include the root but does
    not need to.
    }
-  \item{regimeTitles} {
+  \item{regimeTitles}{
    Titles for the regimes.
    } 
 }
