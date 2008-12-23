@@ -21,21 +21,18 @@ This document provides an overview of the \pkg{maticce} package, which serves th
 
 This document also provides a worked example of analyzing a continuous character dataset that illustrates most of the \pkg{maticce} features. Working through this example will I expect address most questions that should come up during a typical analysis.
 
-XXXXXXXXXXXXXXXXXXX
-
 \section{Package Overview}
 
-The phylobase package currently implements the following functions and data structures:
+The \pkg{maticce} package currently implements functions in the following categories:
 
 \begin{itemize}
-  \item Data structures for storing a single tree and multiple trees: \code{phylo4} and \code{multiPhylo4}?
-  \item A data structure for storing a tree with associated tip and node data: \code{phylo4d}
-  \item A data structure for storing multiple trees with one set of tip data: \code{multiPhylo4d}
-  \item Functions for reading nexus files into the above data structures
-  \item Functions for converting between the above data structures and \code{ape phylo} objects as well as \code{ade4 phylog} objects
-  \item Functions for editing trees and data (i.e., subsetting and replacing)
-  \item Functions for plotting trees and trees with data
+  \item Traversing and manipulating \pkg{ouch}-style (S4 class \code{ouchtree}) trees
+  \item Painting regimes on a batch of \pkg{ouch}-style trees
+  \item Performing batch analyses in \pkg{ouch} over trees and over regimes
+  \item Summarizing analyses 
 \end{itemize}
+
+XXXXXXXXXXXXXXXXXXX
 
 \section{Using the S4 help system}
 
