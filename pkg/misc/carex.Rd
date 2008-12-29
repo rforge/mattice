@@ -10,9 +10,15 @@
 \format{
   A list with three items:
   \describe{
-    \item{tree} An ultrametric tree in \code{phylo} format with 53 tips 
-    \item{dat} A named numeric vector of log-transformed mean chromosome counts for all 53 taxa
-    \item{nodes} A list of eight taxon vectors defining the eight nodes studied.
+    \item{tree}{
+     An ultrametric tree in \code{phylo} format with 53 tips
+     }
+    \item{dat}{
+     A named numeric vector of log-transformed mean chromosome counts for all 53 taxa
+     }
+    \item{nodes}{
+     A list of eight taxon vectors defining the eight nodes studied.
+     }
   }
 }
 \details{

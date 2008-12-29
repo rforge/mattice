@@ -102,7 +102,7 @@
   }
 \author{Andrew Hipp ahipp@mortonarb.org}
 \seealso{
-   \code{\link{plot.ouSim}} for visualizing simulation; \code{\link{carex}} for examples
+   \code{\link{plot.ouSim}} for visualizing simulation; \code{carex} for examples
 }
 \references{
   Hansen, T.F. (1997)

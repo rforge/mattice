@@ -52,5 +52,5 @@ print(hansenSummary)
   }
 \author{Andrew Hipp <ahipp@mortonarb.org>}
 \seealso{
-   \code{\link{carex}} for an example
+   \code{carex} for an example
 }

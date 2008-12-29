@@ -1,7 +1,6 @@
 informationCriterion <- function(u = NULL, lnL = NULL, K, n = 1, names = NULL) {
 ## Returns information criterion values + weights for a vector of u or lnL, a vector of K (= df), and a single n (sample size); names for analyses are optional
-  if(n = 1) warning("Information criterion values calculated assuming sample size = 1; 
-                     if this is accurate, consider additional sampling for future projects.")
+  if(n == 1) warning("Information criterion values calculated assuming sample size = 1; if this is accurate, consider additional sampling for future projects.")
   if(identical(u,NULL)) u <- -2 * lnL # deviance (u) needed; take from lnL if not provided, ignore lnL if provided
   if(identical(names, NULL)) names <- seq(length(u))
   AIC <- vector("numeric", length(u))

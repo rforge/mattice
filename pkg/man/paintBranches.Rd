@@ -6,18 +6,18 @@
   \code{regimeVectors}.
 }
 \usage{
-  paintBranches(tree, regimeShiftNodes, regimeTitles)
+  paintBranches(regimeShiftNodes, tree, regimeTitles)
 }
 \arguments{
-  \item{tree}{
-   An S4 \code{ouchtree} object, generated using \code{ape2ouch} or \code{ouchtree}. 
-   Old-style ouch trees (data frames) will not work but can be translated using \code{ouchtree}.
-   }
   \item{regimeShiftNodes}{
    Either a vector of nodes (by number) at which the selective regime changes, 
    or a list of taxa defining nodes. This allows you to use paintBranches with the same
    nodes you use to call runBatchHansen. This parameter may include the root but does
    not need to.
+   }
+  \item{tree}{
+   An S4 \code{ouchtree} object, generated using \code{ape2ouch} or \code{ouchtree}. 
+   Old-style ouch trees (data frames) will not work but can be translated using \code{ouchtree}.
    }
   \item{regimeTitles}{
    Titles for the regimes.

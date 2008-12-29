@@ -30,5 +30,5 @@
 }
 \author{Andrew Hipp ahipp@mortonarb.org}
 \seealso{
-   \code{\link{ouSim}} for simulations; \code{\link{carex}} for examples
+   \code{\link{ouSim}} for simulations; \code{carex} for examples
 }
