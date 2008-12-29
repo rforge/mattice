@@ -5,7 +5,7 @@
 \usepackage[colorlinks=true,urlcolor=blue]{hyperref}
 \usepackage{array}
 \usepackage{color}
-
+\SweaveOpts{keep.source=TRUE}
 \usepackage[utf8]{inputenc} % for UTF-8/single quotes from sQuote()
 \newcommand{\code}[1]{{{\tt #1}}}
 \title{Utilizing \pkg{maticce} to estimate transitions in continuous character evolution}
@@ -17,7 +17,7 @@
 
 \section{Introduction}
 
-This document provides an overview of the \pkg{maticce} package, which serves three primary purposes. First, it implements an information-theoretic approach to estimating where on a phylogeny there has been a transition in a continuous character. As currently implemented, the approach assumes that (1) such transitions are appropriately modeled as shifts in optimum / equilibrium of a character evolving according to an Ornstein-Uhlenbeck process; (2) strength of constraint / rate of evolution toward the optimum is constant over the tree, as is variance; and (3) all branches on which a change could occur are identified. These assumptions can be relaxed in future versions if needed. Second, the package provides helper functions for the \pkg{ouch} package, in which all likelihood calculations are performed. For example, the package automates the process of painting regimes for the \code{hansen} function of \pkg{ouch}, specifying nodes at which the regime changes. It also provides functions for identifying most recent common ancestors and all descendents of a particular node. Users of \pkg{ouch} who want to handle large numbers of analyses may find the routines for summarizing analyses over trees and over regimes useful as well. Finally, \pkg{maticce} provides a flexible set of simulation functions for visualizing how different model parameters affect (i.e., what they \dquote{say} about) our inference of the evolution of a continuous character on a phylogenetic tree.
+This document provides an overview of the \pkg{maticce} package, which serves three primary purposes. First, it implements an information-theoretic approach to estimating where on a phylogeny there has been a transition in a continuous character. As currently implemented, the approach assumes that (1) such transitions are appropriately modeled as shifts in optimum / equilibrium of a character evolving according to an Ornstein-Uhlenbeck process; (2) strength of constraint / rate of evolution toward the optimum is constant over the tree, as is variance; and (3) all branches on which a change could occur are identified. These assumptions can be relaxed in future versions if needed. Second, the package provides helper functions for the \pkg{ouch} package, in which all likelihood calculations are performed. For example, the package automates the process of painting regimes for the \code{hansen} function of \pkg{ouch}, specifying nodes at which the regime changes. It also provides functions for identifying most recent common ancestors and all descendents of a particular node. Users of \pkg{ouch} who want to handle large numbers of analyses may find the routines for summarizing analyses over trees and over regimes useful as well. Finally, \pkg{maticce} provides a flexible set of simulation functions for visualizing how different model parameters affect (i.e., what they 'say' about) our inference of the evolution of a continuous character on a phylogenetic tree.
 
 This document also provides a worked example of analyzing a continuous character dataset that illustrates most of the \pkg{maticce} features. Working through this example will I expect address most questions that should come up during a typical analysis.
 
@@ -32,11 +32,49 @@ The \pkg{maticce} package currently implements functions in the following catego
   \item Summarizing analyses 
 \end{itemize}
 
-Functions in the first two categories will be of general utility to \pkg{ouch} users; the second two categories are focused on 
+Functions in the first two categories will be of general utility to \pkg{ouch} users; functions in the third category are utilized to perform analyses over trees and over models, and in the fourth to summarize these with regard to the hypothesis that there has been a shift in continuous character on a given branch of a phylogenetic tree. While these latter two categories are more specific, the functions can be easily modified to address other multiple-tree / multiple-model questions.
 
-\section{Using the S4 help system}
+\section{Getting started}
 
-The \code{S4} help system works similarly to the \code{S3} help system with some small differences relating to how \code{S4} methods are written.  The \code{plot()} function is a good example.  When we type \code{?plot} we are provided the help for the default plotting function which expects \code{x} and \code{y}.  \code{R} also provides a way to smartly dispatch the right type of plotting function.  In the case of an \code{ape phylo} object (a \code{S3} class object) \code{R} evaluates the class of the object and finds the correct functions, so the following works correctly.
+library(maticce)
+otree <- read.nexus(XX)
+discussion of making tree ultrametric; data transformations, etc.
+
+data(carex)
+attach(carex)
+otree <- ape2ouch(tree) # make the tree an ouchtree object
+
+\section{Extracting information from trees}
+
+Three functions to extract information from an \code{ouchtree} object:
+
+\begin{itemize}
+  \item \code{isMonophyletic}: returns a \code{T} or \code{F} depending on whether the taxa identified are monophyletic on the tree provided
+  \item \code{nodeDescendents}: identifies all descendents of a given node on a tree
+  \item \code{mrcaOUCH}: identifies the most recent common ancestor of a given set of taxa
+\end{itemize}
+
+These functions can be used interactively to identify nodes on the tree for analysis. Because the batch-analysis functions in \pkg{maticce} identify nodes based on taxa (see explanation in the section on 'Performing batch analyses'), nodes are provided as a list of vectors, each vector containing all taxa descendent from the node of interest. You can generate these lists manually by typing lists of names into vectors, or you could use the following if you want to explicitly designate all taxa for each node by selecting from a list:
+
+\begin{verbatim}
+  > nodes <- list(8) # assuming you want 8 nodes}
+  > for(i in 1:length(nodes)) nodes[[i]] <- select.list(otree@nodelabels, multiple = T)}
+\end{verbatim}
+
+Alternatively, if you want to designate the node more quickly by just selecting the most recent common ancestor of a set of taxa:
+
+\begin{verbatim}
+  > for(i in 1:length(nodes)) {
+  >   ancestor <- mrcaOUCH(select.list(otree@nodelabels, multiple = T), otree)
+  >   nodes[[i]] <- nodeDescendents(otree, ancestor)
+  >   }
+\end{verbatim}
+
+These functions are all documented under \code{isMonophyletic}.
+
+\section{Painting regimes}
+
+XXXXXXXXXXXXXXXXX
 
 <<randtree1,fig=FALSE>>=
 library(ape)
