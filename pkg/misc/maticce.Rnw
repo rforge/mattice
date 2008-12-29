@@ -26,13 +26,13 @@ This document also provides a worked example of analyzing a continuous character
 The \pkg{maticce} package currently implements functions in the following categories:
 
 \begin{itemize}
-  \item Traversing and manipulating \pkg{ouch}-style (S4 class \code{ouchtree}) trees
+  \item Extracting information from \pkg{ouch}-style (S4 class \code{ouchtree}) trees
   \item Painting regimes on a batch of \pkg{ouch}-style trees
   \item Performing batch analyses in \pkg{ouch} over trees and over regimes
   \item Summarizing analyses 
 \end{itemize}
 
-XXXXXXXXXXXXXXXXXXX
+Functions in the first two categories will be of general utility to \pkg{ouch} users; the second two categories are focused on 
 
 \section{Using the S4 help system}
 
