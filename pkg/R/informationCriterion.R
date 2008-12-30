@@ -30,7 +30,7 @@ informationCriterion.hansenBatch <- function(hansenBatch) {
     temp <- hansenBatch$hansens[[i]]
     outdata[[i]] <- informationCriterion(lnL = temp[, 'loglik'], K = temp[, 'dof'], n = N, names = row.names(temp))
     }
-  outdata
+  return(outdata)
 }
 
 print.informationCriterion <- function(ic) {
@@ -38,4 +38,5 @@ print.informationCriterion <- function(ic) {
   out <- matrix(NA, nrow = length(ic$names), ncol = length(items), dimnames = list(ic$names, items))
   for(i in items) out[, i] <- ic[[i]]
   print(out) 
+  return(NULL)
 }
