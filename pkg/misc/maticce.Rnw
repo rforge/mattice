@@ -36,13 +36,16 @@ Functions in the first two categories will be of general utility to \pkg{ouch} u
 
 \section{Getting started}
 
-library(maticce)
-otree <- read.nexus(XX)
-discussion of making tree ultrametric; data transformations, etc.
+In case you aren't familiar with \code{R}, the following commands will get you started.
 
-data(carex)
+<<startAnalysis, fig=FALSE>>=
+library(maticce) # load the maticce package into memory; also loads the required ouch package
+load('C:/Documents and Settings/Mortonarb/My Documents/mattice/pkg/DATA/carex.rda') # load demonstration data
 attach(carex)
-otree <- ape2ouch(tree) # make the tree an ouchtree object
+ovales.tree <- ape2ouch(ovales.tree) # make the tree an ouchtree object
+@
+
+Note that although the sample tree provided (\code{carex[['ovales.tree']]}) is ultrametric, this is not strictly required. 
 
 \section{Extracting information from trees}
 
@@ -85,14 +88,13 @@ Two functions are available for painting selective regimes that may be used in t
 The \code{paintBranches} function is typically called from within \code{regimeVectors}, but it can be called separately. Nodes can be designated by number or taxa; the function assumes the latter only if it receives a list to evaluate instead of a vector.
 
 <<paintingOne,fig=FALSE>>=
-library(ouch)
-ou2 <- paintBranches(list(nodes[[2]]), otree)
+ou2 <- paintBranches(list(ovales.nodes[[2]]), ovales.tree)
 @
 
 The regime can be used directly in a call to \code{hansen} or the \code{plot} method for an \code{ouchtree} object.
 
 <<plotou2, fig=TRUE>>=
-plot(otree, regimes = ou2)
+plot(ovales.tree, regimes = ou2)
 @
 
 \section{Batch analyses}
