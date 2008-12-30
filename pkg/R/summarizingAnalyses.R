@@ -21,6 +21,7 @@ summary.hansenBatch <- function(hansenBatch){
                        )
   for(tree in 1:ntrees) {
     modelsMatrix[[tree]] <- cbind(icObject[[tree]]$AICwi, icObject[[tree]]$AICcwi, icObject[[tree]]$BICwi)
+    dimnames(modelsMatrix[[tree]]) <- list( dimnames(hansenBatch$hansens[[1]])[[1]], c("AICwi", "AICcwi", "BICwi"))
     bic <- icObject[[tree]]$BICwi
     for(i in seq(nnodes)) {
       modelsMatrixSubset <- modelsMatrix[[tree]][hansenBatch$regMatrix$overall[, nodes[i]] == 1, ] # subset models that contain node i
