@@ -1,6 +1,5 @@
 informationCriterion <- function(u = NULL, lnL = NULL, K, n = 1, names = NULL) {
-## Returns information criterion values + weights for a vector of u or lnL, a vector of K (= df), and a single n (sample size); names for analyses are optional
-  if(n == 1) warning("Information criterion values calculated assuming sample size = 1; if this is accurate, consider additional sampling for future projects.")
+  if(identical(n, 1)) warning("Information criterion values calculated assuming sample size = 1; if this is accurate, consider additional sampling for future projects.")
   if(identical(u,NULL)) u <- -2 * lnL # deviance (u) needed; take from lnL if not provided, ignore lnL if provided
   if(identical(names, NULL)) names <- seq(length(u))
   AIC <- vector("numeric", length(u))
@@ -33,7 +32,7 @@ informationCriterion.hansenBatch <- function(hansenBatch) {
   return(outdata)
 }
 
-print.informationCriterion <- function(ic) {
+print.informationCriterion <- function(ic, ...) {
   items <- c('u', 'K', 'AIC', 'AICc', 'BIC', 'AICwi', 'AICcwi', 'BICwi')
   out <- matrix(NA, nrow = length(ic$names), ncol = length(items), dimnames = list(ic$names, items))
   for(i in items) out[, i] <- ic[[i]]
