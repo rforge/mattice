@@ -64,7 +64,7 @@ function(ouchTrees, characterStates, cladeMembersList, filePrefix = NULL, di = N
       }
     
     ## rescale tree if requested
-    if(rescale>0) tree@times <- rescale * tree@times / max(tree@times) 
+    # if(rescale>0) tree@times <- rescale * tree@times / max(tree@times) 
     
     ## make sure data fits the tree
     dataIn <- NULL
