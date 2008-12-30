@@ -118,5 +118,23 @@ plot(ouSim.ha.4.2, colors = ou2)
 \caption{Simulated character on \code{ovales.tree} at model-averaged theta values, with coloring according to \code{ou2}}
 \end{figure}
 
+What is the relative support for the brownian motion vs. OU-2 model? We find which model has a change only at node 2 by inspecting the regime matrix
+
+<<ha, fig = FALSE, echo = TRUE>>=
+ha.4.2[['regMatrix']][['overall']]
+@
+
+Then we can find the likelihood of these models on a given tree:
+
+<<haLnl, fig = FALSE, echo = TRUE>>=
+ha.4.2[['hansens']][[1]] 
+@
+
+or the information criterion weights:
+
+<<haWeights, fig=FALSE, echo=TRUE>>=
+summary(ha.4.2)[['modelsMatrix']][[1]]
+@
+
 
 \end{document}
