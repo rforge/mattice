@@ -39,9 +39,10 @@ Functions in the first two categories will be of general utility to \pkg{ouch} u
 In case you aren't familiar with \code{R}, the following commands will get you started.
 
 <<startAnalysis, fig=FALSE>>=
-# library(maticce) # load the maticce package into memory; also loads the required ouch package
+library(maticce) # load the maticce package into memory; also loads the required ouch package
 library(ouch)
-load('C:/Documents and Settings/Mortonarb/My Documents/mattice/pkg/DATA/carex.rda') # load demonstration data
+data(carex)
+#load('C:/Documents and Settings/Mortonarb/My Documents/mattice/pkg/DATA/carex.rda') # load demonstration data
 attach(carex)
 ovales.tree <- ape2ouch(ovales.tree) # make the tree an ouchtree object
 @
