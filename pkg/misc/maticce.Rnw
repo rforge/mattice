@@ -7,13 +7,13 @@
 \usepackage{color}
 \SweaveOpts{keep.source=TRUE}
 \usepackage[utf8]{inputenc} % for UTF-8/single quotes from sQuote()
-\newcommand{\code}[1]{{{\tt #1}}}
+\newcommand{\code}{\texttt}
+\newcommand{\pkg}{\textsf}
 \title{Utilizing \pkg{maticce} to estimate transitions in continuous character evolution}
 \author{Andrew Hipp}
 \date{\today}
 \begin{document}
 \maketitle
-\tableofcontents
 
 \section{Introduction}
 
@@ -39,7 +39,8 @@ Functions in the first two categories will be of general utility to \pkg{ouch} u
 In case you aren't familiar with \code{R}, the following commands will get you started.
 
 <<startAnalysis, fig=FALSE>>=
-library(maticce) # load the maticce package into memory; also loads the required ouch package
+# library(maticce) # load the maticce package into memory; also loads the required ouch package
+library(ouch)
 load('C:/Documents and Settings/Mortonarb/My Documents/mattice/pkg/DATA/carex.rda') # load demonstration data
 attach(carex)
 ovales.tree <- ape2ouch(ovales.tree) # make the tree an ouchtree object
@@ -91,15 +92,31 @@ The \code{paintBranches} function is typically called from within \code{regimeVe
 ou2 <- paintBranches(list(ovales.nodes[[2]]), ovales.tree)
 @
 
-The regime can be used directly in a call to \code{hansen} or the \code{plot} method for an \code{ouchtree} object.
+The regime can be used directly in a call to \code{hansen} or the \code{plot} method for an \code{ouchtree} object (Figure 1).
 
-<<plotou2, fig=TRUE>>=
-plot(ovales.tree, regimes = ou2)
+\begin{figure}[h]
+\centering
+<<ov2, fig=TRUE, width=30, height =15>>=
+plot(ovales.tree, regimes = ou2, cex = 1.2)
 @
+\caption{\code{ovales.tree} with coloring according to \code{ou2}}
+\end{figure}
 
 \section{Batch analyses}
 
+<<runBatch, fig=FALSE, echo=TRUE>>=
+ha.4.2 <- runBatchHansen(ovales.tree, ovales.data, ovales.nodes[1:4], maxNodes = 2, brown = T)
+print(summary(ha.4.2))
+@
 
+\begin{figure}[h]
+\centering
+<<ouSim, fig=TRUE, width=30, height =15, echo=TRUE>>=
+ouSim.ha.4.2 <- ouSim(ha.4.2, ovales.tree)
+plot(ouSim.ha.4.2, colors = ou2)
+@
+\caption{Simulated character on \code{ovales.tree} at model-averaged theta values, with coloring according to \code{ou2}}
+\end{figure}
 
 
 \end{document}
