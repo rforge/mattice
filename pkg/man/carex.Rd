@@ -10,26 +10,26 @@
 \format{
   A list with three items:
   \describe{
-    \item{tree}{
+    \item{ovales.tree}{
      An ultrametric tree in \code{phylo} format with 53 tips
      }
-    \item{dat}{
+    \item{ovales.data}{
      A named numeric vector of log-transformed mean chromosome counts for all 53 taxa
      }
-    \item{nodes}{
+    \item{ovales.nodes}{
      A list of eight taxon vectors defining the eight nodes studied.
      }
   }
 }
 \details{
   \item{phylogeny}{
-  Phylogeny (\code{tree}) was estimated for approximately 80 species (Hipp 2006), branch lengths optimized using penalized likelihood
+  Phylogeny (\code{ovales.tree}) was estimated for approximately 80 species (Hipp 2006), branch lengths optimized using penalized likelihood
   in \pkg{ape}, and then the tree was pruned down to only those taxa for which chromosome counts were available.
   }
   \item{chromosome counts}{
-  Chromosome counts (\code{dat}) were averaged by population, and the means log-transformed for analysis.
+  Chromosome counts (\code{ovales.data}) were averaged by population, and the means log-transformed for analysis.
   }
-  \item{nodes}{
+  \item{ovales.nodes}{
   Eight nodes were selected for analysis based on clade support and number of taxa in the clade.
   }
 }
@@ -50,13 +50,13 @@
 
 \examples{
   data(carex)
-  carex$tree <- ape2ouch(carex$tree) # tree comes in in \code{phylo} format, but we need an ouchtree object
   attach(carex)
-  trial <- runBatchHansen(tree, dat, nodes, maxNodes = 3) # for expedience, only allows regime changes at up to 3 nodes
+  ovales.tree <- ape2ouch(ovales.tree) # tree comes in in \code{phylo} format, but we need an ouchtree object
+  trial <- runBatchHansen(ovales.tree, ovales.data, ovales.nodes, maxNodes = 3) # for expedience, only allows regime changes at up to 3 nodes
   summary(trial) # summarizes results using summary.hansenBatch and displays the results using print.hansenSummary
-  trialSim <- ouSim(trial, tree) # simulates the evolution of the chromosome number under the model-averaged values
+  trialSim <- ouSim(trial, ovales.tree) # simulates the evolution of the chromosome number under the model-averaged values
   plot(trialSim) # plots the character simulation, with all branches black
-  plot(trialSim, colors = paintBranches(nodes, tree)) # plots the character simulation, with branch colors changing at all 8 nodes
-  plot(trialSim, colors = paintBranches(list(nodes[[2]]), tree)) # plots the character simulation, with branch colors changing only at node 2
+  plot(trialSim, colors = paintBranches(ovales.nodes, ovales.tree)) # plots the character simulation, with branch colors changing at all 8 nodes
+  plot(trialSim, colors = paintBranches(list(ovales.nodes[[2]]), ovales.tree)) # plots the character simulation, with branch colors changing only at node 2
 }
 \author{Andrew L. Hipp <ahipp@mortonarb.org>}
