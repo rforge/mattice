@@ -71,18 +71,18 @@
     and the strength of selection by Butler and King (2004). It is a multiplier by the difference between the character state and the
     character state optimum. Alpha can be submitted as a single value applied to all branches or as a vector corresponding to branches
     in the \code{phylo} object. At \code{alpha = 0}, the simulation approximates a Brownian motion process.
-    This parameter is taken from the analysis results for \code{browntree} (\code{alpha} = 0), \code{hansentree} (point estimate}, 
+    This parameter is taken from the analysis results for \code{browntree} (\code{alpha} = 0), \code{hansentree} (point estimate), 
     \code{hansenBatch} or \code{hansenSummary} (model-averaged).
     }
   \item{variance}{
     The variance on the stochastic portion of the Ornstein-Uhlenbeck model.
-    This parameter is taken from the analysis results for \code{browntree} (\code{alpha} = 0), \code{hansentree} (point estimate}, 
+    This parameter is taken from the analysis results for \code{browntree} (\code{alpha} = 0), \code{hansentree} (point estimate), 
     \code{hansenBatch} or \code{hansenSummary} (model-averaged).
     }
   \item{theta}{
     The character state optimum. \code{theta} can be submitted as a single value or, like \code{alpha}, 
     as a vector corresponding to branches of the tree.
-    This parameter is taken from the analysis results for \code{browntree} (\code{alpha} = 0), \code{hansentree} (point estimate}, 
+    This parameter is taken from the analysis results for \code{browntree} (\code{alpha} = 0), \code{hansentree} (point estimate), 
     \code{hansenBatch} or \code{hansenSummary} (model-averaged).
     }
   \item{model}{
@@ -102,7 +102,7 @@
   }
 \author{Andrew Hipp ahipp@mortonarb.org}
 \seealso{
-   \code{\link{plot.ouSim}} for visualizing simulation; \code{carex} for examples
+   \code{plot.ouSim} for visualizing simulation; \code{carex} for examples
 }
 \references{
   Hansen, T.F. (1997)

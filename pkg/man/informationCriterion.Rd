@@ -3,15 +3,15 @@
 \alias{informationCriterion.hansenBatch}
 \alias{print.informationCriterion}
 \title{Information criterion and weights for a set of models}
-\description {
+\description{
   Returns AIC, AICc, and BIC values and weights for a set of models.
 }
-\usage {
+\usage{
   informationCriterion(u = NULL, lnL = NULL, K, n = 0, names = NULL)
   informationCriterion.hansenBatch(hansenBatch)
-  print.informationCriterion(ic)
+  print.informationCriterion(ic, ...)
 }
-\details {
+\details{
   At the minimum, a vector of either the model log-likelihoods (\code{lnL}) or deviances (\code{u} = -2 * lnL) and a vector
   of number of free parameters for each model (\code{K}) must be provided for the function to work. If the sample size
   (\code{n}) is not provided, the function calculates AICc and BIC assuming \code{n} = 1. Information criterion statistics
