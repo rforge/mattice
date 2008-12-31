@@ -9,7 +9,6 @@
 \usage{data(carex)}
 \format{
   A list with three items:
-  \describe{
     \item{ovales.tree}{
      An ultrametric tree in \code{phylo} format with 53 tips
      }
@@ -18,7 +17,6 @@
      }
     \item{ovales.nodes}{
      A list of eight taxon vectors defining the eight nodes studied.
-     }
   }
 }
 \details{
