@@ -3,11 +3,9 @@
 \alias{informationCriterion.hansenBatch}
 \alias{print.informationCriterion}
 \title{Information criterion and weights for a set of models}
-\description{
-  Returns AIC, AICc, and BIC values and weights for a set of models.
-}
+\description{Returns AIC, AICc, and BIC values and weights for a set of models.}
 \usage{
-  informationCriterion(u = NULL, lnL = NULL, K, n = 0, names = NULL)
+  informationCriterion(u = NULL, lnL = NULL, K, n = 1, names = NULL)
   informationCriterion.hansenBatch(hansenBatch)
   print.informationCriterion(ic, ...)
 }

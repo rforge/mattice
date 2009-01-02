@@ -105,4 +105,4 @@ carex <- structure(list(tree = structure(list(edge = structure(c(54L,
     "scopariaVscoparia", "scopariaVtessellata", "alata", "vexans", 
     "longii"), c("subfusca", "integra", "peucophila", "microptera", 
     "haydeniana", "ebenea"), c("phaeocephala", "preslii", "argyrantha"
-    ))), .Names = c("tree", "dat", "nodes"))
+    ))), .Names = c("ovales.tree", "ovales.data", "ovales.nodes"))

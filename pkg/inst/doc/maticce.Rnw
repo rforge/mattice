@@ -40,7 +40,6 @@ In case you aren't familiar with \code{R}, the following commands will get you s
 
 <<startAnalysis, fig=FALSE>>=
 library(maticce) # load the maticce package into memory; also loads the required ouch package
-library(ouch)
 data(carex)
 #load('C:/Documents and Settings/Mortonarb/My Documents/mattice/pkg/DATA/carex.rda') # load demonstration data
 attach(carex)
