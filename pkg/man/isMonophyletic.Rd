@@ -2,7 +2,7 @@
 \alias{isMonophyletic}
 \alias{mrcaOUCH}
 \alias{nodeDescendents}
-\title{Test whether a set of taxa is monophyletic on an ouch-style tree.}
+\title{Test whether a set of taxa is monophyletic on an ouch-style tree}
 \description{
   A somewhat clunky monophyly-checker for an \code{ouchtree} object
 }
