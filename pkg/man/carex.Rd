@@ -20,15 +20,10 @@
   }
 }
 \details{
-  \item{phylogeny}{
-  Phylogeny (\code{ovales.tree}) was estimated for approximately 80 species (Hipp 2006), branch lengths optimized using penalized likelihood
-  in \pkg{ape}, and then the tree was pruned down to only those taxa for which chromosome counts were available.
-  }
-  \item{chromosome counts}{
-  Chromosome counts (\code{ovales.data}) were averaged by population, and the means log-transformed for analysis.
-  }
-  \item{ovales.nodes}{
-  Eight nodes were selected for analysis based on clade support and number of taxa in the clade.
+  Phylogeny (\code{ovales.tree}) was estimated for approximately 80 species (Hipp 2006), branch lengths optimized using
+  penalized likelihood in \code{ape}, and then the tree was pruned down to only those taxa for which chromosome counts were
+  available. Chromosome counts (\code{ovales.data}) were averaged by population, and the means log-transformed for
+  analysis. Nodes were selected for analysis based on clade support and number of taxa in the clade.
   }
 }
 \source{
