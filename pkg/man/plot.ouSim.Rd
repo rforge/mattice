@@ -5,10 +5,10 @@
   \code{plot.ouSim} is a \code{plot} method for an \code{ouSim} object.
 }
 \usage{
-  plot.ouSim(ouSim, nodeColor = "blue", nodeDotSize = 1.4, colors = NULL, ...)
+  plot.ouSim(x, nodeColor = "blue", nodeDotSize = 1.4, colors = NULL, ...)
 }
 \arguments{
-  \item{ouSim}{
+  \item{x}{
     An \code{ouSim} object.
     }
   \item{nodeColor}{

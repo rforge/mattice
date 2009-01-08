@@ -7,14 +7,14 @@
   \code{print.hansenSummary} is a print method for a \code{hansenSummary} object.
 }
 \usage{
-summary(hansenBatch, ...)
-print(hansenSummary, ...)
+summary.hansenBatch(object, ...)
+print.hansenSummary(x, ...)
 }
 \arguments{
-  \item{hansenBatch}{
+  \item{object}{
   Output from \code{runBatchHansen}.
   }
-  \item{hansenSummary}{
+  \item{x}{
   Output from \code{summary.hansenBatch}.
   }  
 }
