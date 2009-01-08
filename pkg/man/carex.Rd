@@ -44,7 +44,7 @@
 \examples{
   data(carex)
   attach(carex)
-  ovales.tree <- ape2ouch(ovales.tree) # tree comes in in \code{phylo} format, but we need an ouchtree object
+  ovales.tree <- ape2ouch(ovales.tree) # tree comes in in phylo format, but we need an ouchtree object
   trial <- runBatchHansen(ovales.tree, ovales.data, ovales.nodes, maxNodes = 3) # for expedience, only allows regime changes at up to 3 nodes
   summary(trial) # summarizes results using summary.hansenBatch and displays the results using print.hansenSummary
   trialSim <- ouSim(trial, ovales.tree) # simulates the evolution of the chromosome number under the model-averaged values
