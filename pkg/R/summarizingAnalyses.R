@@ -2,8 +2,9 @@
 # FUNCTIONS FOR SUMMARIZING ANALYSES
 # ---------------------------------------------------------------------
 
-summary.hansenBatch <- function(hansenBatch, ...){
+summary.hansenBatch <- function(x, ...){
 ## items in output: hansens, regimeList, regimeMatrix
+  hansenBatch <- x
   icObject <- informationCriterion.hansenBatch(hansenBatch) # Get information criterion weights for all models
   nmodels <- dim(hansenBatch$hansens[[1]])[1] # number of models per tree (ignores the fact that models may not be present in all trees)
   ntrees <- length(hansenBatch$hansens) # number of trees
@@ -74,8 +75,9 @@ replace.matrix <- function (x, oldValue, newValue) {
   return(x)
 }
 
-print.hansenSummary <- function(hansenSummary, ...) {
+print.hansenSummary <- function(object, ...) {
 ## This just formats a hansenSummary object so that it is readable on the screen; you can still store the summary object and extract elements as needed
+  hansenSummary <- object
   message(paste("\nSummarizing hansenBatch analyses over", length(hansenSummary$modelsMatrix), "trees and", dim(hansenSummary$modelsMatrix[[1]])[1], "models"))
   message("-----------------------------------------------------------")
   message("ESTIMATED SUPPORT FOR CHANGES OCCURRING AT DESIGNATED NODES")
