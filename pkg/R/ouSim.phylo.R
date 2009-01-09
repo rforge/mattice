@@ -1,4 +1,4 @@
-ouSim.phylo <- function(phy, rootState = 0, shiftBranches = NULL, shiftStates = NULL, alpha = 0, variance = 1, theta = rootState, model = "OU", branchMeans = NULL, steps = 1000) {
+ouSim.phylo <- function(object, rootState = 0, shiftBranches = NULL, shiftStates = NULL, alpha = 0, variance = 1, theta = rootState, model = "OU", branchMeans = NULL, steps = 1000) {
 ## function to plot a simulated dataset under brownian motion or Ornstein-Uhlenbeck (OU) model
 ## Arguments:
 ##   phy is an ape-style tree
@@ -12,7 +12,7 @@ ouSim.phylo <- function(phy, rootState = 0, shiftBranches = NULL, shiftStates = 
 ## July 2008: modified to accomodate a vector of alpha and theta corresponding to branches
 ## Dec 2008: This function I'm leaving as is for the time being and just letting the phylo method be as raw as always.
 ##           New developments will be in the ouchtree, brown, hansen, and hansenBatch methods
-
+phy <- object
 preorderOU <- function(branchList, phy, startNode, startState, alpha, theta) {
 ## Recursive function to generate the data under a Brownian motion or OU model (not needed in the Platt model)
   startBranch = which(phy$edge[,2] == startNode)
