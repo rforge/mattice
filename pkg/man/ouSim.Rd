@@ -1,24 +1,28 @@
 \name{ouSim}
 \alias{ouSim}
 \alias{ouSim.ouchtree}
-\alias{ouSim.brownHansen}
+\alias{ouSim.browntree}
+\alias{ouSim.hansentree}
 \alias{ouSim.phylo}
 \alias{ouSim.hansenBatch}
+\alias{ouSim.hansenSummary}
 \title{Discrete-time simulation of Ornstein-Uhlenbeck models on a user tree.}
 \description{
   \code{ouSim} simulates the evolution of a single character for visualization purposes; for parametric bootstrapping,
   utilize the \code{simulate} methods in \code{ouch}.
 }
 \usage{
-  ouSim(object, ...) ## Generic function
-  ouSim.phylo(phy, rootState = 0, shiftBranches = NULL, shiftStates = NULL, alpha = 0, variance = 1, theta = rootState, model = "OU", branchMeans = NULL, steps = 1000)
-  ouSim.ouchtree(tree, rootState = 0, alpha = 0, variance = 1, theta = rootState, steps = 1000)
-  ouSim.brownHansen(analysis, ...)
-  ouSim.hansenBatch(analysis, tree, treeNum = 1, rootState = NULL, ...) 
+  ouSim(object, ...)
+  ouSim.phylo(object, rootState = 0, shiftBranches = NULL, shiftStates = NULL, alpha = 0, variance = 1, theta = rootState, model = "OU", branchMeans = NULL, steps = 1000)
+  ouSim.ouchtree(object, rootState = 0, alpha = 0, variance = 1, theta = rootState, steps = 1000)
+  ouSim.browntree(object, ...)
+  ouSim.hansentree(object, ...)
+  ouSim.hansenBatch(object, ...)
+  ouSim.hansenSummary(analysis, tree, treeNum = 1, rootState = NULL, ...) 
 }
 \details{
   A call to \code{ouSim} detects the class of \code{object} and behaves as follows:
-  \item{phylo}{
+  \item{object}{
     With an \pkg{ape}-style tree, all parameters of the model are specified by branch. Most flexibility, least convenience.
     }
   \item{ouchtree}{
@@ -44,7 +48,7 @@
   model using two vectors that correspond to the branches in an \code{ape}-format tree. It is important to note that
   this simulation method is really  heuristic device, not appropriate for estimating parameter distributions. For
   analysis purposes, you should utilize the \code{simulate} and \code{bootstrap} methods in \code{ouch}.
-}
+  }
 \arguments{
   \item{object}{
     In a call to the generic function, an object of class ouchtree, browntree, hansentree, hansenBatch, or hansenSummary.

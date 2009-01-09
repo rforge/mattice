@@ -4,7 +4,7 @@
 
 summary.hansenBatch <- function(object, ...){
 ## items in output: hansens, regimeList, regimeMatrix
-  hansenBatch <- x
+  hansenBatch <- object
   icObject <- informationCriterion.hansenBatch(hansenBatch) # Get information criterion weights for all models
   nmodels <- dim(hansenBatch$hansens[[1]])[1] # number of models per tree (ignores the fact that models may not be present in all trees)
   ntrees <- length(hansenBatch$hansens) # number of trees

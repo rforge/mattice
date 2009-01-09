@@ -32,7 +32,8 @@ informationCriterion.hansenBatch <- function(hansenBatch) {
   return(outdata)
 }
 
-print.informationCriterion <- function(ic, ...) {
+print.informationCriterion <- function(x, ...) {
+  ic <- x
   items <- c('u', 'K', 'AIC', 'AICc', 'BIC', 'AICwi', 'AICcwi', 'BICwi')
   out <- matrix(NA, nrow = length(ic$names), ncol = length(items), dimnames = list(ic$names, items))
   for(i in items) out[, i] <- ic[[i]]

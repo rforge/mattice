@@ -16,7 +16,10 @@ print.hansenSummary(x, ...)
   }
   \item{x}{
   Output from \code{summary.hansenBatch}.
-  }  
+  }
+  \item{...}{
+  Additional arguments to \code{print} or \code{summary}.
+  }
 }
 \details{
     \code{summary.hansenBatch} averages parameters over models and over trees, and provides the cumulative 

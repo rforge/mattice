@@ -42,6 +42,7 @@
 }
 
 \examples{
+  library(maticce)
   data(carex)
   attach(carex)
   ovales.tree <- ape2ouch(ovales.tree) # tree comes in in phylo format, but we need an ouchtree object
@@ -53,3 +54,4 @@
   plot(trialSim, colors = paintBranches(list(ovales.nodes[[2]]), ovales.tree)) # plots the character simulation, with branch colors changing only at node 2
 }
 \author{Andrew L. Hipp <ahipp@mortonarb.org>}
+\keyword{datasets}                                            

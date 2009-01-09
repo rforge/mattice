@@ -5,9 +5,9 @@
 \title{Information criterion and weights for a set of models}
 \description{Returns AIC, AICc, and BIC values and weights for a set of models.}
 \usage{
-  informationCriterion(u = NULL, lnL = NULL, K, n = 1, names = NULL)
+  informationCriterion(u = NULL, lnL = NULL, K, n = 1, names = NULL, ...)
   informationCriterion.hansenBatch(hansenBatch)
-  print.informationCriterion(ic, ...)
+  print.informationCriterion(x, ...)
 }
 \details{
   At the minimum, a vector of either the model log-likelihoods (\code{lnL}) or deviances (\code{u} = -2 * lnL) and a vector
@@ -33,7 +33,7 @@
      }
    \item{hansenBatch}{
      Output from \{runBatchHansen}.
-   \item{ic}{
+   \item{x}{
      Output from \{informationCriterion}.
 }
 \value{
