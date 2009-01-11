@@ -8,7 +8,7 @@ ouSim.hansenSummary <- function(object, tree, treeNum = 1, rootState = NULL, ...
   return(outdata)
 }
 
-ouSim.hansenBatch <- function(object, ...) ouSim(summary(object))
+ouSim.hansenBatch <- function(object, ...) ouSim(summary(object), ...)
 
 ouSim.hansentree <- function(object, ...) {
   analysis <- object

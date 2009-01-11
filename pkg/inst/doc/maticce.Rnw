@@ -39,9 +39,9 @@ Functions in the first two categories will be of general utility to \pkg{ouch} u
 In case you aren't familiar with \code{R}, the following commands will get you started.
 
 <<startAnalysis, fig=FALSE>>=
-library(maticce) # load the maticce package into memory; also loads the required ouch package
+# library(maticce) # load the maticce package into memory; also loads the required ouch package
+library(ouch)
 data(carex)
-#load('C:/Documents and Settings/Mortonarb/My Documents/mattice/pkg/DATA/carex.rda') # load demonstration data
 attach(carex)
 ovales.tree <- ape2ouch(ovales.tree) # make the tree an ouchtree object
 @
@@ -112,7 +112,7 @@ print(summary(ha.4.2))
 \begin{figure}[h]
 \centering
 <<ouSim, fig=TRUE, width=30, height =15, echo=TRUE>>=
-ouSim.ha.4.2 <- ouSim(ha.4.2, ovales.tree)
+ouSim.ha.4.2 <- ouSim(ha.4.2, tree = ovales.tree)
 plot(ouSim.ha.4.2, colors = ou2)
 @
 \caption{Simulated character on \code{ovales.tree} at model-averaged theta values, with coloring according to \code{ou2}}
