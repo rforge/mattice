@@ -78,22 +78,23 @@ replace.matrix <- function (x, oldValue, newValue) {
 print.hansenSummary <- function(x, ...) {
 ## This just formats a hansenSummary object so that it is readable on the screen; you can still store the summary object and extract elements as needed
   hansenSummary <- x
-  message(paste("\nSummarizing hansenBatch analyses over", length(hansenSummary$modelsMatrix), "trees and", dim(hansenSummary$modelsMatrix[[1]])[1], "models"))
-  message("-----------------------------------------------------------")
-  message("ESTIMATED SUPPORT FOR CHANGES OCCURRING AT DESIGNATED NODES")
-  message("Averaged over all trees, thus multiplying the clade distribution by the mean support for the model:")
+  cat(paste("\nSummarizing hansenBatch analyses over", length(hansenSummary$modelsMatrix), "trees and", dim(hansenSummary$modelsMatrix[[1]])[1], "models"))
+  cat("\n-----------------------------------------------------------")
+  cat("\nESTIMATED SUPPORT FOR CHANGES OCCURRING AT DESIGNATED NODES")
+  cat("\nAveraged over all trees:\n")
   print(hansenSummary$nodeWeightsMatrix$allNodes)
-  message("\nSupport conditioned on trees that possess the node")
+  cat("\nSupport conditioned on trees that possess the node\n")
   print(hansenSummary$nodeWeightsMatrix$unnormalized)
   #message("\nESTIMATED SUPPORT FOR NUMBER OF PARAMETERS IN THE MODEL")
   #message("The properties of this support value have not been studied and are likely to be biased strongly toward the median value of\nK, as K is largest at the median values (they are distributed according to Stirling numbers of the first kind).")
   #print(hansenSummary$kMatrix)
-  message("\nMODEL-AVERAGED PARAMETERS")
-  message(paste("alpha =", hansenSummary$modelAvgAlpha))
-  message(paste("sigma^2 =", hansenSummary$modelAvgSigmaSq))
-  if(any(dim(hansenSummary$thetaMatrix) > 12)) message(paste("theta matrix is too long to display; access through the summary object"))
+  cat("\nMODEL-AVERAGED PARAMETERS")
+  cat("\nalpha =", hansenSummary$modelAvgAlpha)
+  cat("\nsigma^2 =", hansenSummary$modelAvgSigmaSq)
+  if(any(dim(hansenSummary$thetaMatrix) > 12)) message(paste("\ntheta matrix is too long to display; access through the summary object"))
   else {
-    message("theta matrix, with branches as the columns and trees as the rows:")
+    cat("\ntheta matrix, with branches as the columns and trees as the rows:\n")
     print(hansenSummary$thetaMatrix)
+    cat('\n')
     }
 }
