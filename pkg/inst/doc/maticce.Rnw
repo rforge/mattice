@@ -17,7 +17,7 @@
 
 \section{Introduction}
 
-This document provides an overview of the \pkg{maticce} package, which serves three primary purposes. First, it implements an information-theoretic approach to estimating where on a phylogeny there has been a transition in a continuous character. As currently implemented, the approach assumes that (1) such transitions are appropriately modeled as shifts in optimum / equilibrium of a character evolving according to an Ornstein-Uhlenbeck process; (2) strength of constraint / rate of evolution toward the optimum is constant over the tree, as is variance; and (3) all branches on which a change could occur are identified. These assumptions can be relaxed in future versions if needed. Second, the package provides helper functions for the \pkg{ouch} package, in which all likelihood calculations are performed. For example, the package automates the process of painting regimes for the \code{hansen} function of \pkg{ouch}, specifying nodes at which the regime changes. It also provides functions for identifying most recent common ancestors and all descendents of a particular node. Users of \pkg{ouch} who want to handle large numbers of analyses may find the routines for summarizing analyses over trees and over regimes useful as well. Finally, \pkg{maticce} provides a flexible set of simulation functions for visualizing how different model parameters affect (i.e., what they 'say' about) our inference of the evolution of a continuous character on a phylogenetic tree.
+This document provides an overview of the \pkg{maticce} package, which serves three primary purposes. First, it implements an information-theoretic approach to estimating where on a phylogeny there has been a transition in a continuous character. As currently implemented, the approach assumes that (1) such transitions are appropriately modeled as shifts in optimum / equilibrium of a character evolving according to an Ornstein-Uhlenbeck process; (2) strength of constraint / rate of evolution toward the optimum is constant over the tree, as is variance; and (3) all branches on which a change could occur are identified. These assumptions can be relaxed in future versions if needed. Second, the package provides helper functions for the \pkg{ouch} package, in which all likelihood calculations are performed. For example, the package automates the process of painting \dQuote{regimes} (described in the \dQuote{Painting Regimes} section below) for the \code{hansen} function of \pkg{ouch}, specifying nodes at which the regime changes. It also provides functions for identifying most recent common ancestors and all descendents of a particular node. Users of \pkg{ouch} who want to handle large numbers of analyses may find the routines for summarizing analyses over trees and over regimes useful as well. Finally, \pkg{maticce} provides a flexible set of simulation functions for visualizing how different model parameters affect (i.e., what they 'say' about) our inference of the evolution of a continuous character on a phylogenetic tree.
 
 This document also provides a worked example of analyzing a continuous character dataset that illustrates most of the \pkg{maticce} features. Working through this example will I expect address most questions that should come up during a typical analysis.
 
@@ -78,12 +78,12 @@ These functions are all documented under \code{isMonophyletic}.
 
 \section{Painting regimes}
 
-Two functions are available for painting selective regimes that may be used in the \code{hansen} function of \pkg{ouch}:
+In the \code{hansen} function of \pkg{ouch}, Ornstein-Uhlenbeck models are specified by specifying for each phylogenetic branch one and only one selective regime that governs the evolution of individuals that occupy that branch. In the \pkg{maticce} approach, \dQuote{selective regime} is an overly specific description, because the dynamics of trait evolution may shift significantly at cladogenesis for reasons that have nothing to do with natural selection. For consistency with \pkg{ouch}, the term \dQuote{regime} is retained in \pkg{maticce}, but it is used here to refer to the entire set of lineage-specific stationary distributions on a tree rather than the branch-specific set of selective pressures that is implied by dQuote{selective regime}. Hereafter, and in the \pkg{maticce} documentation, dQuote{regime} is used interchangeably for the tree-based model (the vector returned by \code{paintBranches} and visualized using \code{plot(tree, regimes=regime)}). Two functions are available for painting regimes; both return objects that may be used directly in the \code{hansen} function of \pkg{ouch}:
 
 \begin{itemize}
-  \item \code{paintBranches}: returns the single regime for changes occuring at all specified nodes
-  \item \code{regimeVectors}: returns all possible regimes for specified nodes, up to a maximum of \code{maxNodes} + 1 optima
-  \item \code{regimeMaker}: returns regimes defined by a matrix, with each row specifying which nodes the optimz change at
+  \item \code{paintBranches}: returns the single regime for character transitions occuring at all specified nodes
+  \item \code{regimeVectors}: returns all possible regimes for specified nodes, up to a maximum of \code{maxNodes} transitions
+  \item \code{regimeMaker}: returns regimes defined by a matrix, with each row specifying which nodes permit character transitions
 \end{itemize}
 
 The \code{paintBranches} function is typically called from within \code{regimeVectors}, but it can be called separately. Nodes can be designated by number or taxa; the function assumes the latter only if it receives a list to evaluate instead of a vector.
@@ -91,8 +91,6 @@ The \code{paintBranches} function is typically called from within \code{regimeVe
 <<paintingOne,fig=FALSE>>=
 ou2 <- paintBranches(list(ovales.nodes[[2]]), ovales.tree)
 @
-
-The regime can be used directly in a call to \code{hansen} or the \code{plot} method for an \code{ouchtree} object (Figure 1).
 
 \begin{figure}[h]
 \centering
@@ -102,18 +100,33 @@ plot(ovales.tree, regimes = ou2, cex = 1.2)
 \caption{\code{ovales.tree} with coloring according to \code{ou2}}
 \end{figure}
 
+The regime can be used directly in a call to \code{hansen} or the \code{plot} method for an \code{ouchtree} object (Figure 1). Note that \code{paintBranches} paints the crown group designated by the taxa you give it. As written now, there is not an option to begin painting on the branch above that node (i.e., to pain the stem groups designated by your list of taxon-vectors). In practice, this is not likely to affect your conclusions. However, it might, because the Ornstein-Uhlenbeck calculations integrate over (1) the amount of time that a lineage occupies each component of the regime and (2) the amount of time elapsed since the end of each regime component. If this is important to you, write me, and we can adjust the \code{paintBranches} function to allow a mix of branch-based and node-based regime definitions.
+
+
 \section{Batch analyses}
 
+The goal of \pkg{maticce} is to make regime-definition and batch analyses of multiple models and multiple trees straightforward, so that researchers can focus on specifying their models and interpreting the results rather than on the book-keeping of running numerous analyses. The things a researcher should be thinking about are:
+
+\begin{itemize}
+  \item \emph{Which nodes are you interested in testing?} The choice of which nodes you are considering will have the strongest effect on your estimates of the support for a character transition having occurred at those nodes. This is a standard issue in model-fitting: the choice of which models to consider is the primary question once you have data in hand.
+  \item \emph{How many transitions are plausible on a single tree?} The feasibility of studying a large number of nodes is governed by how many simultaneous transitions you allow. Suppose you have 15 nodes that are of interest. Testing models that allow transitions at anywhere between zero and 15 nodes would entail testing 2^15 = 32,768 models. This would be too long to be feasible. Allowing changes at anywhere between zero and four nodes would entail testing a more manageable 1,941 models.
+  \item \emph{How much do you trust poorly-supported nodes? Do you want to consider them at all?} \pkg{maticce} allows you to analyze over a set of trees, e.g. trees visited in a Bayesian (MCMC) analysis or a set of bootstrap trees. The \code{summary} function will give you an estimate of the support for a transition at each node you specify, both conditioned on trees that possess that node and averaged over all trees. If you have some reason for trusting the node in spite of low support (because, for example, it holds together a morphologically coherent group), you might want to give some credence to the support value that conditions only on trees that possess that node.
+\end{itemize}
+
 <<runBatch, fig=FALSE, echo=TRUE>>=
-ha.4.2 <- runBatchHansen(ovales.tree, ovales.data, ovales.nodes[1:4], maxNodes = 2, brown = T)
-print(summary(ha.4.2))
+# First, analyze with maxNodes set to 2
+ha.8.2 <- runBatchHansen(ovales.tree, ovales.data, ovales.nodes, maxNodes = 2, brown = T)
+print(summary(ha.8.2))
+# Then, analyze with maxNodes set to 5
+ha.8.5 <- runBatchHansen(ovales.tree, ovales.data, ovales.nodes, maxNodes = 5, brown = T)
+print(summary(ha.8.5))
 @
 
 \begin{figure}[h]
 \centering
 <<ouSim, fig=TRUE, width=30, height =15, echo=TRUE>>=
-ouSim.ha.4.2 <- ouSim(ha.4.2, tree = ovales.tree)
-plot(ouSim.ha.4.2, colors = ou2)
+ouSim.ha.8.2 <- ouSim(ha.8.2, tree = ovales.tree)
+plot(ouSim.ha.8.2, colors = ou2)
 @
 \caption{Simulated character on \code{ovales.tree} at model-averaged theta values, with coloring according to \code{ou2}}
 \end{figure}
@@ -121,19 +134,19 @@ plot(ouSim.ha.4.2, colors = ou2)
 What is the relative support for the brownian motion vs. OU-2 model? We find which model has a change only at node 2 by inspecting the regime matrix
 
 <<ha, fig = FALSE, echo = TRUE>>=
-ha.4.2[['regMatrix']][['overall']]
+ha.8.2[['regMatrix']][['overall']]
 @
 
 Then we can find the likelihood of these models on a given tree:
 
 <<haLnl, fig = FALSE, echo = TRUE>>=
-ha.4.2[['hansens']][[1]] 
+ha.8.2[['hansens']][[1]] 
 @
 
 or the information criterion weights:
 
 <<haWeights, fig=FALSE, echo=TRUE>>=
-summary(ha.4.2)[['modelsMatrix']][[1]]
+summary(ha.8.2)[['modelsMatrix']][[1]]
 @
 
 
