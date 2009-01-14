@@ -82,7 +82,7 @@ function(regimeShiftNodes, tree, regimeTitles = NULL) {
       
       } # closes for(i in 1:length(ancestor)) loop 
 
-      # a little hack to fix a problem I don't understand... with the undesired side effect that it colors the stem of some subtrees rather than the crown as originally written
+      # a hack to fix a problem I don't understand... with the undesired side effect that it colors the stem of some subtrees rather than the crown as originally written
       for(i in 1:length(colorsVector)) if(colorsVector[i] == "") colorsVector[i] <- as.character(i) 
       
       # colors terminal branches if any terminal branches are in the regimeShiftNodes

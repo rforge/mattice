@@ -29,7 +29,8 @@ The \pkg{maticce} package currently implements functions in the following catego
   \item Extracting information from \pkg{ouch}-style (S4 class \code{ouchtree}) trees
   \item Painting regimes on a batch of \pkg{ouch}-style trees
   \item Performing batch analyses in \pkg{ouch} over trees and over regimes
-  \item Summarizing analyses 
+  \item Summarizing analyses
+  \item Simulating data under explicit models for visualization purposes
 \end{itemize}
 
 Functions in the first two categories will be of general utility to \pkg{ouch} users; functions in the third category are utilized to perform analyses over trees and over models, and in the fourth to summarize these with regard to the hypothesis that there has been a shift in continuous character on a given branch of a phylogenetic tree. While these latter two categories are more specific, the functions can be easily modified to address other multiple-tree / multiple-model questions.
