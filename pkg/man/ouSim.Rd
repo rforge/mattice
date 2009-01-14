@@ -9,20 +9,20 @@
 \title{Discrete-time simulation of Ornstein-Uhlenbeck models on a user tree.}
 \description{
   \code{ouSim} simulates the evolution of a single character for visualization purposes; for parametric bootstrapping,
-  utilize the \code{simulate} methods in \code{ouch}.
+  utilize the \code{simulate} methods in \pkg{ouch}.
 }
 \usage{
   ouSim(object, ...)
-  ouSim.phylo(object, rootState = 0, shiftBranches = NULL, shiftStates = NULL, alpha = 0, variance = 1, theta = rootState, model = "OU", branchMeans = NULL, steps = 1000)
-  ouSim.ouchtree(object, rootState = 0, alpha = 0, variance = 1, theta = rootState, steps = 1000)
+  ouSim.phylo(object, rootState = 0, shiftBranches = NULL, shiftStates = NULL, alpha = 0, variance = 1, theta = rootState, model = "OU", branchMeans = NULL, steps = 1000, ...)
+  ouSim.ouchtree(object, rootState = 0, alpha = 0, variance = 1, theta = rootState, steps = 1000, ...)
   ouSim.browntree(object, ...)
   ouSim.hansentree(object, ...)
   ouSim.hansenBatch(object, ...)
-  ouSim.hansenSummary(analysis, tree, treeNum = 1, rootState = NULL, ...) 
+  ouSim.hansenSummary(object, tree, treeNum = 1, rootState = NULL, ...) 
 }
 \details{
   A call to \code{ouSim} detects the class of \code{object} and behaves as follows:
-  \item{object}{
+  \item{phylo}{
     With an \pkg{ape}-style tree, all parameters of the model are specified by branch. Most flexibility, least convenience.
     }
   \item{ouchtree}{
@@ -46,15 +46,12 @@
     }
   \code{ouSim.phylo} is a very basic simulation engine, but also the most flexible. As written, the user has to specify the 
   model using two vectors that correspond to the branches in an \code{ape}-format tree. It is important to note that
-  this simulation method is really  heuristic device, not appropriate for estimating parameter distributions. For
-  analysis purposes, you should utilize the \code{simulate} and \code{bootstrap} methods in \code{ouch}.
-  }
+  this simulation method is really a heuristic device, not appropriate for estimating parameter distributions. For
+  analysis purposes, you should utilize the \code{simulate} and \code{bootstrap} methods in \pkg{ouch}.
+}
 \arguments{
   \item{object}{
-    In a call to the generic function, an object of class ouchtree, browntree, hansentree, hansenBatch, or hansenSummary.
-    }
-  \item{phy}{
-    An \code{ape}-style tree, class \code{phylo}.
+    In a call to the generic function, an object of class phylo, ouchtree, browntree, hansentree, hansenBatch, or hansenSummary.
     }
   \item{rootState}{
     The character state at the root of the tree. In a {browntree} object, this value is provided. In a {hansentree} or
@@ -95,10 +92,20 @@
     depends on only these parameters (ancestry is not considered, only current mean and variance).
     }
   \item{branchMeans}{
-    For a \code{phylo} tree only. The mean for each branch, utilized only in the "meanVar" model. 
+    For a \code{phylo} tree only. The mean for each branch, utilized only in the \dQuote{meanVar} model. 
     }
   \item{steps}{
     The number of slices into which the tree is divided for simulation.
+    }
+  \item{tree}{
+    The \code{ouch}-style tree to simulate on.
+    }
+  \item{treeNum}{
+    In a \code{hansenBatch} or \code{hansenSummary} object, the number of the tree from which analysis
+    parameters should be drawn; should match the tree provided with \code{tree}.
+    }
+  \item{...}{
+    Additional arguments to be passed along to \code{ouSim}.
     }
 }
 \value{

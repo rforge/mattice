@@ -37,6 +37,6 @@ print.informationCriterion <- function(x, ...) {
   items <- c('u', 'K', 'AIC', 'AICc', 'BIC', 'AICwi', 'AICcwi', 'BICwi')
   out <- matrix(NA, nrow = length(ic$names), ncol = length(items), dimnames = list(ic$names, items))
   for(i in items) out[, i] <- ic[[i]]
-  print(out) 
+  print(out, ...) 
   return(NULL)
 }

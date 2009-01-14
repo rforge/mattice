@@ -5,7 +5,7 @@
 \title{Information criterion and weights for a set of models}
 \description{Returns AIC, AICc, and BIC values and weights for a set of models.}
 \usage{
-  informationCriterion(u = NULL, lnL = NULL, K, n = 1, names = NULL, ...)
+  informationCriterion(u = NULL, lnL = NULL, K, n = 1, names = NULL)
   informationCriterion.hansenBatch(hansenBatch)
   print.informationCriterion(x, ...)
 }
@@ -33,8 +33,13 @@
      }
    \item{hansenBatch}{
      Output from \{runBatchHansen}.
+     }
    \item{x}{
      Output from \{informationCriterion}.
+     }
+   \item{...}{
+     Additional arguments to be passed along to \code{print}
+     }
 }
 \value{
   A list with the following vectors, all indexed by model number:
