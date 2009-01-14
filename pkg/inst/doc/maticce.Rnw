@@ -115,18 +115,18 @@ The goal of \pkg{maticce} is to make regime-definition and batch analyses of mul
 
 <<runBatch, fig=FALSE, echo=TRUE>>=
 # First, analyze with maxNodes set to 2
-ha.8.2 <- runBatchHansen(ovales.tree, ovales.data, ovales.nodes, maxNodes = 2, brown = T)
-print(summary(ha.8.2))
-# Then, analyze with maxNodes set to 5
-ha.8.5 <- runBatchHansen(ovales.tree, ovales.data, ovales.nodes, maxNodes = 5, brown = T)
-print(summary(ha.8.5))
+ha.4.2 <- runBatchHansen(ovales.tree, ovales.data, ovales.nodes[1:4], maxNodes = 2, brown = T)
+print(summary(ha.4.2))
+# Then, analyze with maxNodes set to 4
+ha.4.4 <- runBatchHansen(ovales.tree, ovales.data, ovales.nodes[1:4], maxNodes = 4, brown = T)
+print(summary(ha.4.4))
 @
 
 \begin{figure}[h]
 \centering
 <<ouSim, fig=TRUE, width=30, height =15, echo=TRUE>>=
-ouSim.ha.8.2 <- ouSim(ha.8.2, tree = ovales.tree)
-plot(ouSim.ha.8.2, colors = ou2)
+ouSim.ha.4.2 <- ouSim(ha.4.2, tree = ovales.tree)
+plot(ouSim.ha.4.2, colors = ou2)
 @
 \caption{Simulated character on \code{ovales.tree} at model-averaged theta values, with coloring according to \code{ou2}}
 \end{figure}
@@ -134,19 +134,19 @@ plot(ouSim.ha.8.2, colors = ou2)
 What is the relative support for the brownian motion vs. OU-2 model? We find which model has a change only at node 2 by inspecting the regime matrix
 
 <<ha, fig = FALSE, echo = TRUE>>=
-ha.8.2[['regMatrix']][['overall']]
+ha.4.2[['regMatrix']][['overall']]
 @
 
 Then we can find the likelihood of these models on a given tree:
 
 <<haLnl, fig = FALSE, echo = TRUE>>=
-ha.8.2[['hansens']][[1]] 
+ha.4.2[['hansens']][[1]] 
 @
 
 or the information criterion weights:
 
 <<haWeights, fig=FALSE, echo=TRUE>>=
-summary(ha.8.2)[['modelsMatrix']][[1]]
+summary(ha.4.2)[['modelsMatrix']][[1]]
 @
 
 
