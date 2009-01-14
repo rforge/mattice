@@ -42,16 +42,16 @@
 }
 
 \examples{
-  library(maticce)
-  data(carex)
-  attach(carex)
-  ovales.tree <- ape2ouch(ovales.tree) # tree comes in in phylo format, but we need an ouchtree object
-  trial <- runBatchHansen(ovales.tree, ovales.data, ovales.nodes[1:3], maxNodes = 2) # for expedience, only tests for changes at up to 2 of the first 4 nodes
-  summary(trial) # summarizes results using summary.hansenBatch and displays the results using print.hansenSummary
-  trialSim <- ouSim(trial, ovales.tree) # simulates the evolution of the chromosome number under the model-averaged values
-  plot(trialSim) # plots the character simulation, with all branches black
-  plot(trialSim, colors = paintBranches(ovales.nodes[1:4], ovales.tree)) # plots the character simulation, with branch colors changing at all 8 nodes
-  plot(trialSim, colors = paintBranches(list(ovales.nodes[[2]]), ovales.tree)) # plots the character simulation, with branch colors changing only at node 2
+  #library(maticce)
+  #data(carex)
+  #attach(carex)
+  #ovales.tree <- ape2ouch(ovales.tree) # tree comes in in phylo format, but we need an ouchtree object
+  #trial <- runBatchHansen(ovales.tree, ovales.data, ovales.nodes[1:3], maxNodes = 2) # for expedience, only tests for changes at up to 2 of the first 4 nodes
+  #summary(trial) # summarizes results using summary.hansenBatch and displays the results using print.hansenSummary
+  #trialSim <- ouSim(trial, ovales.tree) # simulates the evolution of the chromosome number under the model-averaged values
+  #plot(trialSim) # plots the character simulation, with all branches black
+  #plot(trialSim, colors = paintBranches(ovales.nodes[1:4], ovales.tree)) # plots the character simulation, with branch colors changing at all 8 nodes
+  #plot(trialSim, colors = paintBranches(list(ovales.nodes[[2]]), ovales.tree)) # plots the character simulation, with branch colors changing only at node 2
 }
 \author{Andrew L. Hipp <ahipp@mortonarb.org>}
 \keyword{datasets}                                            
