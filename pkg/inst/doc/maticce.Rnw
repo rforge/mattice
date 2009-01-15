@@ -115,12 +115,16 @@ The goal of \pkg{maticce} is to make regime-definition and batch analyses of mul
 
 <<runBatch, fig=FALSE, echo=TRUE>>=
 # First, analyze with maxNodes set to 2
-ha.4.2 <- runBatchHansen(ovales.tree, ovales.data, ovales.nodes[1:4], maxNodes = 2, brown = T)
+ha.4.2 <- runBatchHansen(ovales.tree, ovales.data, 
+          ovales.nodes[1:4], maxNodes = 2, brown = T)
 print(summary(ha.4.2))
 # Then, analyze with maxNodes set to 4
-ha.4.4 <- runBatchHansen(ovales.tree, ovales.data, ovales.nodes[1:4], maxNodes = 4, brown = T)
+ha.4.4 <- runBatchHansen(ovales.tree, ovales.data, 
+          ovales.nodes[1:4], maxNodes = 4, brown = T)
 print(summary(ha.4.4))
 @
+
+In the examples above, support for node two is relatively little affected by the value of \code{maxNodes}.
 
 \begin{figure}[h]
 \centering
