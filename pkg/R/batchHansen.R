@@ -21,7 +21,7 @@ function(ouchTrees, characterStates, cladeMembersList, filePrefix = NULL, di = N
   ## do all the objects in ouchTrees inherit ouchtree?
   if(is(ouchTrees,'ouchtree')) ouchTrees <- list(ouchTrees)
   treeCheck <- unlist(lapply(ouchTrees, function(x) is(x,'ouchtree')))
-  if(F %in% treeCheck) 
+  if(FALSE %in% treeCheck) 
         stop(paste('This function has been rewritten to use the new S4 ', sQuote('ouchtree'), ' class.',
 	'\nYou can generate a tree of this class by calling ', sQuote('ouchtree()'), '.', sep = ""))
   
@@ -31,7 +31,7 @@ function(ouchTrees, characterStates, cladeMembersList, filePrefix = NULL, di = N
     stopFlag <- F
     tree <- ouchTrees[[i]]
     terminals <- tree@nodelabels[(tree@nnodes - tree@nterm + 1):tree@nnodes]
-    if(any(F %in% (terminals %in% names(characterStates)))) {
+    if(any(FALSE %in% (terminals %in% names(characterStates)))) {
       message(paste("Not every terminal branch in tree", i, "has a corresponding name in", sQuote("characterStates")))
       if(length(characterStates) == tree@nterm) {
         message("Data assumed to be in the same order as terminals")
