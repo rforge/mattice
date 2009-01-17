@@ -1,8 +1,9 @@
 ouSim.ouchtree <- function(object, rootState = 0, alpha = 0, variance = 1, theta = rootState, steps = 1000, ...) {
 ## function to plot a simulated dataset under brownian motion or Ornstein-Uhlenbeck (OU) model
 ## Arguments:
-##   tree is an ouch-style (S4) tree
+##   object is an ouch-style (S4) tree
 ##   alpha and theta are either single values or vectors of length (length(branchList))
+tree <- object
 message(paste("running sim with root =", rootState, ", alpha =", mean(alpha), ", var =", variance, "theta =", mean(theta)))
 ##embedded function---------------------
 ##can be released to the wild, but more arguments will need to be passed around
