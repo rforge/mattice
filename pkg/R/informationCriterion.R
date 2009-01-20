@@ -27,7 +27,7 @@ informationCriterion.hansenBatch <- function(hansenBatch) {
   N = hansenBatch$N
   for(i in seq(outdata)) {
     temp <- hansenBatch$hansens[[i]]
-    outdata[[i]] <- informationCriterion(lnL = temp[, 'loglik'], K = temp[, 'dof'], n = N, names = row.names(temp))
+    outdata[[i]] <- informationCriterion(lnL = as.numeric(temp[, 'loglik']), K = as.numeric(temp[, 'dof']), n = as.numeric(N), names = row.names(temp))
     }
   return(outdata)
 }
