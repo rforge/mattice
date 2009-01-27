@@ -42,16 +42,17 @@ partialModel <- function(phyList, dat, model, treeNames, parameterVector = NULL,
    if(i %in% pSum) next
    else allParams <- c(allParams, paste(treeNames, i, sep = ""))
    }
-  analysis <- ifelse(model == "brown",
-                     lapply(phyList, brown, data = dat),
-                     lapply(phyList, hansen, data = dat, 
-                            regimes = structure(rep(1, phyList[[1]]@nnodes), 
-                                                names = phyList[[1]]@nodes, 
-                                                levels = 1, class = 'factor'),       ## won't work... multiple subtrees, different regimes!
-                            sigma = 1, alpha = 1)
-                     )
+  if(model == "brown") analysis <- lapply(phyList, brown, data = dat),
+  else {
+    analysis <- list(length(phyList))
+    for (i in seq(length(phyList))) analysis[[i]] <- hansen(data = dat, tree = phyList[[i]], 
+                                                            regimes = structure(rep(1, phyList[[i]]@nnodes), 
+                                                                                names = phyList[[i]]@nodes, 
+                                                                                levels = 1, class = 'factor'),
+                                                            sigma = 1, alpha = 1)
+    } # close else
   params <- lapply(analysis, function(x) {unlist(summary(x)[pV])[pV]}, pV = allParams)
-  rawMat <- matrix(unlist(params), nrow = length(params), ncol = length(allParams), dimnames = list(treeNames, allParams))
+  rawMat <- matrix(unlist(params), nrow = length(params), ncol = length(allParams), byrow = T, dimnames = list(treeNames, allParams))
   params <- colSums(rawMat, na.rm = T)
   out <- list(analysis = analysis, rawMat = rawMat, params = params)
   return(out)
