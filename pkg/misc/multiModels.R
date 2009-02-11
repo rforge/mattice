@@ -30,7 +30,7 @@ wholeModel <- function(phy, dat, model, node, parameterVector) {
                                         class = 'factor'),
                                         alpha = 1, sigma = 1)
   if(model = "ou2") {
-    regime <- paintBranches(node, phy)
+    regime <- paintBranches(list(node), phy)
     ancNum <- as.character(tree@root)
     descNum <- as.character(unique(regime))[unique(regime) != tree@root]
     analysis <- hansen(dat, phy, regime, alpha = 1, sigma = 1)
