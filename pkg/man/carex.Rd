@@ -28,7 +28,7 @@
 \source{
   Hipp, A.L. (2007) 
   Non-uniform processes of chromosome evolution in sedges (Carex: Cyperaceae). 
-  Evolution 61:2175-2194.
+  \emph{Evolution} 61:2175-2194.
 }
 \references{
   Hipp, A.L., P.E. Rothrock, A.A. Reznicek, and J.A. Weber (2006) 
@@ -47,6 +47,7 @@
   ovales.tree <- ape2ouch(ovales.tree) # tree comes in in phylo format, but we need an ouchtree object
   trial <- runBatchHansen(ovales.tree, ovales.data, ovales.nodes[1:3], maxNodes = 2) # for expedience, only tests for changes at up to 2 of the first 4 nodes
   summary(trial) # summarizes results using summary.hansenBatch and displays the results using print.hansenSummary
+  multiModel(carex$ovales.tree, ovales.data, ovales.nodes[[2]]) # compares five different models of character change at node 2
   trialSim <- ouSim(trial, ovales.tree) # simulates the evolution of the chromosome number under the model-averaged values
   plot(trialSim) # plots the character simulation, with all branches black
   plot(trialSim, colors = paintBranches(ovales.nodes[1:4], ovales.tree)) # plots the character simulation, with branch colors changing at all 8 nodes

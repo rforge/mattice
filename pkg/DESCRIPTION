@@ -3,13 +3,12 @@ Type: Package
 Title: Mapping Transitions in Continuous Character Evolution
 Version: 0.4
 Date: 2008-12-18
-Depends: ouch
-Suggests: ape
+Depends: ouch, ape
 Enhances: ouch
-Author: Andrew Hipp <ahipp@mortonarb.org>, with contributions from Marcial Escudero.
+Author: Andrew Hipp <ahipp@mortonarb.org>, with contributions from Marcial Escudero
 Maintainer: Andrew Hipp <ahipp@mortonarb.org>
 Description: Tools for an information-theoretic approach to estimating 
-             the probability of continuous character transitions on phylogenetic trees. 
+             the probability of continuous character transitions on phylogenetic trees
 License: GPL
 URL: http://mattice.R-forge.R-project.org
 Revision: 1
