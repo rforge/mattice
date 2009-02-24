@@ -1,5 +1,5 @@
 1. DONE: make allPossibleRegimes more efficient when maxNodes < length(nodes)
-2. is the k-matrix a sensible statistic? fix it so it works on the revised batchHansen; average weight, or drop it
+2. DROPPED: is the k-matrix a sensible statistic? fix it so it works on the revised batchHansen; average weight, or drop it
 3. DONE: change paintBranches so that it automatically adds the root and knows what to do if it is handed a list of node vectors instead of a vector of nodes
 4. DONE: make plot.ouSim smart enough to paint the branches according to the theta vector if no colors are provided
 5. make a "simulate" method for a hansenBatch object that simulates the data using model-averaged parameters (including theta)
