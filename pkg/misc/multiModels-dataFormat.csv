@@ -1,12 +1,14 @@
-,loglik,dof,sigma.squared,alpha,theta,optimum,optimum.uptree,optimum.downtree
-whole.ou2,x,x,x,x,,,x,x
-whole.ou1,x,x,x,x,,x,,
-whole.brown,x,x,x,,x,,,
-part.ou.uptree,x,x,x,x,,x,,
-part.ou.downtree,x,x,x,x,,x,,
-part.brown.uptree,x,x,x,,x,,,
-part.brown.downtree,x,x,x,,x,,,
+,IC-weight,loglik,dof,sigma.squared,alpha,theta,optimum,optimum.uptree,optimum.downtree
+whole.ou2,x,x,x,x,x,,,x,x
+whole.ou1,x,x,x,x,x,,x,,
+whole.brown,x,x,x,x,,x,,,
+part.ou.uptree,,x,x,x,x,,x,,
+part.ou.downtree,,x,x,x,x,,x,,
+part.ou.summed,x,x-sum,x-sum,,,,,,
+part.brown.uptree,,x,x,x,,x,,,
+part.brown.downtree,,x,x,x,,x,,,
+part.brown.summed,x,x-sum,x-sum,,,,,,
 
-"paramHeader <- c('loglik', 'dof', 'sigma.squared', 'alpha', 'theta', 'optimum', 'optimum.uptree', 'optimum.downtree')",,,,,,,,
-"paramSets <- list(all = c('loglik', 'dof', 'sigma.squared'), brown = c('theta'), ou1 = c('alpha', 'optimum'), ou2 = c('alpha', 'optimum.uptree', 'optimum.downtree'))",,,,,,,,
-"modelAll = c('whole.ou2', 'whole.ou1', 'whole.brown', 'part.ou.uptree', 'part.ou.downtree', 'part.brown.uptree', 'part.brown.downtree')",,,,,,,,
+"paramHeader <- c('loglik', 'dof', 'sigma.squared', 'alpha', 'theta', 'optimum', 'optimum.uptree', 'optimum.downtree')",,,,,,,,,
+"paramSets <- list(all = c('loglik', 'dof', 'sigma.squared'), brown = c('theta'), ou1 = c('alpha', 'optimum'), ou2 = c('alpha', 'optimum.uptree', 'optimum.downtree'))",,,,,,,,,
+"modelAll = c('whole.ou2', 'whole.ou1', 'whole.brown', 'part.ou.uptree', 'part.ou.downtree', 'part.brown.uptree', 'part.brown.downtree')",,,,,,,,,
