@@ -21,7 +21,7 @@ multiModel <- function(phy, dat, node, models = c('whole.brown', 'whole.ou1', 'w
   outMatrix <- matrix(NA, nrow = length(modelsAll), ncol = length(paramHeader), dimnames = list(modelsAll, paramHeader))
   compareK <- rep(NA, length(models)); names(compareK) <- models
   comparelnL <- rep(NA, length(models)); names(comparelnL) <- models
-  modelsSplit <- strsplit(models, ".", fixed = T)
+  modelsSplit <- strsplit(models, ".", fixed = TRUE)
 
   for(i in modelsSplit) {
    model <- paste(i[1], ".", i[2], sep = "")

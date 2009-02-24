@@ -41,15 +41,15 @@ function(ouchTrees, characterStates, cladeMembersList, filePrefix = NULL, di = N
         message("Data assumed to be in the same order as nodes;\nany data not associated with a terminal branch will be ignored")
         dataFlag <- 'sameOrderNodes'
         }
-      if(identical(dataFlag, NULL)) stopFlag <- T
+      if(identical(dataFlag, NULL)) stopFlag <- TRUE
       message("-------------------\n")
       }
     else dataFlag <- 'named'
     if(stopFlag) stop("Correct discrepancies between trees and data and try again!")
     }
   if(!identical(di, NULL)) dir.create(di)
-  if(class(try(alpha, silent = T)) == 'try-error') alpha = 1
-  if(class(try(sigma, silent = T)) == 'try-error') sigma = 1
+  if(class(try(alpha, silent = TRUE)) == 'try-error') alpha = 1
+  if(class(try(sigma, silent = TRUE)) == 'try-error') sigma = 1
   ar = regimeVectors(ouchTrees, cladeMembersList, maxNodes)
   hansenBatch <- list(length(ouchTrees))
   thetas <- list(length(ouchTrees))

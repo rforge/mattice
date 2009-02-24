@@ -9,12 +9,12 @@ informationCriterion <- function(u = NULL, lnL = NULL, K, n = 1, names = NULL) {
     AICc[i] <- u[i] + (2 * K[i] * (n / (n - K[i] - 1)))
     AIC[i] <- u[i] + (2 * K[i])
     BIC[i] <- u[i] + (log(n) * K[i]) }
-  deltaAIC <- as.vector(lapply(AIC, function(x, allX) {x - min(allX, na.rm = T)}, allX = AIC), mode = "numeric")
-  deltaAICc <- as.vector(lapply(AICc, function(x, allX) {x - min(allX, na.rm = T)}, allX = AICc), mode = "numeric")
-  deltaBIC <- as.vector(lapply(BIC, function(x, allX) {x - min(allX, na.rm = T)}, allX = BIC), mode = "numeric")
-  AICwi <- as.vector(lapply(deltaAIC, function(x, allDelta) {exp(-0.5 * x) / sum(exp(-0.5 * allDelta), na.rm = T)}, allDelta = deltaAIC), mode = "numeric")
-  AICcwi <- as.vector(lapply(deltaAICc, function(x, allDelta) {exp(-0.5 * x) / sum(exp(-0.5 * allDelta), na.rm = T)}, allDelta = deltaAICc), mode = "numeric")
-  BICwi <- as.vector(lapply(deltaBIC, function(x, allDelta) {exp(-0.5 * x) / sum(exp(-0.5 * allDelta), na.rm = T)}, allDelta = deltaBIC), mode = "numeric")
+  deltaAIC <- as.vector(lapply(AIC, function(x, allX) {x - min(allX, na.rm = TRUE)}, allX = AIC), mode = "numeric")
+  deltaAICc <- as.vector(lapply(AICc, function(x, allX) {x - min(allX, na.rm = TRUE)}, allX = AICc), mode = "numeric")
+  deltaBIC <- as.vector(lapply(BIC, function(x, allX) {x - min(allX, na.rm = TRUE)}, allX = BIC), mode = "numeric")
+  AICwi <- as.vector(lapply(deltaAIC, function(x, allDelta) {exp(-0.5 * x) / sum(exp(-0.5 * allDelta), na.rm = TRUE)}, allDelta = deltaAIC), mode = "numeric")
+  AICcwi <- as.vector(lapply(deltaAICc, function(x, allDelta) {exp(-0.5 * x) / sum(exp(-0.5 * allDelta), na.rm = TRUE)}, allDelta = deltaAICc), mode = "numeric")
+  BICwi <- as.vector(lapply(deltaBIC, function(x, allDelta) {exp(-0.5 * x) / sum(exp(-0.5 * allDelta), na.rm = TRUE)}, allDelta = deltaBIC), mode = "numeric")
   outdata <- list(names = names, u = u, K = K, AIC = AIC, AICc = AICc, BIC = BIC, AICwi = AICwi, AICcwi = AICcwi, BICwi = BICwi)
   class(outdata) <- 'informationCriterion'
   return(outdata)

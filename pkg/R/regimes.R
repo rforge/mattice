@@ -111,7 +111,7 @@ regimeMaker <- function(ouchTrees, regMatrix, nodeMembers) {
   for(i in seq(numNodes)) nodeMatrix[, i] <- unlist(lapply(ouchTrees, isMonophyletic, taxa = nodeMembers[[i]]))
   for(i in seq(numTrees)) {
     tree <- ouchTrees[[i]]
-    regMatrices[[i]] <- regMatrix * as.numeric(matrix(nodeMatrix[i, ], dim(regMatrix)[1], dim(regMatrix)[2], byrow = T)) # multiplies regMatrix by nodes present
+    regMatrices[[i]] <- regMatrix * as.numeric(matrix(nodeMatrix[i, ], dim(regMatrix)[1], dim(regMatrix)[2], byrow = TRUE)) # multiplies regMatrix by nodes present
     regMatrices[[i]][1:(dim(regMatrices[[i]])[1] - 1), ][which(apply(regMatrices[[i]][1:(dim(regMatrices[[i]])[1] - 1), ], 1, sum) == 0), ] <- rep(NA, numNodes) # set to NA regimes that have no nodes, except for OU1 model
     regMatrices[[i]][duplicated(apply(regMatrices[[i]], 1, as.decimal)), ] <- rep(NA, numNodes) ## set to NA non-unique regimes
     dimnames(regMatrices[[i]]) <- list(seq(dim(regMatrices[[i]])[1]), dimnames(regMatrices[[i]])[[2]])
@@ -163,7 +163,7 @@ regimeMatrix <- function(n, maxNodes) {
     remainder <- n - i
     if (maxNodes > 1 && remainder > 0) {
       nextMat <- regimeMatrix(remainder, maxNodes - 1)
-      temp <- cbind(matrix(temp, dim(nextMat)[1], length(temp), byrow = T), nextMat)
+      temp <- cbind(matrix(temp, dim(nextMat)[1], length(temp), byrow = TRUE), nextMat)
       }
     else temp[(i+1):n] <- rep(0, length((i+1):n))
     outmat <- rbind(outmat, temp)

@@ -28,24 +28,24 @@ summary.hansenBatch <- function(object, ...){
       modelsMatrixSubset <- modelsMatrix[[tree]][hansenBatch$regMatrix$overall[, nodes[i]] == 1, ] # subset models that contain node i
       if(identical(dim(modelsMatrixSubset), NULL)) # is modelsMatrixSubset a 1-d vector? if so then:
         nodeWeightsSummed[, nodes[i]] <- nodeWeightsSummed[, nodes[i]] + replace.matrix(modelsMatrixSubset, NA, 0) # because extracting a single row yields a vector, and dim returns NULL for a vector
-      else nodeWeightsSummed[, nodes[i]] <- nodeWeightsSummed[, nodes[i]] + colSums(modelsMatrixSubset, na.rm = T)
+      else nodeWeightsSummed[, nodes[i]] <- nodeWeightsSummed[, nodes[i]] + colSums(modelsMatrixSubset, na.rm = TRUE)
 	  }
-    sigmaSqVector[tree] <- weighted.mean(hansenBatch$hansens[[tree]][, 'sigma.squared'], bic, na.rm = T)
+    sigmaSqVector[tree] <- weighted.mean(hansenBatch$hansens[[tree]][, 'sigma.squared'], bic, na.rm = TRUE)
     if(hansenBatch$brown) bicOU <- bic[1: (length(bic) - 1)]
     alphaVector[tree] <- ifelse(hansenBatch$brown, 
-                                weighted.mean(hansenBatch$hansens[[tree]][1:(nmodels - 1), 'theta / alpha'], bicOU, na.rm = T),
-                                weighted.mean(hansenBatch$hansens[[tree]][ , 'theta / alpha'], bic, na.rm = T) 
+                                weighted.mean(hansenBatch$hansens[[tree]][1:(nmodels - 1), 'theta / alpha'], bicOU, na.rm = TRUE),
+                                weighted.mean(hansenBatch$hansens[[tree]][ , 'theta / alpha'], bic, na.rm = TRUE) 
                                 )
     if(hansenBatch$brown) w <- bicOU else w <- bic
     thetaMatrix[tree, ] <- apply(hansenBatch$thetas[[tree]], 2, 
                                  weighted.mean, 
                                  w = w, 
-                                 na.rm = T
+                                 na.rm = TRUE
                                  )
                                  
   }
   # in this matrix, the weight for each node is averaged only over trees that possess that node
-  nodeWeightsMatrix.unnormalized <- nodeWeightsSummed / matrix(nodeSums, nrow = dim(nodeWeightsSummed)[1], ncol = nnodes, byrow = T)
+  nodeWeightsMatrix.unnormalized <- nodeWeightsSummed / matrix(nodeSums, nrow = dim(nodeWeightsSummed)[1], ncol = nnodes, byrow = TRUE)
   # in this matrix, the weight for each node is averaged over all trees
   nodeWeightsMatrix.allNodes <- nodeWeightsSummed / ntrees 
   
@@ -62,8 +62,8 @@ summary.hansenBatch <- function(object, ...){
   #  if(identical(dim(modelsMatrixSubset), NULL)) kMatrix[, i] <- modelsMatrixSubset # is modelsMatrixSubset a 1-d vector?
   #  else kMatrix[, i] <- apply(modelsMatrixSubset, 2, sum) 
   #}
-  modelAvgAlpha <- mean(alphaVector, na.rm = T)
-  modelAvgSigmaSq <- mean(sigmaSqVector, na.rm = T)
+  modelAvgAlpha <- mean(alphaVector, na.rm = TRUE)
+  modelAvgSigmaSq <- mean(sigmaSqVector, na.rm = TRUE)
   outdata <- list(modelsMatrix = modelsMatrix, nodeWeightsMatrix = list(unnormalized = nodeWeightsMatrix.unnormalized, allNodes = nodeWeightsMatrix.allNodes), modelAvgAlpha = modelAvgAlpha, modelAvgSigmaSq = modelAvgSigmaSq, thetaMatrix = thetaMatrix)
   class(outdata) <- 'hansenSummary'
   return(outdata)
