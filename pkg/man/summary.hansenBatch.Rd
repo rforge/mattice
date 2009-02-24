@@ -55,5 +55,5 @@
   }
 \author{Andrew Hipp <ahipp@mortonarb.org>}
 \seealso{
-   \code{carex} for an example
+   \code{\link{carex}} for an example
 }
