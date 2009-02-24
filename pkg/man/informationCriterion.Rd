@@ -72,9 +72,9 @@
     }
     
 }
-\author{Andrew Hipp ahipp@mortonarb.org}
+\author{Andrew Hipp \email{ahipp@mortonarb.org}}
 \references{
   Burnham, K. P., and D. R. Anderson (2002) 
-  Model selection and multimodel inference: a practical information-theoretic approach. 
+  \emph{Model selection and multimodel inference: a practical information-theoretic approach.} 
   Springer, New York.
 }

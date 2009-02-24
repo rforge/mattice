@@ -24,10 +24,17 @@
 }
 \value{
 A list with three items:
-\item{regList} A list (by tree) of lists of regimes that can be input directly into \code{hansen}.
-\item{nodeMatrix} A matrix indicating which nodes are presentin each tree.
-\item{regMatrix} A list (by tree) of matrices indicating which nodes are present in each model.
+\item{regList}{
+  A list (by tree) of lists of regimes that can be input directly into \code{hansen}.
+  }
+\item{nodeMatrix}{
+  A matrix indicating which nodes are presentin each tree.
+  }
+\item{regMatrix}{
+  A list (by tree) of matrices indicating which nodes are present in each model.
+  }
 }
+\author{Andrew Hipp \email{ahipp@mortonarb.org}}
 \seealso{
-\code{\link{paintBranches}}
+  \code{\link{paintBranches}}
 }

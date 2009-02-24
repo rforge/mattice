@@ -28,7 +28,7 @@
 \value{
   None. Called for its side-effect (plotting).
 }
-\author{Andrew Hipp ahipp@mortonarb.org}
+\author{Andrew Hipp \email{ahipp@mortonarb.org}}
 \seealso{
    \code{\link{ouSim}} for simulations; \code{\link{carex}} for examples
 }

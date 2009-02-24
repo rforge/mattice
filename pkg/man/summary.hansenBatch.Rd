@@ -53,7 +53,7 @@
     (the character equilibrium or optimum value) for each branch on each tree
     }
   }
-\author{Andrew Hipp <ahipp@mortonarb.org>}
+\author{Andrew Hipp \email{ahipp@mortonarb.org}}
 \seealso{
    \code{\link{carex}} for an example
 }

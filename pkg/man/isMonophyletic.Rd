@@ -36,4 +36,4 @@
     A vector of tip labels.
     }
   }
-\author{Andrew Hipp ahipp@mortonarb.org}
+\author{Andrew Hipp \email{ahipp@mortonarb.org}}

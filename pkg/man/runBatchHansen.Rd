@@ -6,7 +6,7 @@
   complex Ornstein-Uhlenbeck models.
 }
 \usage{
-runBatchHansen(ouchTrees, characterStates, cladeMembersList, filePrefix = NULL, di = NULL, nodeNames = NULL, maxNodes = length(cladeMembersList), regimeTitles = NULL, brown = F, ...)
+runBatchHansen(ouchTrees, characterStates, cladeMembersList, filePrefix = NULL, di = NULL, nodeNames = NULL, maxNodes = length(cladeMembersList), regimeTitles = NULL, brown = FALSE, ...)
 }
 \arguments{
   \item{ouchTrees}{

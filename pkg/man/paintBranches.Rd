@@ -32,6 +32,7 @@
   A regime in which shifts in optimum are coded as occuring at all nodes specified in \code{regimeShiftNodes}.
   The regime is formated to input directly into \code{hansen}
 }
+\author{Andrew Hipp \email{ahipp@mortonarb.org}}
 \seealso{
   \code{\link{regimeVectors}}, \code{\link{isMonophyletic}}
 }

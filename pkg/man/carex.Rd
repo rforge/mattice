@@ -9,13 +9,13 @@
 \usage{data(carex)}
 \format{
   A list with three items:
-    \item{ovales.tree}{
+    \item{\code{ovales.tree}}{
      An ultrametric tree in \code{phylo} format with 53 tips
      }
-    \item{ovales.data}{
+    \item{\code{ovales.data}}{
      A named numeric vector of log-transformed mean chromosome counts for all 53 taxa
      }
-    \item{ovales.nodes}{
+    \item{\code{ovales.nodes}}{
      A list of eight taxon vectors defining the eight nodes studied.
      }
 }
@@ -33,11 +33,11 @@
 \references{
   Hipp, A.L., P.E. Rothrock, A.A. Reznicek, and J.A. Weber (2006) 
   Phylogeny and classification of Carex section Ovales (Cyperaceae). 
-  International Journal of Plant Sciences 167:1029-1048.
+  \emph{International Journal of Plant Sciences} 167:1029-1048.
   
   Hipp, A.L. (2007) 
   Non-uniform processes of chromosome evolution in sedges (Carex: Cyperaceae). 
-  Evolution 61:2175-2194.
+  \emph{Evolution} 61:2175-2194.
 }
 
 \examples{
