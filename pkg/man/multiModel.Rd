@@ -18,7 +18,9 @@ multiModel(phy, dat, node, models = c("whole.brown", "whole.ou1", "whole.ou2", "
                   \dQuote{part} indicates a model in which the tree is subdivided and treated as two entities }
 }
 \details{
-  The 'censored' approach was presented in O'Meara et al. 2006
+  This function is useful after you have identified nodes at which significant character transitions are likely to have occurred.
+  Its use is to identify whether shifts at a given node are 
+  whether the OU parameters are really necessary. five models tested are
 }
 \value{
   A list with two items:
@@ -33,10 +35,30 @@ multiModel(phy, dat, node, models = c("whole.brown", "whole.ou1", "whole.ou2", "
   O'Meara, B. C., C. Ané, M. J. Sanderson, and P. C. Wainwright (2006) 
   Testing for different rates of continuous trait evolution using likelihood. 
   \emph{Evolution} 60:922--933.
+  
+  O'Meara, B. C. (2009)
+  \emph{brownie} v 1.0 (MATLAB) and v 2.0 (stand-alone). \url{http://www.brianomeara.info/brownie/}
+}
+\examples{
+  library(maticce)
+  data(carex)
+  attach(carex)
+  mm2 <- multiModel(carex$ovales.tree, ovales.data, ovales.nodes[[2]]) # compares five different models of character change at node 2
+  mm2
+  layout(matrix(1:4,2,2))
+  pie(mm2$IC$AICwi, labels = mm2$IC$name, col = rainbow(length(mm2$IC$name)), main = "AIC weights")
+  pie(mm2$IC$AICcwi, labels = mm2$IC$name, col = rainbow(length(mm2$IC$name)), main = "AICc weights")
+  pie(mm2$IC$BICwi, labels = mm2$IC$name, col = rainbow(length(mm2$IC$name)), main = "BIC weights")
+  noChangeAICwi <- sum(mm2$IC$AICwi[1:2])
+  changeAICwi <- sum(mm2$IC$AICwi[3:5])
+  barplot(c(noChangeAICwi, changeAICwi), ylim = c(0,1), names.arg = c('no transition', 'transition'), 
+    main = 'Transition vs. no-transition')
 }
 \author{Andrew L. Hipp \email{ahipp@mortonarb.org}}
 \note{
-  In \pkg{ouch} version 2.x, the \code{ouchtree} function rescales trees to depth = 1. As a consequence, the alpha and sigma parameters
-  are not directly comparable between subtrees, as they were in previous versions of \pkg{ouch}.
+  In \pkg{ouch} version 2.x, the \code{ouchtree} function rescales trees to depth = 1. The alpha and sigma parameters
+  are thus not directly comparable between subtrees, as they were in previous versions of \pkg{ouch}, and this function as currently implemented
+  should not be used to test for shifts in evolutionary rate within a tree (cf. O'Meara et al. 2006). This test can be implemented
+  in \pkg{geiger}, an \pkg{R} package, or \acronym{brownie}, which is available as a stand-alone application or a set of \acronym{MATLAB} modules.
 }
 \seealso{ \code{\link{carex}} for an example}
