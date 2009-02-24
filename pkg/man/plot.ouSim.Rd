@@ -5,7 +5,7 @@
   \code{plot.ouSim} is a \code{plot} method for an \code{ouSim} object.
 }
 \usage{
-  plot.ouSim(x, nodeColor = "blue", nodeDotSize = 1.4, colors = NULL, ...)
+  \method{plot}{ouSim}(x, nodeColor = "blue", nodeDotSize = 1.4, colors = NULL, ...)
 }
 \arguments{
   \item{x}{
@@ -30,5 +30,5 @@
 }
 \author{Andrew Hipp ahipp@mortonarb.org}
 \seealso{
-   \code{\link{ouSim}} for simulations; \code{carex} for examples
+   \code{\link{ouSim}} for simulations; \code{\link{carex}} for examples
 }

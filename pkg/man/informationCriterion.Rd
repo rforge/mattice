@@ -32,10 +32,10 @@
      Optional vector of model names, indexed by model.
      }
    \item{hansenBatch}{
-     Output from \{runBatchHansen}.
+     Output from \code{runBatchHansen}.
      }
    \item{x}{
-     Output from \{informationCriterion}.
+     Output from \code{informationCriterion}.
      }
    \item{...}{
      Additional arguments to be passed along to \code{print}

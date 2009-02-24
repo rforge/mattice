@@ -7,8 +7,8 @@
   \code{print.hansenSummary} is a print method for a \code{hansenSummary} object.
 }
 \usage{
-summary.hansenBatch(object, ...)
-print.hansenSummary(x, ...)
+  \method{summary}{hansenBatch}(object, ...)
+  \method{print}{hansenSummary}(x, ...)
 }
 \arguments{
   \item{object}{

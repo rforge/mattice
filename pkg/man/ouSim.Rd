@@ -13,12 +13,12 @@
 }
 \usage{
   ouSim(object, ...)
-  ouSim.phylo(object, rootState = 0, shiftBranches = NULL, shiftStates = NULL, alpha = 0, variance = 1, theta = rootState, model = "OU", branchMeans = NULL, steps = 1000, ...)
-  ouSim.ouchtree(object, rootState = 0, alpha = 0, variance = 1, theta = rootState, steps = 1000, ...)
-  ouSim.browntree(object, ...)
-  ouSim.hansentree(object, ...)
-  ouSim.hansenBatch(object, ...)
-  ouSim.hansenSummary(object, tree, treeNum = 1, rootState = NULL, ...) 
+  \method{ouSim}{phylo}(object, rootState = 0, shiftBranches = NULL, shiftStates = NULL, alpha = 0, variance = 1, theta = rootState, model = "OU", branchMeans = NULL, steps = 1000, ...)
+  \method{ouSim}{ouchtree}(object, rootState = 0, alpha = 0, variance = 1, theta = rootState, steps = 1000, ...)
+  \method{ouSim}{browntree}(object, ...)
+  \method{ouSim}{hansentree}(object, ...)
+  \method{ouSim}{hansenBatch}(object, ...)
+  \method{ouSim}{hansenSummary}(object, tree, treeNum = 1, rootState = NULL, ...) 
 }
 \details{
   A call to \code{ouSim} detects the class of \code{object} and behaves as follows:
