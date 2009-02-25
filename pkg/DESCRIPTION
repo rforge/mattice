@@ -5,6 +5,7 @@ Version: 0.4
 Date: 2008-12-18
 Depends: ouch, ape
 Enhances: ouch
+Suggests: geiger
 Author: Andrew Hipp <ahipp@mortonarb.org>, with contributions from Marcial Escudero
 Maintainer: Andrew Hipp <ahipp@mortonarb.org>
 Description: Tools for an information-theoretic approach to estimating 

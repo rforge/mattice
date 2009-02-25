@@ -41,6 +41,7 @@ In case you aren't familiar with \code{R}, the following commands will get you s
 
 <<startAnalysis, fig=FALSE>>=
 library(maticce) # load the maticce package into memory; also loads the required ouch package
+library(ape)
 data(carex)
 attach(carex)
 ovales.tree <- ape2ouch(ovales.tree) # make the tree an ouchtree object
@@ -135,23 +136,35 @@ plot(ouSim.ha.4.2, colors = ou2)
 \caption{Simulated character on \code{ovales.tree} at model-averaged theta values, with coloring according to \code{ou2}}
 \end{figure}
 
-What is the relative support for the brownian motion vs. OU-2 model? We find which model has a change only at node 2 by inspecting the regime matrix
+What is the relative support for the Brownian motion model, the OU model that implies no transition in character state, and the OU-2 model with a change only at node 2? We can identify models by inspecting the regime matrix; in this case, model 7 has a change only at node 2, and model 11 is the OU model with no change:
 
 <<ha, fig = FALSE, echo = TRUE>>=
 ha.4.2[['regMatrix']][['overall']]
 @
 
-Then we can find the likelihood of these models on a given tree:
+Then we can find the likelihood and parameter estimates of these models on a given tree:
 
 <<haLnl, fig = FALSE, echo = TRUE>>=
-ha.4.2[['hansens']][[1]] 
+ha.4.2[['hansens']][[1]][c(7, 11, 'brown'), ]
 @
 
 or the information criterion weights:
 
 <<haWeights, fig=FALSE, echo=TRUE>>=
-summary(ha.4.2)[['modelsMatrix']][[1]]
+summary(ha.4.2)[['modelsMatrix']][[1]][c(7, 11, 'brown'), ]
 @
 
+Considering just these models, model 7 is not overwhelmingly supported (BIC weight = 0.530, AICc weight = 0.369), but it is much more strongly supported than the Brownian motion model or the OU model with no change. This points to the utility of model-averaging as a means of localizing character transitions on a phylogenetic tree. Moreover, the fact that a character transition is strongly supported only for node 2 tells us little about whether each node, analyzed on its own, would support a character transition model over a no-transition model. In fact, in the sample data, nodes 1, 2, 3, 4, and 7 all support a transition over no-transition model. You can investigate this node-by-node using the \code{multiModel} function.
+
+<<multiModel, fig=TRUE, echo=TRUE>>=
+layout(matrix(1:9, 3, 3))
+for(i in 1:8) {   
+  mm <- multiModel(carex[['ovales.tree']], ovales.data, ovales.nodes[[i]])
+  pie(mm[['IC']][['BICwi']], labels = mm[['IC']][['names']], 
+    col = rainbow(length(mm[['IC']][['names']])), main = paste("Node",i,"BICwi"))
+  }
+@
+
+The benefit of doing the global test first using \code{runBatchHansen} and related functions is that you first test, globally, whether the node you are looking at shows significantly stronger support for a transition in character state than any other selected node on the tree. Then, you can investigate alternative models using the \code{multiModel} function.
 
 \end{document}
