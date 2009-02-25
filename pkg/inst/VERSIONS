@@ -1,3 +1,8 @@
+v0.9-1	25 February 2009
+- Complete package and examples working
+- Vignette compiling correctly
+- Documentation cleaned up and largely compliant
+
 v0.5	18 December 2008
 - All functions working correctly with ouch v2
 - core documentation completed
