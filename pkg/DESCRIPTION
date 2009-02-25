@@ -1,8 +1,8 @@
 Package: maticce
 Type: Package
 Title: Mapping Transitions in Continuous Character Evolution
-Version: 0.4
-Date: 2008-12-18
+Version: 0.9-1
+Date: 2009-2-25
 Depends: ouch, ape
 Enhances: ouch
 Suggests: geiger
