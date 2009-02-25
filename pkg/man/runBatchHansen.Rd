@@ -1,12 +1,12 @@
 \name{runBatchHansen}
-\alias{runBatchHansen}
+\alias{runBatchHansen}  
 \title{Analyze Ornstein-Uhlenbeck models over a set of trees}
 \description{
   \code{runBatchHansen} simulates the evolution of a single character on an \code{ape}-style user tree under arbitrarily
   complex Ornstein-Uhlenbeck models.
 }
 \usage{
-runBatchHansen(ouchTrees, characterStates, cladeMembersList, filePrefix = NULL, di = NULL, nodeNames = NULL, maxNodes = length(cladeMembersList), regimeTitles = NULL, brown = FALSE, ...)
+runBatchHansen(ouchTrees, characterStates, cladeMembersList, filePrefix = NULL, di = NULL, nodeNames = NULL, maxNodes = length(cladeMembersList), regimeTitles = NULL, brown = FALSE, ...)  
 }
 \arguments{
   \item{ouchTrees}{
@@ -49,12 +49,6 @@ runBatchHansen(ouchTrees, characterStates, cladeMembersList, filePrefix = NULL, 
 \details{
     This function is the primary function for estimating the probability of a change in with changes in regime at the nodes
     specified, with changes corresponding to permutations of the nodes fed to the function. See vignette for additional details.
-    
-    Note: summary estimates of the probability of change on a branch are only valid if 
-    (1) the maximum number of regimes permitted approximates the actual maximum;
-    (2) nodes at which changes actually occurred were included among the nodes being tested; and
-    (3) any matrix you may have utilized to conduct analysis was balanced, 
-        such that all nodes are present in the same number of models.
 }
 \value{
   A list of class \code{hansenBatch} with the following items:
@@ -91,6 +85,13 @@ runBatchHansen(ouchTrees, characterStates, cladeMembersList, filePrefix = NULL, 
   }
 }
 \author{Andrew Hipp <ahipp@mortonarb.org>}
+\note{
+    Summary estimates of the probability of change on a branch are only valid if 
+    (1) the maximum number of regimes permitted approximates the actual maximum;
+    (2) nodes at which changes actually occurred were included among the nodes being tested; and
+    (3) any matrix you may have utilized to conduct analysis was balanced, 
+        such that all nodes are present in the same number of models.
+}
 \seealso{
    \code{\link{summary.hansenBatch}} for summarizing data; \code{\link{carex}} for an example
 }

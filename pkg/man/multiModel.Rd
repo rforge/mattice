@@ -18,9 +18,11 @@ multiModel(phy, dat, node, models = c("whole.brown", "whole.ou1", "whole.ou2", "
                   \dQuote{part} indicates a model in which the tree is subdivided and treated as two entities }
 }
 \details{
-  This function is useful after you have identified nodes at which significant character transitions are likely to have occurred.
-  Its use is to identify whether shifts at a given node are 
-  whether the OU parameters are really necessary. five models tested are
+  This function is useful after you have identified nodes at which significant character transitions are likely to 
+  have occurred. Its use is to identify whether shifts at a given node are compatible with a single Ornstein-Uhlenbeck
+  (O-U) model with a change in equilibrium value at the node; a two-tree model, with each tree evolving under a 
+  separate Brownian motion or O-U model; or a no-change model, either Brownian motion or no-change O-U model. 
+  Details and discussion of biological interpretation of these models is in Hipp 2007.
 }
 \value{
   A list with two items:
@@ -58,7 +60,7 @@ multiModel(phy, dat, node, models = c("whole.brown", "whole.ou1", "whole.ou2", "
 \note{
   In \pkg{ouch} version 2.x, the \code{ouchtree} function rescales trees to depth = 1. The alpha and sigma parameters
   are thus not directly comparable between subtrees, as they were in previous versions of \pkg{ouch}, and this function as currently implemented
-  should not be used to test for shifts in evolutionary rate within a tree (cf. O'Meara et al. 2006). This test can be implemented
+  should not be used to test for shifts in evolutionary rate within a tree (cf. O'Meara et al. 2006). Such a test can be performed
   in \pkg{geiger}, an \pkg{R} package, or \acronym{brownie}, which is available as a stand-alone application or a set of \acronym{MATLAB} modules.
 }
 \seealso{ \code{\link{carex}} for an example}

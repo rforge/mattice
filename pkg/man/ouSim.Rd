@@ -24,27 +24,34 @@
   A call to \code{ouSim} detects the class of \code{object} and behaves as follows:
   \item{\code{phylo}}{
     With an \pkg{ape}-style tree, all parameters of the model are specified by branch. Most flexibility, least convenience.
+    
     }
   \item{\code{ouchtree}}{
     With an \pkg{ouch}-style (S4) tree, again, all parameters of the model are specified by branch. 
     Somewhat less flexibility than \code{ouSim.phylo} but all the pain. Typically just called by the next two methods.
+    
     }
   \item{\code{browntree}}{
     All Brownian motion model parameters and tree are extracted from the \code{browntree} object.
+    
     }
   \item{\code{hansentree}}{
     All Ornstein-Uhlenbeck model parameters and tree are extracted from the \code{hansentree} object.
     Only the first regime is utilized.
+    
     }
   \item{\code{hansenBatch}}{
     Model-averaged parameters from the \code{hansenBatch} object are used for analysis. 
     One of the trees used for analysis must be provided, and a corrsponding tree number must be provided so that 
     branches are indexed correctly.
+    
     }
   \item{\code{hansenSummary}}{
     Behaves exactly like a \code{hansenBatch} object.
+    
     }
-  \code{\code{ouSim.phylo}} is a very basic simulation engine, but also the most flexible. As written, the user has to specify the 
+  \item{\code{ouSim.phylo}}{
+   A very basic simulation engine, but also the most flexible. As written, the user has to specify the 
   model using two vectors that correspond to the branches in an \code{ape}-format tree. It is important to note that
   this simulation method is really a heuristic device, not appropriate for estimating parameter distributions. For
   analysis purposes, you should utilize the \code{simulate} and \code{bootstrap} methods in \pkg{ouch}.
