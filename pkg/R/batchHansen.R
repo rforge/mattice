@@ -28,7 +28,7 @@ function(ouchTrees, characterStates, cladeMembersList, filePrefix = NULL, di = N
   ## Check character states to make sure that they are either named and match names in the trees, or are the same length as the tips
   for (i in 1:length(ouchTrees)) {
     dataFlag <- NULL
-    stopFlag <- F
+    stopFlag <- FALSE
     tree <- ouchTrees[[i]]
     terminals <- tree@nodelabels[(tree@nnodes - tree@nterm + 1):tree@nnodes]
     if(any(FALSE %in% (terminals %in% names(characterStates)))) {
