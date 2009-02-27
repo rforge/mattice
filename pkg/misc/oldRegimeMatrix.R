@@ -40,10 +40,3 @@ as.binary <- function(n, base = 2, r = FALSE, digits = NULL)
    return(out)
 }
 
-as.decimal <- function(n) {
-# takes a binary vector and makes it a decimal
-  digits <- length(n)
-  result <- 0
-  for(i in digits:1) result <- result + n[i] * 2 ^ (digits - i)
-  result
-}

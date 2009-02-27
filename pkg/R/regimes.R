@@ -157,3 +157,11 @@ regimeMatrix <- function(n, maxNodes) {
   dimnames(outmat) = list(seq(dim(outmat)[1]), seq(dim(outmat)[2]))
   return(outmat)
 }
+
+as.decimal <- function(n) {
+# takes a binary vector and makes it a decimal
+  digits <- length(n)
+  result <- 0
+  for(i in digits:1) result <- result + n[i] * 2 ^ (digits - i)
+  result
+}
