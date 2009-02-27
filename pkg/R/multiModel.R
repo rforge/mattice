@@ -37,7 +37,7 @@ multiModel <- function(phy, dat, node, models = c('whole.brown', 'whole.ou1', 'w
      }
    }
   IC <- informationCriterion(lnL = comparelnL, K = compareK, n = length(phy$tip.label), names = models)
-  outdata <- list(IC = IC, modelMatrix <- outMatrix)
+  outdata <- list(IC = IC, modelMatrix = outMatrix)
   return(outdata)
   }
 
