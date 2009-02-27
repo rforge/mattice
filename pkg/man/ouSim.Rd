@@ -55,6 +55,7 @@
   model using two vectors that correspond to the branches in an \code{ape}-format tree. It is important to note that
   this simulation method is really a heuristic device, not appropriate for estimating parameter distributions. For
   analysis purposes, you should utilize the \code{simulate} and \code{bootstrap} methods in \pkg{ouch}.
+  }
 }
 \arguments{
   \item{object}{
