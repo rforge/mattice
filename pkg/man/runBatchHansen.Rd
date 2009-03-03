@@ -2,8 +2,7 @@
 \alias{runBatchHansen}  
 \title{Analyze Ornstein-Uhlenbeck models over a set of trees}
 \description{
-  \code{runBatchHansen} simulates the evolution of a single character on an \code{ape}-style user tree under arbitrarily
-  complex Ornstein-Uhlenbeck models.
+  \code{runBatchHansen} estimates the support for character change on taxon-defined nodes, integrating over uncertainty in the phylogeny and the model of trait evolution.
 }
 \usage{
 runBatchHansen(ouchTrees, characterStates, cladeMembersList, filePrefix = NULL, di = NULL, nodeNames = NULL, maxNodes = length(cladeMembersList), regimeTitles = NULL, brown = FALSE, ...)  
