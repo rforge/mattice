@@ -6,30 +6,32 @@ ouSim.ouchtree <- function(object, rootState = 0, alpha = 0, variance = 1, theta
 tree <- object
 message(paste("running sim with root =", rootState, ", alpha =", mean(alpha), ", var =", variance, "theta =", mean(theta)))
 
-	##embedded function---------------------
-	##could be released to the wild, but more arguments will need to be passed around
+	## embedded function---------------------
+	## could be released to the wild, but more arguments will need to be passed around
 	preorderOU <- function(branchList, tree, startNode, startState, alpha, theta) {
 	  ## Recursive function to generate the data under a Brownian motion or OU model
 	  ## modified for ouchtree (s4) Dec 08
 	  ## branch times back from each tip are in tree@epochs, indexed by tip number
 	  ## nodes back from each node (including tips) are in tree@lineages, indexed by node number
 	  ## a branch length is the time of a node - the time of its ancestor
-	  ## not fixed yet for ouchtree
 	  startBranch <- startNode ## startNode really means start branch... it's the end node of the branch starting this process
 	  workingBranch <- branchList[[startBranch]]
-	  workingBranch[1] <- startState
-	  for (brStep in 2:length(workingBranch)) {
-	    workingBranch[brStep] <- 
-	      workingBranch[brStep - 1] + workingBranch[brStep] + alpha[startBranch] / steps * (theta[startBranch] - workingBranch[brStep - 1]) # denom was mult'd by steps... should be? 
-	    }
-	  branchList[[startBranch]] <- workingBranch
-	  endState <- branchList[[startBranch]][length(branchList[[startBranch]])]
 	  daughterBranches <- tree@nodes[which(tree@ancestors == startNode)]
+	  if(length(workingBranch) == 0) endState <- startState
+	  else {
+	    for (brStep in 1:length(workingBranch)) {
+	      workingBranch[brStep] <- 
+	        startState + workingBranch[brStep] + alpha[startBranch] / steps * (theta[startBranch] - startState) # denom was mult'd by steps... should be? 
+	      startState <- workingBranch[brStep] 
+	      }
+	    branchList[[startBranch]] <- workingBranch
+	    endState <- branchList[[startBranch]][length(branchList[[startBranch]])]
+	    }	  
 	  if(!identical(as.integer(daughterBranches), integer(0))) {
-	    for(i in daughterBranches) branchList <- preorderOU(branchList, tree, i, endState, alpha, theta) }
+	    for(i in daughterBranches) branchList <- preorderOU(branchList, tree, i, endState, alpha, theta) } 
 	  return(branchList) 
 	}  
-	##--------------------------------------
+	## --------------------------------------
 
  #debug(preorderOU)
 
@@ -46,7 +48,7 @@ message(paste("running sim with root =", rootState, ", alpha =", mean(alpha), ",
   ##   If there is a separate variance for each branch, I assume the variance is expressed in terms of total tree-length, 
   ##   so the scaling is the same for all branches
   sdStep <- sqrt(variance / steps)
-  if(length(variance) == 1) branchList <- lapply(sapply(round(brLengths*steps), max, 1), rnorm, sd = sdStep) # makes each branch a minimum of 2 steps long
+  if(length(variance) == 1) branchList <- lapply(round(brLengths*steps), rnorm, sd = sdStep)
   else {
     branchList <- vector("list", length(tree@nnodes)) 
     for(i in seq(tree@nnodes)) branchList[[i]] <- rnorm(n = brLengths[i], mean = 0, sd = sdStep[i])
@@ -57,7 +59,7 @@ message(paste("running sim with root =", rootState, ", alpha =", mean(alpha), ",
   for (i in 1:length(timesList)) timesList[[i]] <- timesList[[i]] + startTimes[i]
 
   ## 3. traverse
-  for(i in which(tree@ancestors == tree@root)) {
+  for(i in which(tree@ancestors == tree@root)) { ## calls preorderOU for each descendent from the root.
     branchList <- preorderOU(branchList, tree, tree@nodes[i], rootState, alpha, theta) 
     }
 		
