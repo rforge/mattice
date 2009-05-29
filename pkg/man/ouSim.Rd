@@ -42,7 +42,7 @@
     }
   \item{\code{hansenBatch}}{
     Model-averaged parameters from the \code{hansenBatch} object are used for analysis. 
-    One of the trees used for analysis must be provided, and a corrsponding tree number must be provided so that 
+    One of the trees used for analysis must be provided, and a corresponding tree number must be provided so that 
     branches are indexed correctly.
     
     }
@@ -51,10 +51,10 @@
     
     }
   \item{\code{ouSim.phylo}}{
-   A very basic simulation engine, but also the most flexible. As written, the user has to specify the 
-  model using two vectors that correspond to the branches in an \code{ape}-format tree. It is important to note that
-  this simulation method is really a heuristic device, not appropriate for estimating parameter distributions. For
-  analysis purposes, you should utilize the \code{simulate} and \code{bootstrap} methods in \pkg{ouch}.
+    A very basic simulation engine, but also the most flexible. As written, the user has to specify the 
+    model using two vectors that correspond to the branches in an \code{ape}-format tree. It is important to note that
+    this simulation method is really a heuristic device, not appropriate for estimating parameter distributions. For
+    analysis purposes, you should utilize the \code{simulate} and \code{bootstrap} methods in \pkg{ouch}.
   }
 }
 \arguments{

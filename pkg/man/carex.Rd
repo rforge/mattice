@@ -8,7 +8,7 @@
 }
 \usage{data(carex)}
 \format{
-  A list with three items:
+  A list with four items:
     \item{\code{ovales.tree}}{
      An ultrametric tree in \code{phylo} format with 53 tips
      }
@@ -17,6 +17,10 @@
      }
     \item{\code{ovales.nodes}}{
      A list of eight taxon vectors defining the eight nodes studied.
+     }
+    \item{\code{ovales.bayesTrees}}{
+     A list of 100 ultrametric trees in \code{phylo} format, subsampled from the MCMC analysis underlying 
+     \code{carex$ovales.bayesTrees}.
      }
 }
 \details{
@@ -43,14 +47,14 @@
 \examples{
   library(maticce)
   data(carex)
-  ovales.tree <- ape2ouch(carex$ovales.tree) # tree comes in in phylo format, but we need an ouchtree object
-  trial <- runBatchHansen(ovales.tree, carex$ovales.data, carex$ovales.nodes[1:4], maxNodes = 2) # for expedience, only tests for changes at up to 2 of the first 4 nodes
+  trees <- lapply(carex$ovales.bayesTrees[1:10], ape2ouch) # tree comes in in phylo format, but we need an ouchtree object
+  trial <- runBatchHansen(trees, carex$ovales.data, carex$ovales.nodes[1:4], maxNodes = 2) # for expedience, only tests for changes at up to 2 of the first 4 nodes
   summary(trial) # summarizes results using summary.hansenBatch and displays the results using print.hansenSummary
   multiModel(carex$ovales.tree, carex$ovales.data, carex$ovales.nodes[[2]]) # compares five different models of character change at node 2
-  trialSim <- ouSim(trial, ovales.tree) # simulates the evolution of the chromosome number under the model-averaged values
+  trialSim <- ouSim(trial, trees[[1]], treeNum = 1) # simulates the evolution of the chromosome number under the model-averaged values, using tree # 1 as the guide tree
   plot(trialSim) # plots the character simulation, with all branches black
-  plot(trialSim, colors = paintBranches(carex$ovales.nodes[1:4], ovales.tree)) # plots the character simulation, with branch colors changing at all 8 nodes
-  plot(trialSim, colors = paintBranches(list(carex$ovales.nodes[[2]]), ovales.tree)) # plots the character simulation, with branch colors changing only at node 2
+  plot(trialSim, colors = paintBranches(carex$ovales.nodes[1:4], trees[[1]])) # plots the character simulation, with branch colors changing at all 8 nodes
+  plot(trialSim, colors = paintBranches(list(carex$ovales.nodes[[2]]), trees[[1]])) # plots the character simulation, with branch colors changing only at node 2
 }
 \author{Andrew L. Hipp <ahipp@mortonarb.org>}
 \keyword{datasets}                                            
