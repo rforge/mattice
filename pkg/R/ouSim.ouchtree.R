@@ -54,7 +54,8 @@ message(paste("running sim with root =", rootState, ", alpha =", mean(alpha), ",
     for(i in seq(tree@nnodes)) branchList[[i]] <- rnorm(n = brLengths[i], mean = 0, sd = sdStep[i])
     }
   names(branchList) <- tree@nodes # branches are indexed by their end nodes
-  timesList <- lapply(branchList, seq) # creates a list of sequential numbers corresponding to the rnorm vectors
+  timesList <- lapply(lapply(branchList, length), seq) # creates a list of sequential numbers corresponding to the rnorm vectors
+  for(i in which(sapply(branchList, length) == 0)) timesList[[i]] <- numeric(0) # added b/c seq(numeric(0)) == 1:0
   startTimes <- round(unlist(sapply(tree@nodes, ancestorTime, tree = tree)) * steps) ## ASSUMES ULTRAMETRICITY
   for (i in 1:length(timesList)) timesList[[i]] <- timesList[[i]] + startTimes[i]
 
