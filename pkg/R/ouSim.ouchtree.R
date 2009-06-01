@@ -7,7 +7,7 @@ tree <- object
 message(paste("running sim with root =", rootState, ", alpha =", mean(alpha), ", var =", variance, "theta =", mean(theta)))
 
 	## embedded function---------------------
-	## could be released to the wild, but more arguments will need to be passed around
+	## could be released to the wild, but more arguments would need to be passed around
 	preorderOU <- function(branchList, tree, startNode, startState, alpha, theta) {
 	  ## Recursive function to generate the data under a Brownian motion or OU model
 	  ## modified for ouchtree (s4) Dec 08
@@ -32,8 +32,6 @@ message(paste("running sim with root =", rootState, ", alpha =", mean(alpha), ",
 	  return(branchList) 
 	}  
 	## --------------------------------------
-
- #debug(preorderOU)
 
   ## 1. initialize
   if(length(alpha) == 1) alpha <- rep(alpha, tree@nnodes)
