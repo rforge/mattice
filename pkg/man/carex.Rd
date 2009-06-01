@@ -47,14 +47,23 @@
 \examples{
   library(maticce)
   data(carex)
-  trees <- lapply(carex$ovales.bayesTrees[1:10], ape2ouch) # tree comes in in phylo format, but we need an ouchtree object
-  trial <- runBatchHansen(trees, carex$ovales.data, carex$ovales.nodes[1:4], maxNodes = 2) # for expedience, only tests for changes at up to 2 of the first 4 nodes
-  summary(trial) # summarizes results using summary.hansenBatch and displays the results using print.hansenSummary
-  multiModel(carex$ovales.tree, carex$ovales.data, carex$ovales.nodes[[2]]) # compares five different models of character change at node 2
-  trialSim <- ouSim(trial, trees[[1]], treeNum = 1) # simulates the evolution of the chromosome number under the model-averaged values, using tree # 1 as the guide tree
-  plot(trialSim) # plots the character simulation, with all branches black
-  plot(trialSim, colors = paintBranches(carex$ovales.nodes[1:4], trees[[1]])) # plots the character simulation, with branch colors changing at all 8 nodes
-  plot(trialSim, colors = paintBranches(list(carex$ovales.nodes[[2]]), trees[[1]])) # plots the character simulation, with branch colors changing only at node 2
+  # tree comes in in phylo format, but we need an ouchtree object
+  trees <- lapply(carex$ovales.bayesTrees[1:10], ape2ouch) 
+  # for expedience, only tests for changes at up to 2 of the first 4 nodes on 10 trees visited in the MCMC phylogenetic analysis
+  trialBayesTrees <- runBatchHansen(trees, carex$ovales.data, carex$ovales.nodes[1:4], maxNodes = 2) 
+  summary(trialBayesTrees) # summarizes results using summary.hansenBatch and displays the results using print.hansenSummary
+  # same analysis as above, but on a single tree
+  trialBayesConsensus <- runBatchHansen(ape2ouch(carex$ovales.tree), carex$ovales.data, carex$ovales.nodes[1:4], maxNodes = 2)
+  # compares five different models of character change at node 2
+  multiModel(carex$ovales.tree, carex$ovales.data, carex$ovales.nodes[[2]])
+  # simulates the evolution of the chromosome number under the model-averaged values
+  trialSim <- ouSim(trialBayesConsensus, ape2ouch(carex$ovales.tree)) 
+  # plots the character simulation, with all branches black
+  plot(trialSim) 
+  # plots the character simulation, with branch colors changing at all 8 nodes
+  plot(trialSim, colors = paintBranches(carex$ovales.nodes[1:4], trees[[1]])) 
+  # plots the character simulation, with branch colors changing only at node 2
+  plot(trialSim, colors = paintBranches(list(carex$ovales.nodes[[2]]), trees[[1]])) 
 }
 \author{Andrew L. Hipp <ahipp@mortonarb.org>}
 \keyword{datasets}                                            
