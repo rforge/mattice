@@ -42,11 +42,12 @@ In case you aren't familiar with \code{R}, the following commands will get you s
 <<startAnalysis, fig=FALSE>>=
 library(maticce) # load maticce and required packages
 data(carex) # load dataset
-attach(carex) # 
-ovales.tree <- ape2ouch(ovales.tree) # make the tree an ouchtree object
+attach(carex) # attach dataset to search path
+ovales.tree <- ape2ouch(ovales.tree) # convert the Bayes consensus to an ouchtree object
+trees <- lapply(ovales.bayesTrees[1:10], ape2ouch) # convert the first 10 trees visited in the MCMC analysis to ouchtree objects
 @
 
-Note that although the sample tree provided (\code{carex[['ovales.tree']]}) is ultrametric, this is not strictly required. The tree itself is a partial phylogeny of sedges; for information about the tree, you can use \code{help(carex)} or \code{?carex} to call the help file for the dataset, which includes the reference. The data associated with this tree (\code{carex[['ovales.data']]}) are log-transformed mean chromosome data. Because the model underlying \pkg{maticce} is a generalized least squares regression model, standard assumptions about data normality apply and should be considered at the outset of any analysis.
+Note that although the sample trees provided (\code{carex[['ovales.tree']]} and \code{carex[['ovales.bayesTrees']]}) are ultrametric, ultrametricity is not strictly required for most analyses in \pkg{maticce}. The simulations implemented in \code{ouSim} do, however, assume ultrametricity. Trees in the \code{carex} dataset comprise a partial phylogeny of sedges; for information about the tree, you can use \code{help(carex)} or \code{?carex} to call the help file for the dataset, which includes the reference. The data associated with this tree (\code{carex[['ovales.data']]}) are log-transformed mean chromosome data. Because the model underlying \pkg{maticce} is a generalized least squares regression model, standard assumptions about data normality apply and should be considered at the outset of any analysis.
 
 \section{Extracting information from trees}
 
@@ -122,6 +123,10 @@ print(summary(ha.4.2))
 ha.4.4 <- runBatchHansen(ovales.tree, ovales.data, 
           ovales.nodes[1:4], maxNodes = 4, brown = T)
 print(summary(ha.4.4))
+# Then, assess the effects of phylogenetic uncertainty by analyzing over a set of trees
+ha.4.2.multi <- runBatchHansen(trees, ovales.data, 
+                ovales.nodes[1:4], maxNodes = 2, brown = T)
+print(summary(ha.4.2.multi))
 @
 
 In the examples above, support for node two is relatively little affected by the value of \code{maxNodes}.
