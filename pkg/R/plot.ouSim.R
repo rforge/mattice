@@ -1,4 +1,4 @@
-trplot.ouSim <- function(x, nodeColor = "blue", nodeDotSize = 1.4, colors = NULL, ...) {
+plot.ouSim <- function(x, nodeColor = "blue", nodeDotSize = 1.4, colors = NULL, ...) {
 ## To plot different clades, set the colors vector according to the branches in the original 
 ## only passes the ... along to lines
   branches = length(x$branchList)
