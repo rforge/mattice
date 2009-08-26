@@ -6,7 +6,6 @@
 \usepackage{array}
 \usepackage{color}
 \SweaveOpts{keep.source=TRUE}
-\usepackage[utf8]{inputenc} % for UTF-8/single quotes from sQuote()
 \newcommand{\code}{\texttt}
 \newcommand{\pkg}{\textsf}
 \title{Utilizing \pkg{maticce} to estimate transitions in continuous character evolution}
@@ -75,7 +74,7 @@ Alternatively, if you want to designate the node more quickly by just selecting 
   >   }
 \end{verbatim}
 
-These functions are all documented under \code{isMonophyletic}. Note that for many analyses that you might want to perform over a set of trees, you will need to determine for each tree whether each node of interest is present on the tree. There are alternative ways to do this (for example, a relatively new function in \pkg{ape} (\code{makeNodeLabel}) generates node labels by sorting and saving the descendents of each node to a file, then using \code{md5sum} to get a unique node label that uniquely identifies all the nodes in a tree with respect to its descendents. In \pkg{maticce}, node identity is checked automatically during batch analyses (see section \sQuote{Batch analyses} below by defining nodes based on their descendents, then checking for monophyly on each tree. For standard analyses in \pkg{maticce}, you do not have to worry about this yourself, but isn't it nice to think about?
+These functions are all documented under \code{isMonophyletic}. Note that for many analyses that you might want to perform over a set of trees, you will need to determine for each tree whether each node of interest is present on the tree. There are alternative ways to do this (for example, a relatively new function in \pkg{ape} (\code{makeNodeLabel}) generates node labels by sorting and saving the descendents of each node to a file, then using \code{md5sum} to get a unique node label that uniquely identifies all the nodes in a tree with respect to its descendents. In \pkg{maticce}, node identity is checked automatically during batch analyses (see section Batch analyses below) by defining nodes based on their descendents, then checking for monophyly on each tree. For standard analyses in \pkg{maticce}, you do not have to worry about this yourself.
 
 \section{Painting regimes}
 
