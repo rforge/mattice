@@ -22,6 +22,7 @@
 }
 \details{
   A call to \code{ouSim} detects the class of \code{object} and behaves as follows:
+  \itemize{
   \item{\code{phylo}}{
     With an \pkg{ape}-style tree, all parameters of the model are specified by branch. Most flexibility, least convenience.
     
@@ -55,6 +56,7 @@
     model using two vectors that correspond to the branches in an \code{ape}-format tree. It is important to note that
     this simulation method is really a heuristic device, not appropriate for estimating parameter distributions. For
     analysis purposes, you should utilize the \code{simulate} and \code{bootstrap} methods in \pkg{ouch}.
+  }
   }
 }
 \arguments{

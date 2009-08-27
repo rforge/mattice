@@ -9,6 +9,7 @@
 \usage{data(carex)}
 \format{
   A list with four items:
+  \itemize{
     \item{\code{ovales.tree}}{
      An ultrametric tree in \code{phylo} format with 53 tips
      }
@@ -22,6 +23,7 @@
      A list of 100 ultrametric trees in \code{phylo} format, subsampled from the MCMC analysis underlying 
      \code{carex$ovales.bayesTrees}.
      }
+  }
 }
 \details{
   Phylogeny (\code{ovales.tree}) was estimated for approximately 80 species (Hipp 2006), branch lengths optimized using

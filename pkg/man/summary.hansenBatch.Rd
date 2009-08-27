@@ -35,12 +35,14 @@
   }
   \item{nodeWeightsMatrix}{
     A list of length two with two matrices: 
+    \itemize{
     \item{unnormalized}{
       The cumulative information criterion weight for each node, averaged only over trees that possess that node
       }
     \item{allNodes}{
       The cumulative information criterion weight for each node, averaged over all trees.
       }
+    }
     }
   \item{modelAvgAlpha}{
     The model-averaged estimate of \code{alpha}, the rate of evolution toward the equilibrium / optimum
