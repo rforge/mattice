@@ -1,7 +1,6 @@
 multiModel <- function(phy, dat, node, models = c('whole.brown', 'whole.ou1', 'whole.ou2','part.brown', 'part.ou')) {
 # test the support for alternative models on simple and partitioned trees
-# currently only works on one tree; fix so it runs on a set of trees, conditioned on those trees that have the node of interest;
-# return percent of trees possessing that node as an additional value
+# currently only works on one tree; eventually should be modified so it runs on a set of trees, conditioned on those trees that have the node of interest and returning percent of trees possessing that node as an additional value
   paramHeader <- c('loglik', 'dof', 'sigma.squared', 'alpha', 'theta', 'optimum', 'optimum.uptree', 'optimum.downtree')
   paramsAll <- c('loglik', 'dof', 'sigma.squared')
   paramSets <- list(brown = c(paramsAll, 'theta'), 
