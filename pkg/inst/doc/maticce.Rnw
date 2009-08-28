@@ -42,8 +42,10 @@ In case you aren't familiar with \code{R}, the following commands will get you s
 library(maticce) # load maticce and required packages
 data(carex) # load dataset
 attach(carex) # attach dataset to search path
-ovales.tree <- ape2ouch(ovales.tree) # convert the Bayes consensus to an ouchtree object
-trees <- lapply(ovales.bayesTrees[1:10], ape2ouch) # convert the first 10 trees visited in the MCMC analysis to ouchtree objects
+# convert the Bayes consensus to an ouchtree object...
+ovales.tree <- ape2ouch(ovales.tree) 
+# ... then convert the first 10 trees visited in the MCMC analysis to ouchtree objects
+trees <- lapply(ovales.bayesTrees[1:10], ape2ouch) 
 @
 
 Note that although the sample trees provided (\code{carex[['ovales.tree']]} and \code{carex[['ovales.bayesTrees']]}) are ultrametric, ultrametricity is not strictly required for most analyses in \pkg{maticce}. The simulations implemented in \code{ouSim} do, however, assume ultrametricity. Trees in the \code{carex} dataset comprise a partial phylogeny of sedges; for information about the tree, you can use \code{help(carex)} or \code{?carex} to call the help file for the dataset, which includes the reference. The data associated with this tree (\code{carex[['ovales.data']]}) are log-transformed mean chromosome data. Because the model underlying \pkg{maticce} is a generalized least squares regression model, standard assumptions about data normality apply and should be considered at the outset of any analysis.
@@ -62,15 +64,17 @@ These functions can be used interactively to identify nodes on the tree for anal
 
 \begin{verbatim}
   > nodes <- list(8) # assuming you want 8 nodes
-  > for(i in 1:length(nodes)) nodes[[i]] <- select.list(otree@nodelabels, multiple = T)
+  > for(i in 1:length(nodes)) 
+  >   nodes[[i]] <- select.list(ovales.tree@nodelabels, multiple = T)
 \end{verbatim}
 
 Alternatively, if you want to designate the node more quickly by just selecting the most recent common ancestor of a set of taxa:
 
 \begin{verbatim}
   > for(i in 1:length(nodes)) {
-  >   ancestor <- mrcaOUCH(select.list(otree@nodelabels, multiple = T), otree)
-  >   nodes[[i]] <- nodeDescendents(otree, ancestor)
+  >   ancestor <- 
+  >     mrcaOUCH(select.list(ovales.tree@nodelabels, multiple = T), ovales.tree)
+  >   nodes[[i]] <- nodeDescendents(ovales.tree, ancestor)
   >   }
 \end{verbatim}
 
@@ -122,7 +126,8 @@ print(summary(ha.4.2))
 ha.4.4 <- runBatchHansen(ovales.tree, ovales.data, 
           ovales.nodes[1:4], maxNodes = 4, brown = T)
 print(summary(ha.4.4))
-# Then, assess the effects of phylogenetic uncertainty by analyzing over a set of trees
+# Then, assess the effects of phylogenetic uncertainty by 
+#   analyzing over a set of trees
 ha.4.2.multi <- runBatchHansen(trees, ovales.data, 
                 ovales.nodes[1:4], maxNodes = 2, brown = T)
 print(summary(ha.4.2.multi))
@@ -168,6 +173,6 @@ for(i in 1:8) {
   }
 @
 
-The benefit of doing the global test first using \code{runBatchHansen} and related functions is that you first test, globally, whether the node you are looking at shows significantly stronger support for a transition in character state than any other selected node on the tree. Then, you can investigate alternative models using the \code{multiModel} function.
+In this figure, the yellow portion of each pie-chart is the BIC weight for the OU model with no transition in stationary distribution. This no-change model receives > 5 percent support only at nodes 5, 6, and 8. The benefit of doing the global test first using \code{runBatchHansen} and related functions is that you first test, globally, whether the node you are looking at shows significantly stronger support for a transition in character state than any other selected node on the tree. Then, you can investigate alternative models using the \code{multiModel} function.
 
 \end{document}
