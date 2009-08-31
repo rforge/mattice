@@ -44,7 +44,8 @@ data(carex) # load dataset
 attach(carex) # attach dataset to search path
 # convert the Bayes consensus to an ouchtree object...
 ovales.tree <- ape2ouch(ovales.tree) 
-# ... then convert the first 10 trees visited in the MCMC analysis to ouchtree objects
+# ... then convert the first 10 trees visited in the MCMC 
+#     analysis to ouchtree objects
 trees <- lapply(ovales.bayesTrees[1:10], ape2ouch) 
 @
 
@@ -65,17 +66,19 @@ These functions can be used interactively to identify nodes on the tree for anal
 \begin{verbatim}
   > nodes <- list(8) # assuming you want 8 nodes
   > for(i in 1:length(nodes)) 
-  >   nodes[[i]] <- select.list(ovales.tree@nodelabels, multiple = T)
+  +  nodes[[i]] <- select.list(ovales.tree@nodelabels, 
+  +  multiple = T)
 \end{verbatim}
 
 Alternatively, if you want to designate the node more quickly by just selecting the most recent common ancestor of a set of taxa:
 
 \begin{verbatim}
   > for(i in 1:length(nodes)) {
-  >   ancestor <- 
-  >     mrcaOUCH(select.list(ovales.tree@nodelabels, multiple = T), ovales.tree)
-  >   nodes[[i]] <- nodeDescendents(ovales.tree, ancestor)
-  >   }
+  +  ancestor <- 
+  +    mrcaOUCH(select.list(ovales.tree@nodelabels, multiple = T), 
+  +     ovales.tree)
+  +  nodes[[i]] <- nodeDescendents(ovales.tree, ancestor)
+  +  }
 \end{verbatim}
 
 These functions are all documented under \code{isMonophyletic}. Note that for many analyses that you might want to perform over a set of trees, you will need to determine for each tree whether each node of interest is present on the tree. There are alternative ways to do this (for example, a relatively new function in \pkg{ape} (\code{makeNodeLabel}) generates node labels by sorting and saving the descendents of each node to a file, then using \code{md5sum} to get a unique node label that uniquely identifies all the nodes in a tree with respect to its descendents. In \pkg{maticce}, node identity is checked automatically during batch analyses (see section Batch analyses below) by defining nodes based on their descendents, then checking for monophyly on each tree. For standard analyses in \pkg{maticce}, you do not have to worry about this yourself.
@@ -167,9 +170,11 @@ Considering just these models, model 7 is not overwhelmingly supported (BIC weig
 <<multiModel, fig=TRUE, echo=TRUE>>=
 layout(matrix(1:9, 3, 3))
 for(i in 1:8) {   
-  mm <- multiModel(carex[['ovales.tree']], ovales.data, ovales.nodes[[i]])
+  mm <- multiModel(carex[['ovales.tree']], ovales.data, 
+        ovales.nodes[[i]])
   pie(mm[['IC']][['BICwi']], labels = mm[['IC']][['names']], 
-    col = rainbow(length(mm[['IC']][['names']])), main = paste("Node",i,"BICwi"))
+    col = rainbow(length(mm[['IC']][['names']])), 
+    main = paste("Node",i,"BICwi"))
   }
 @
 
