@@ -64,8 +64,8 @@
     In a call to the generic function, an object of class phylo, ouchtree, browntree, hansentree, hansenBatch, or hansenSummary.
     }
   \item{rootState}{
-    The character state at the root of the tree. In a {browntree} object, this value is provided. In a {hansentree} or
-    {batchHansen} object, the value at the root is not provided, but it is taken to be the equilibrium or optimum 
+    The character state at the root of the tree. In a \code{browntree} object, this value is provided. In a \code{hansentree} or
+    \code{batchHansen} object, the value at the root is not provided, but it is taken to be the equilibrium or optimum 
     (\code{theta}) at the root of the tree.
     }
   \item{shiftBranches}{
