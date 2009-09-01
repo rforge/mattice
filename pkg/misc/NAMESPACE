@@ -1,6 +1,0 @@
-export(informationCriterion, informationCriterion.hansenBatch)
-export(ouSim, ouSim.hansenBatch, ouSim.hansenSummary, ouSim.browntree, ouSim.hansentree, ouSim.ouchtree, ouSim.phylo, plot.ouSim)
-export(regimeVectors, paintBranches)
-export(summary.hansenBatch, print.hansenSummary)
-export(isMonophyletic, nodeDescendents, mrcaOUCH)
-export(runBatchHansen)
