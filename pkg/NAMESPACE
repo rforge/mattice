@@ -1,6 +1,5 @@
 import(ape, ouch)
 
-export(carex)
 export(informationCriterion, informationCriterion.hansenBatch)
 export(isMonophyletic, nodeDescendents, mrcaOUCH)
 export(multiModel)
