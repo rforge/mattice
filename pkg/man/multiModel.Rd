@@ -4,7 +4,7 @@
 \description{
   Compares up to five different models of character evolution: two models of no transition (Brownian motion and a single-
   optimum Ornstein-Uhlenbeck model); one model allowing transition at a single node in a whole-tree context; and two models 
-  that split the tree into two subtrees and treat character evolution separately in the two trees (the 'censored' approach -- see
+  that split the tree into two subtrees and treat character evolution separately in the two trees (the \sQuote{censored} approach -- see
   discussion below).
 }
 \usage{
@@ -34,7 +34,7 @@ multiModel(phy, dat, node, models = c("whole.brown", "whole.ou1", "whole.ou2", "
   Non-uniform processes of chromosome evolution in sedges (Carex: Cyperaceae). 
   \emph{Evolution} 61:2175--2194.
 
-  O'Meara, B. C., C. Ané, M. J. Sanderson, and P. C. Wainwright (2006) 
+  O'Meara, B. C., C. Ane, M. J. Sanderson, and P. C. Wainwright (2006) 
   Testing for different rates of continuous trait evolution using likelihood. 
   \emph{Evolution} 60:922--933.
   
