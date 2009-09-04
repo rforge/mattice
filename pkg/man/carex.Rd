@@ -47,7 +47,6 @@
 }
 
 \examples{
-  library(maticce)
   data(carex)
   # tree comes in in phylo format, but we need an ouchtree object
   trees <- lapply(carex$ovales.bayesTrees[1:10], ape2ouch) 

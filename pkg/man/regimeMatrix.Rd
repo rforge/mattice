@@ -12,40 +12,34 @@
 \usage{
 regimeMatrix(n, maxNodes)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{n}{
-%%     ~~Describe \code{n} here~~
+  An integer between 1 and \code{maxNodes}
 }
   \item{maxNodes}{
-%%     ~~Describe \code{maxNodes} here~~
+  An integer between 1 and n; at \code{n} = \code{maxNodes}, \code{regimeMatrix} will return a matrix of 2^\code{n} rows.
 }
 }
 \details{
   Typically, this function is called by \code{regimeVectors},
-  but it may be useful to 
+  but it may be useful to call this function if you are interested in definining a 
   }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
-}
+  A matrix of n columns by k rows, where n is a number
+  of items and k is the number of all possible permutations of those items, up to a maximum number of items
+  defined by \code{maxNodes}, and including a row with zero items
+  }
 \references{
 %% ~put references to the literature/web site here ~
 }
 \author{
-%%  ~~who you are~~
+  Andrew Hipp \email{ahipp@mortonarb.org}
 }
 \note{
 %%  ~~further notes~~
 }
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
 \seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+  \code{\link{regimeMaker}}, \code{\link{paintBranches}}
 }
 \examples{
 ##---- Should be DIRECTLY executable !! ----

@@ -5,7 +5,7 @@
   Returns ouch-style regimes defined by a matrix, with each row specifying which nodes permit character transitions
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+  This function utilizes a matrix of the format returned by \code{regimeMatrix}
 }
 \usage{
 regimeMaker(ouchTrees, regMatrix, nodeMembers)
@@ -45,57 +45,16 @@ regimeMaker(ouchTrees, regMatrix, nodeMembers)
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+  \code{\link{regimeMatrix}}, \code{\link{paintBranches}}
 }
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
-
-## The function is currently defined as
-function (ouchTrees, regMatrix, nodeMembers) 
-{
-    numTrees <- length(ouchTrees)
-    numNodes <- length(nodeMembers)
-    if (numNodes != dim(regMatrix)[2]) 
-        stop("Number of nodes (columns) in regMatrix must equal number of items in nodeMembers list")
-    nodeMatrix <- matrix(NA, nrow = numTrees, ncol = numNodes, 
-        dimnames = list(seq(numTrees), dimnames(regMatrix)[[2]]))
-    changeNodes <- list(numTrees)
-    regList <- list(numTrees)
-    regMatrices <- list(numTrees)
-    for (i in seq(numNodes)) nodeMatrix[, i] <- unlist(lapply(ouchTrees, 
-        isMonophyletic, taxa = nodeMembers[[i]]))
-    for (i in seq(numTrees)) {
-        tree <- ouchTrees[[i]]
-        regMatrices[[i]] <- regMatrix * as.numeric(matrix(nodeMatrix[i, 
-            ], dim(regMatrix)[1], dim(regMatrix)[2], byrow = TRUE))
-        regMatrices[[i]][1:(dim(regMatrices[[i]])[1] - 1), ][which(apply(regMatrices[[i]][1:(dim(regMatrices[[i]])[1] - 
-            1), ], 1, sum) == 0), ] <- rep(NA, numNodes)
-        regMatrices[[i]][duplicated(apply(regMatrices[[i]], 1, 
-            as.decimal)), ] <- rep(NA, numNodes)
-        dimnames(regMatrices[[i]]) <- list(seq(dim(regMatrices[[i]])[1]), 
-            dimnames(regMatrices[[i]])[[2]])
-        numTreeRegs <- dim(regMatrices[[i]])[1]
-        treeRegs <- list(numTreeRegs)
-        nodesVector <- unlist(lapply(nodeMembers, mrcaOUCH, tree = ouchTrees[[i]]))
-        for (j in seq(numTreeRegs)) {
-            if (any(is.na(regMatrices[[i]][j, ]))) 
-                treeRegs[[j]] <- NA
-            else {
-                treeRegs[[j]] <- as.factor(paintBranches(c("1", 
-                  nodesVector[as.logical(regMatrices[[i]][j, 
-                    ])]), tree))
-                names(treeRegs[[j]]) <- tree@nodes
-            }
-        }
-        regList[[i]] <- treeRegs
-    }
-    regMatrices$overall <- regMatrix
-    outdata <- list(regList = regList, nodeMatrix = nodeMatrix, 
-        regMatrix = regMatrices)
-    return(outdata)
-  }
+  data(carex)
+  # tree comes in in phylo format, but we need an ouchtree object
+  trees <- lapply(carex$ovales.bayesTrees[1:10], ape2ouch) 
+  # if we are interested in comparing the single-change models that allow changes only at nodes 1, 2, 4, 5, and 8, as well as the no-change model, we could do:
+  mat <- regimeMatrix(n = 8, maxNodes = 1)[c(1,2,4,5,8,9), ] # the 9th row is the no-change model
+  regs <- regimeMaker(trees, mat, carex$ovales.nodes)
+  
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
