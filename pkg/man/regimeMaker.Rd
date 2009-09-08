@@ -2,48 +2,50 @@
 \Rdversion{1.1}
 \alias{regimeMaker}
 \title{
-  Returns ouch-style regimes defined by a matrix, with each row specifying which nodes permit character transitions
+  Paint ouch-style regimes over a set of trees based on a user-defined matrix
 }
 \description{
-  This function utilizes a matrix of the format returned by \code{regimeMatrix}
+  This function utilizes a matrix of the format returned by \code{regimeMatrix} to define the models it is going to create. Then, it paints these models onto the trees provided and returns a list suitable for further analysis.
 }
 \usage{
 regimeMaker(ouchTrees, regMatrix, nodeMembers)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{ouchTrees}{
-%%     ~~Describe \code{ouchTrees} here~~
-}
+  A list of \pkg{ouch}-style trees
+  }
   \item{regMatrix}{
-%%     ~~Describe \code{regMatrix} here~~
-}
+  A model by nodes matrix of the format returned by \code{regimeMatrix}
+  }
   \item{nodeMembers}{
-%%     ~~Describe \code{nodeMembers} here~~
-}
+  A list of individuals defining the nodes specified in \code{regMatrix}
+  }
 }
 \details{
-%%  ~~ If necessary, more details than the description above ~~
+  The easiest way to use this function will usually be to utilize \code{regimeMatrix} to create the matrix input as \code{regMatrix} and manually prune or add rows. See the example below.
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
-}
-\references{
-%% ~put references to the literature/web site here ~
+  A list with three items:
+  \item{regList}{
+    A list of lists of regimes, with the number of first-order items corresponding to the number of trees in \code{ouchTrees}, 
+    the number of second-order items corresponding to the number of models being tested. 
+    In the example below, \code{regs$regList[[2]][[4]]} is the fourth model defined on the second tree.
+    }
+  \item{nodeMatrix}{
+    A boolean matrix with rows corresponding to the trees in \code{ouchTrees} and columns corresponding to the nodes specified in \code{regMatrix}; 
+    cells indicate by \code{TRUE} or \code{FALSE} whether a node is present in each of the trees being analyzed.
+    }
+  \item{regMatrix}{
+    A list of \code{regimeMatrix}-format matrices that define the models applicable for each tree in \code{ouchTrees}, with missing nodes designated by NAs.
+    }
 }
 \author{
-%%  ~~who you are~~
+  Andrew L. Hipp <ahipp@mortonarb.org>
 }
 \note{
-%%  ~~further notes~~
+  Use of \code{regimeMatrix} or \code{regimeMaker} to generate tailored sets of regimes is not currently integrated smoothly with \code{runBatchHansen},
+  but for the time being they can be used to create regimes for manual analysis.
 }
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
 \seealso{
   \code{\link{regimeMatrix}}, \code{\link{paintBranches}}
 }
@@ -53,10 +55,11 @@ regimeMaker(ouchTrees, regMatrix, nodeMembers)
   trees <- lapply(carex$ovales.bayesTrees[1:10], ape2ouch) 
   # if we are interested in comparing the single-change models that allow changes only at nodes 1, 2, 4, 5, and 8, as well as the no-change model, we could do:
   mat <- regimeMatrix(n = 8, maxNodes = 1)[c(1,2,4,5,8,9), ] # the 9th row is the no-change model
+  #... then we make regimes based on that regime matrix...
   regs <- regimeMaker(trees, mat, carex$ovales.nodes)
-  
+  #... and paint the regimes from tree 1 onto tree 1 either singly...
+  plot(trees[[1]], regime = regs$regList[[1]][[1]])
+  #... or in a layout:
+  plot(trees[[1]], regime = regs$regList[[1]])
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+\keyword{ models }
