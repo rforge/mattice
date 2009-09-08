@@ -36,5 +36,5 @@ A list with three items:
 }
 \author{Andrew Hipp \email{ahipp@mortonarb.org}}
 \seealso{
-  \code{\link{paintBranches}}
+  \code{\link{paintBranches}}, \code{link{regimeMatrix}}, \code{link{regimeMaker}}
 }
