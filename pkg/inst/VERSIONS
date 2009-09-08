@@ -1,3 +1,8 @@
+v0.9-2  8 September 2009
+- All functions exported in NAMESPACE documented
+- Vignette cleaned up
+- Development status changed to beta
+
 v0.9-1	25 February 2009
 - Complete package and examples working
 - Vignette compiling correctly
