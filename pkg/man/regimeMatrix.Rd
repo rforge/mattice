@@ -30,9 +30,6 @@
   of items and k is the number of all possible permutations of those items, up to a maximum number of items
   defined by \code{maxNodes}, and including a row with zero items
   }
-\references{
-%% ~put references to the literature/web site here ~
-}
 \author{
   Andrew Hipp \email{ahipp@mortonarb.org}
   }
