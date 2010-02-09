@@ -1,14 +1,14 @@
-ouSim.ouchtree <- function(object, rootState = 0, alpha = 0, variance = 1, theta = rootState, steps = 1000, ...) {
+ouSim.ouchtree <- function(object, rootState = 0, sqrt.alpha = 0, variance = 1, theta = rootState, steps = 1000, ...) {
 ## function to plot a simulated dataset under brownian motion or Ornstein-Uhlenbeck (OU) model
 ## Arguments:
 ##   object is an ouch-style (S4) tree
-##   alpha and theta are either single values or vectors of length (length(branchList))
+##   sqrt.alpha and theta are either single values or vectors of length (length(branchList))
 tree <- object
-message(paste("running sim with root =", rootState, ", alpha =", mean(alpha), ", var =", variance, "theta =", mean(theta)))
+message(paste("running sim with root =", rootState, ", sqrt.alpha =", mean(sqrt.alpha), ", var =", variance, "theta =", mean(theta)))
 
 	## embedded function---------------------
 	## could be released to the wild, but more arguments would need to be passed around
-	preorderOU <- function(branchList, tree, startNode, startState, alpha, theta) {
+	preorderOU <- function(branchList, tree, startNode, startState, sqrt.alpha, theta) {
 	  ## Recursive function to generate the data under a Brownian motion or OU model
 	  ## modified for ouchtree (s4) Dec 08
 	  ## branch times back from each tip are in tree@epochs, indexed by tip number
@@ -21,24 +21,24 @@ message(paste("running sim with root =", rootState, ", alpha =", mean(alpha), ",
 	  else {
 	    for (brStep in 1:length(workingBranch)) {
 	      workingBranch[brStep] <- 
-	        startState + workingBranch[brStep] + alpha[startBranch] / steps * (theta[startBranch] - startState) # denom was mult'd by steps... should be? 
+	        startState + workingBranch[brStep] + sqrt.alpha[startBranch] / steps * (theta[startBranch] - startState) # denom was mult'd by steps... should be? 
 	      startState <- workingBranch[brStep] 
 	      }
 	    branchList[[startBranch]] <- workingBranch
 	    endState <- branchList[[startBranch]][length(branchList[[startBranch]])]
 	    }	  
 	  if(!identical(as.integer(daughterBranches), integer(0))) {
-	    for(i in daughterBranches) branchList <- preorderOU(branchList, tree, i, endState, alpha, theta) } 
+	    for(i in daughterBranches) branchList <- preorderOU(branchList, tree, i, endState, sqrt.alpha, theta) } 
 	  return(branchList) 
 	}  
 	## --------------------------------------
 
   ## 1. initialize
-  if(length(alpha) == 1) alpha <- rep(alpha, tree@nnodes)
+  if(length(sqrt.alpha) == 1) sqrt.alpha <- rep(sqrt.alpha, tree@nnodes)
   if(length(theta) == 1) theta <- rep(theta, tree@nnodes)
   brLengths <- c(0, unlist(lapply(2:tree@nnodes, branchLength, tree = tree))) # assumes first node is root; this should be relaxed
   names(brLengths) <- tree@nodes # branches are indexed by end node
-  names(alpha) <- tree@nodes
+  names(sqrt.alpha) <- tree@nodes
   names(theta) <- tree@nodes
 
   ## 2. The following creates a list of random draws from the normal distribution, with standard deviation scaled by total 
@@ -60,10 +60,10 @@ message(paste("running sim with root =", rootState, ", alpha =", mean(alpha), ",
 
   ## 3. traverse
   for(i in which(tree@ancestors == tree@root)) { ## calls preorderOU for each descendent from the root.
-    branchList <- preorderOU(branchList, tree, tree@nodes[i], rootState, alpha, theta) 
+    branchList <- preorderOU(branchList, tree, tree@nodes[i], rootState, sqrt.alpha, theta) 
     }
 		
-  value <- list(branchList = branchList, timesList = timesList, steps = steps, parameters = list(rootState = rootState, alpha = alpha, variance = variance, theta = theta))
+  value <- list(branchList = branchList, timesList = timesList, steps = steps, parameters = list(rootState = rootState, sqrt.alpha = sqrt.alpha, variance = variance, theta = theta))
   class(value) <- "ouSim"
   return(value)
 }

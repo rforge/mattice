@@ -12,7 +12,7 @@ summary.hansenBatch <- function(object, ...){
   nnodes <- length(nodeSums) # number of nodes being studied
   nodes <- dimnames(hansenBatch$regMatrix$overall)[[2]] # grab the overall regMatrix, which includes all possible nodes
   sigmaSqVector <- numeric(ntrees) # vector to capture model-averaged sigma^2 for each tree
-  alphaVector <- numeric(ntrees) # vector to capture model-averaged alpha for each tree
+  sqrt.alphaVector <- numeric(ntrees) # vector to capture model-averaged sqrt.alpha for each tree
   modelsMatrix <- vector('list', ntrees) # list of matrices, indexed by tree, holding the weight for each model
   matrixRows <- c('AIC.weight', 'AICc.weight', 'BIC.weight') # rows in the matrix
   nodeWeightsSummed <- matrix(0, nrow = length(matrixRows), ncol = nnodes, dimnames = list(matrixRows, nodes)) # holds node weights summed
@@ -32,9 +32,9 @@ summary.hansenBatch <- function(object, ...){
 	  }
     sigmaSqVector[tree] <- weighted.mean(hansenBatch$hansens[[tree]][, 'sigma.squared'], bic, na.rm = TRUE)
     if(hansenBatch$brown) bicOU <- bic[1: (length(bic) - 1)]
-    alphaVector[tree] <- ifelse(hansenBatch$brown, 
-                                weighted.mean(hansenBatch$hansens[[tree]][1:(nmodels - 1), 'theta / alpha'], bicOU, na.rm = TRUE),
-                                weighted.mean(hansenBatch$hansens[[tree]][ , 'theta / alpha'], bic, na.rm = TRUE) 
+    sqrt.alphaVector[tree] <- ifelse(hansenBatch$brown, 
+                                weighted.mean(hansenBatch$hansens[[tree]][1:(nmodels - 1), 'theta / sqrt.alpha'], bicOU, na.rm = TRUE),
+                                weighted.mean(hansenBatch$hansens[[tree]][ , 'theta / sqrt.alpha'], bic, na.rm = TRUE) 
                                 )
     if(hansenBatch$brown) w <- bicOU else w <- bic
     thetaMatrix[tree, ] <- apply(hansenBatch$thetas[[tree]], 2, 
@@ -51,7 +51,7 @@ summary.hansenBatch <- function(object, ...){
   
   # sum over number of parameters
   # create a vector of sums that tells us how many categories there are for each model: dof = sum(nodes) + 1 [because a node indicates a change in 
-  #   regime, thus the total number of thetas = nodes + 1] + alpha + sigma = sum(nodes) + 3; for Brownian motion model, dof = 2
+  #   regime, thus the total number of thetas = nodes + 1] + sqrt.alpha + sigma = sum(nodes) + 3; for Brownian motion model, dof = 2
   
   #nodeSums <- apply(hansenBatch$regMatrix$overall, 1, sum) + 3
   #if(hansenBatch$brown) nodeSums['brown'] <- 2
@@ -62,7 +62,7 @@ summary.hansenBatch <- function(object, ...){
   #  if(identical(dim(modelsMatrixSubset), NULL)) kMatrix[, i] <- modelsMatrixSubset # is modelsMatrixSubset a 1-d vector?
   #  else kMatrix[, i] <- apply(modelsMatrixSubset, 2, sum) 
   #}
-  modelAvgAlpha <- mean(alphaVector, na.rm = TRUE)
+  modelAvgAlpha <- mean(sqrt.alphaVector, na.rm = TRUE)
   modelAvgSigmaSq <- mean(sigmaSqVector, na.rm = TRUE)
   outdata <- list(modelsMatrix = modelsMatrix, nodeWeightsMatrix = list(unnormalized = nodeWeightsMatrix.unnormalized, allNodes = nodeWeightsMatrix.allNodes), modelAvgAlpha = modelAvgAlpha, modelAvgSigmaSq = modelAvgSigmaSq, thetaMatrix = thetaMatrix)
   class(outdata) <- 'hansenSummary'
@@ -89,7 +89,7 @@ print.hansenSummary <- function(x, ...) {
   #message("The properties of this support value have not been studied and are likely to be biased strongly toward the median value of\nK, as K is largest at the median values (they are distributed according to Stirling numbers of the first kind).")
   #print(hansenSummary$kMatrix)
   cat("\nMODEL-AVERAGED PARAMETERS")
-  cat("\nalpha =", hansenSummary$modelAvgAlpha)
+  cat("\nsqrt.alpha =", hansenSummary$modelAvgAlpha)
   cat("\nsigma^2 =", hansenSummary$modelAvgSigmaSq)
   if(any(dim(hansenSummary$thetaMatrix) > 12)) message(paste("\ntheta matrix is too long to display; access through the summary object"))
   else {

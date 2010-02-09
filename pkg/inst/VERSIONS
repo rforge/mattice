@@ -1,4 +1,7 @@
-v0.9-3  in the works
+v0.9-4	9 February 2010
+- changed "alpha" to "sqrt.alpha" throughout for compatibility with updated ouch
+
+v0.9-3  17 Sept 2009 
 - Corrected an error in which branches were painted in the Carex example
 
 v0.9-2  8 September 2009

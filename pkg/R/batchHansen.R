@@ -48,7 +48,7 @@ function(ouchTrees, characterStates, cladeMembersList, filePrefix = NULL, di = N
     if(stopFlag) stop("Correct discrepancies between trees and data and try again!")
     }
   if(!identical(di, NULL)) dir.create(di)
-  if(class(try(alpha, silent = TRUE)) == 'try-error') alpha = 1
+  if(class(try(sqrt.alpha, silent = TRUE)) == 'try-error') sqrt.alpha = 1
   if(class(try(sigma, silent = TRUE)) == 'try-error') sigma = 1
   ar = regimeVectors(ouchTrees, cladeMembersList, maxNodes)
   hansenBatch <- list(length(ouchTrees))
@@ -77,7 +77,7 @@ function(ouchTrees, characterStates, cladeMembersList, filePrefix = NULL, di = N
     ## send it off to batchHansen and just stick the results in hansenBatch... this won't work as the number of regimes gets large, 
     ##   so there should be some option here to just hang onto the coefficients for each run (i.e., hang onto 'coef(hansen(...))' rather than 'hansen(...)')
     ##   there could also be an option to save the entire object as a series of files in addition to hanging onto 
-    hb <- batchHansen(tree, dataIn, ar$regList[[i]], regimeTitles, brown, fP, alpha, sigma, ...)
+    hb <- batchHansen(tree, dataIn, ar$regList[[i]], regimeTitles, brown, fP, sqrt.alpha, sigma, ...)
     hansenBatch[[i]] <- hb$treeData
     thetas[[i]] <- hb$thetas
     message(paste("Tree",i,"of",length(ouchTrees),"complete", "\n-----------------------------"))
@@ -93,14 +93,14 @@ batchHansen <-
 #  "regimesList" = list of regime-paintings as output from regimeVectors
 #  "scalingFactor" = factor to multiply against (times / max(times)) -- choose based on trial analyses
 # Value: a matrix with nrow = regimes (+ 1 if brownian model is included) and columns for u, d.f., all estimated parameters, LRvsBM, AIC, and AIC weight
-function(tree, data, regimesList, regimeTitles, brown, filePrefix = NULL, alpha, sigma, ...) {
+function(tree, data, regimesList, regimeTitles, brown, filePrefix = NULL, sqrt.alpha, sigma, ...) {
   n <- tree@nterm
-  ## set up a matrix that returns lnL, K, sigmasq, theta0, and alpha for every model
+  ## set up a matrix that returns lnL, K, sigmasq, theta0, and sqrt.alpha for every model
   ## thetas go into a models-by-branch matrix
   hansenOptima <- list(length(regimeTitles))
-  variables <- c("loglik", "dof", "sigma.squared", "theta / alpha") # only display variables... set the selecting variables in the next two lines
+  variables <- c("loglik", "dof", "sigma.squared", "theta / sqrt.alpha") # only display variables... set the selecting variables in the next two lines
   brVars <- c("loglik", "dof", "sigma.squared", "theta")
-  haVars <- c("loglik", "dof", "sigma.squared", "alpha")
+  haVars <- c("loglik", "dof", "sigma.squared", "sqrt.alpha")
   if(brown) thetaModels <- regimeTitles[1: (length(regimeTitles) - 1)]
   else thetaModels <- regimeTitles
   thetas <- matrix(NA, 
@@ -120,8 +120,8 @@ function(tree, data, regimesList, regimeTitles, brown, filePrefix = NULL, alpha,
       }
     else {
       message(paste("Running regime",i))
-      ## at this point, the user has to give an initial alpha and sigma for hansen to search on... this should be relaxed
-      ha = hansen(data = data, tree = tree, regimes = regimesList[[i]], alpha = alpha, sigma = sigma, ...)
+      ## at this point, the user has to give an initial sqrt.alpha and sigma for hansen to search on... this should be relaxed
+      ha = hansen(data = data, tree = tree, regimes = regimesList[[i]], sqrt.alpha = sqrt.alpha, sigma = sigma, ...)
       treeData[i, ] <- unlist(summary(ha)[haVars])
       thetas[i, ] <- ha@theta$data[ha@regimes[[1]]]
       if(!identical(filePrefix, NULL)) save(ha, file = paste(filePrefix, 'r', i, '.Rdata', sep = ""))

@@ -2,11 +2,11 @@ multiModel <- function(phy, dat, node, models = c('whole.brown', 'whole.ou1', 'w
 # test the support for alternative models on simple and partitioned trees
 # currently only works on one tree; eventually should be modified so it runs on a set of trees, conditioned on those trees 
 #   that have the node of interest and returning percent of trees possessing that node as an additional value
-  paramHeader <- c('loglik', 'dof', 'sigma.squared', 'alpha', 'theta', 'optimum', 'optimum.uptree', 'optimum.downtree')
+  paramHeader <- c('loglik', 'dof', 'sigma.squared', 'sqrt.alpha', 'theta', 'optimum', 'optimum.uptree', 'optimum.downtree')
   paramsAll <- c('loglik', 'dof', 'sigma.squared')
   paramSets <- list(brown = c(paramsAll, 'theta'), 
-                  ou1 = c(paramsAll, 'alpha', 'optimum'), 
-                  ou2 = c(paramsAll, 'alpha', 'optimum.uptree', 'optimum.downtree')
+                  ou1 = c(paramsAll, 'sqrt.alpha', 'optimum'), 
+                  ou2 = c(paramsAll, 'sqrt.alpha', 'optimum.uptree', 'optimum.downtree')
                   )
   modelsAll = c('whole.ou2', 'whole.ou1', 'whole.brown', 'part.ou.uptree', 'part.ou.downtree', 'part.ou.summed', 'part.brown.uptree', 'part.brown.downtree', 'part.brown.summed')
   pSum <- c('loglik', 'dof') # parameters to sum for evaluating partitioned trees
@@ -47,14 +47,14 @@ wholeModel <- function(phy, dat, model, node, parameterVector, paramHeader) {
   if(model == "ou1") analysis <- hansen(dat, 
   					phy, 
                                         regimes = structure(rep(phy@root, phy@nnodes), names = phy@nodes, levels = 1, class = 'factor'),
-                                        alpha = 1, 
+                                        sqrt.alpha = 1, 
                                         sigma = 1
                                         )
   if(model == "ou2") {
     regime <- paintBranches(list(node), phy)
     uptreeNum <- as.character(phy@root)
     downtreeNum <- as.character(unique(regime))[unique(regime) != phy@root]
-    analysis <- hansen(dat, phy, regime, alpha = 1, sigma = 1)
+    analysis <- hansen(dat, phy, regime, sqrt.alpha = 1, sigma = 1)
     }
   params <- unlist(summary(analysis)[parameterVector])[paramHeader]
   names(params) <- paramHeader
@@ -79,7 +79,7 @@ partialModel <- function(phyList, dat, model, treeNames, parameterVector = NULL,
                                                             regimes = structure(rep(1, phyList[[i]]@nnodes), 
                                                                                 names = phyList[[i]]@nodes, 
                                                                                 levels = 1, class = 'factor'),
-                                                            sigma = 1, alpha = 1)
+                                                            sigma = 1, sqrt.alpha = 1)
     } 
   names(analysis) <- treeNames
   params <- matrix(NA, nrow = length(c(treeNames, 'summed')), ncol = length(paramHeader), dimnames = list(c(treeNames, 'summed'), paramHeader))
