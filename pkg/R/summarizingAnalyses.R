@@ -5,7 +5,7 @@
 # March 2011 - summary.hansenBatch found to give incorrect answers with multiple trees; corrected
 # also changed the weighting so that model averaging can be by AICc, AIC, or BIC
 
-summary.hansenBatch <- function(object, ic = 'AICc', ...){
+summary.hansenBatch <- function(object, ic = 'aicc', ...){
 ## items in output: hansens, regimeList, regimeMatrix
 ## ic = choice of information criterion weight to use in model averaging
   hansenBatch <- object
@@ -16,10 +16,13 @@ summary.hansenBatch <- function(object, ic = 'AICc', ...){
   nnodes <- length(nodeSums) # number of nodes being studied
   nodes <- dimnames(hansenBatch$regMatrix$overall)[[2]] # grab the overall regMatrix, which includes all possible nodes
   sigmaSqVector <- numeric(ntrees) # vector to capture model-averaged sigma^2 for each tree
-  sqrt.alphaVector <- numeric(ntrees) # vector to capture model-averaged sqrt.alpha for each tree
+  alphaVector <- numeric(ntrees) # vector to capture model-averaged sqrt.alpha for each tree # s/b sqrt.alpha
   modelsMatrix <- vector('list', ntrees) # list of matrices, indexed by tree, holding the weight for each model
-  matrixRows <- c('AIC.weight', 'AICc.weight', 'BIC.weight') # rows in the matrix
+  matrixRows <- c('AICwi', 'AICcwi', 'BICwi') # rows in the matrix
   nodeWeightsSummed <- matrix(0, nrow = length(matrixRows), ncol = nnodes, dimnames = list(matrixRows, nodes)) # holds node weights summed; zero-filled b/c it is a sum?
+  icMats <- vector('list', length(matrixRows))
+  names(icMats) <- matrixRows
+  for(i in matrixRows) icMats[[i]] <- matrix(NA, nrow = ntrees, ncol = nnodes, dimnames = list(NULL, nodes))
   thetaMatrix <- matrix(NA, nrow = ntrees, 
                             ncol = dim(hansenBatch$thetas[[1]])[2], 
                             dimnames = list(1:ntrees, dimnames(hansenBatch$thetas[[1]])[[2]])
@@ -28,20 +31,25 @@ summary.hansenBatch <- function(object, ic = 'AICc', ...){
     modelsMatrix[[tree]] <- cbind(icObject[[tree]]$AICwi, icObject[[tree]]$AICcwi, icObject[[tree]]$BICwi)
     dimnames(modelsMatrix[[tree]]) <- list( dimnames(hansenBatch$hansens[[1]])[[1]], c("AICwi", "AICcwi", "BICwi"))
     icWeight <- switch(ic,
-	              bic = icObject[[tree]]$BICwi,
-				  aic = icObject[[tree]]$AICwi,
-				  aicc = icObject[[tree]]$AICcwi)
-    for(i in seq(nnodes)) {
-      modelsMatrixSubset <- modelsMatrix[[tree]][hansenBatch$regMatrix$overall[, nodes[i]] == 1, ] # subset models that contain node i
-      if(identical(dim(modelsMatrixSubset), NULL)) # is modelsMatrixSubset a 1-d vector? if so then:
-        nodeWeightsSummed[, nodes[i]] <- nodeWeightsSummed[, nodes[i]] + replace.matrix(modelsMatrixSubset, NA, 0) # because extracting a single row yields a vector, and dim returns NULL for a vector
-      else nodeWeightsSummed[, nodes[i]] <- nodeWeightsSummed[, nodes[i]] + colSums(modelsMatrixSubset, na.rm = TRUE)
-	  }
+    			bic = icObject[[tree]]$BICwi,
+			aic = icObject[[tree]]$AICwi,
+			aicc = icObject[[tree]]$AICcwi
+			)
+    for(i in matrixRows) icMats[[i]][tree, ] <-  colSums(replace(matrix(modelsMatrix[[tree]][, i], nmodels, nnodes), NA, 1) * hansenBatch$regMatrix$overall, na.rm = T) # somewhat vectorized
+    nodeWeightsSummed[i, ] <- icMats[[i]][tree, ] + nodeWeightsSummed[i, ] 
+    #OLD:
+    #for(i in seq(nnodes)) {
+    #  modelsMatrixSubset <- modelsMatrix[[tree]][hansenBatch$regMatrix$overall[, nodes[i]] == 1, ] # subset models that contain node i
+    #  if(identical(dim(modelsMatrixSubset), NULL)) # is modelsMatrixSubset a 1-d vector? if so then:
+    #    nodeWeightsSummed[, nodes[i]] <- nodeWeightsSummed[, nodes[i]] + replace.matrix(modelsMatrixSubset, NA, 0) # because extracting a single row yields a vector, and dim returns NULL for a vector
+    #  else nodeWeightsSummed[, nodes[i]] <- nodeWeightsSummed[, nodes[i]] + colSums(modelsMatrixSubset, na.rm = TRUE)
+    #	  }
+    
     sigmaSqVector[tree] <- weighted.mean(hansenBatch$hansens[[tree]][, 'sigma.squared'], icWeight, na.rm = TRUE)
     if(hansenBatch$brown) icOU <- icWeight[1: (length(icWeight) - 1)]
-    sqrt.alphaVector[tree] <- ifelse(hansenBatch$brown, 
-                                weighted.mean(hansenBatch$hansens[[tree]][1:(nmodels - 1), 'theta / sqrt.alpha'], icOU, na.rm = TRUE),
-                                weighted.mean(hansenBatch$hansens[[tree]][ , 'theta / sqrt.alpha'], icWeight, na.rm = TRUE) 
+    alphaVector[tree] <- ifelse(hansenBatch$brown, # s/b sqrt.alpha 
+                                weighted.mean(hansenBatch$hansens[[tree]][1:(nmodels - 1), 'theta / alpha'], icOU, na.rm = TRUE), # s/b sqrt.alpha
+                                weighted.mean(hansenBatch$hansens[[tree]][ , 'theta / alpha'], icWeight, na.rm = TRUE) # s/b sqrt.alpha
                                 )
     if(hansenBatch$brown) w <- icOU else w <- icWeight
     thetaMatrix[tree, ] <- apply(hansenBatch$thetas[[tree]], 2, 
@@ -69,9 +77,9 @@ summary.hansenBatch <- function(object, ic = 'AICc', ...){
   #  if(identical(dim(modelsMatrixSubset), NULL)) kMatrix[, i] <- modelsMatrixSubset # is modelsMatrixSubset a 1-d vector?
   #  else kMatrix[, i] <- apply(modelsMatrixSubset, 2, sum) 
   #}
-  modelAvgAlpha <- mean(sqrt.alphaVector, na.rm = TRUE)
+  modelAvgAlpha <- mean(alphaVector, na.rm = TRUE) # s/b sqrt.alpha
   modelAvgSigmaSq <- mean(sigmaSqVector, na.rm = TRUE)
-  outdata <- list(modelsMatrix = modelsMatrix, nodeWeightsMatrix = list(unnormalized = nodeWeightsMatrix.unnormalized, allNodes = nodeWeightsMatrix.allNodes), modelAvgAlpha = modelAvgAlpha, modelAvgSigmaSq = modelAvgSigmaSq, thetaMatrix = thetaMatrix)
+  outdata <- list(modelsMatrix = modelsMatrix, nodeWeightsMatrix = list(unnormalized = nodeWeightsMatrix.unnormalized, allNodes = nodeWeightsMatrix.allNodes), modelAvgAlpha = modelAvgAlpha, modelAvgSigmaSq = modelAvgSigmaSq, thetaMatrix = thetaMatrix, icMats = icMats)
   class(outdata) <- 'hansenSummary'
   return(outdata)
 }

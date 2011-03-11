@@ -36,7 +36,8 @@ regimeMaker(ouchTrees, regMatrix, nodeMembers)
     cells indicate by \code{TRUE} or \code{FALSE} whether a node is present in each of the trees being analyzed.
     }
   \item{regMatrix}{
-    A list of \code{regimeMatrix}-format matrices that define the models applicable for each tree in \code{ouchTrees}, with missing nodes designated by NAs.
+    A list of \code{regimeMatrix}-format matrices that define the models applicable for each tree in \code{ouchTrees}, with missing nodes designated by 0s and 
+    duplicate rows blanked out with NA.
     }
 }
 \author{

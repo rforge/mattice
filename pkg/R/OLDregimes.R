@@ -113,7 +113,7 @@ regimeMaker <- function(ouchTrees, regMatrix, nodeMembers) {
   regMatrices <- list(numTrees)
   
   # fill outdata
-  for(i in seq(numNodes)) nodeMatrix[, i] <- unlist(lapply(ouchTrees, isMonophyletic, taxa = nodeMembers[[i]])) # each column of nodeMatrix indicates whether a node is present or absent for that clade; works
+  for(i in seq(numNodes)) nodeMatrix[, i] <- unlist(lapply(ouchTrees, isMonophyletic, taxa = nodeMembers[[i]]))
   for(i in seq(numTrees)) {
     tree <- ouchTrees[[i]]
     regMatrices[[i]] <- regMatrix * as.numeric(matrix(nodeMatrix[i, ], dim(regMatrix)[1], dim(regMatrix)[2], byrow = TRUE)) # multiplies regMatrix by nodes present
