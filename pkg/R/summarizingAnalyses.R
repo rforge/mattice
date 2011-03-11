@@ -5,6 +5,16 @@
 # March 2011 - summary.hansenBatch found to give incorrect answers with multiple trees; corrected
 # also changed the weighting so that model averaging can be by AICc, AIC, or BIC
 
+## 11 mar 11 note: trying to figure out why the ic weights are not being averaged correctly... tallying trees wrong somewhere? 
+## Also changed documentation: regimeMaker does not return an NA where a node is missing, but a 0. NAs are used for rows that are all zeros or duplicates.
+## It seems that the summary code is giving a probability for every node for every tree, even when the tree does not have the node. Something is wrong here. Also, models are 
+## being treated as though they were commensurate across trees when they are not. Models that are defined for nodes that are not absent for a tree still get a probability, as though the node were 
+## there. This is not right. If a tree has all the nodes in a model, that model should be analyzed. If not, the model should not be analyzed. I think this is what is causing the problem,
+## because I am summing the probabilities for each node based on the assumption that a model that possesses a node has only been analyzed on trees that have that node.
+## In effect, I am changing the model across trees rather than deleting models from trees where they don't apply. This is undoubtedly the problem. Probabilities are consequently
+## inflated across trees. regimeMaker SHOULD return NAs for each model that is missing any nodes, in addition to duplicate models. I need to look back at the logic and see what I was
+## thinking on this.
+
 summary.hansenBatch <- function(object, ic = 'aicc', ...){
 ## items in output: hansens, regimeList, regimeMatrix
 ## ic = choice of information criterion weight to use in model averaging
