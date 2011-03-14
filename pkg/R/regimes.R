@@ -5,6 +5,7 @@
 # Initially written for ouch v 1.2-4
 # updated to ouch >= 2.4-2 Nov 2008
 # updated to accommodate multiple trees Nov 2008
+# updated to correct scoring of NAs in regimeMaker, 14 mar 2011
 
 regimeVectors <-
 # This is the basic call to get the full range of regimes over a set of trees
@@ -106,27 +107,35 @@ regimeMaker <- function(ouchTrees, regMatrix, nodeMembers) {
   # set up variables
   numTrees <- length(ouchTrees)
   numNodes <- length(nodeMembers)
+  nregs <- dim(regMatrix)[1]
   if(numNodes != dim(regMatrix)[2]) stop('Number of nodes (columns) in regMatrix must equal number of items in nodeMembers list')
   nodeMatrix <- matrix(NA, nrow = numTrees, ncol = numNodes, dimnames = list(seq(numTrees), dimnames(regMatrix)[[2]]))
-  changeNodes <- list(numTrees)
-  regList <- list(numTrees)
-  regMatrices <- list(numTrees)
+  regList <- regMatrices <- vector('list', numTrees)
   
   # fill outdata
   for(i in seq(numNodes)) nodeMatrix[, i] <- unlist(lapply(ouchTrees, isMonophyletic, taxa = nodeMembers[[i]])) # each column of nodeMatrix indicates whether a node is present or absent for that clade; works
   for(i in seq(numTrees)) {
-    tree <- ouchTrees[[i]]
-    regMatrices[[i]] <- regMatrix * as.numeric(matrix(nodeMatrix[i, ], dim(regMatrix)[1], dim(regMatrix)[2], byrow = TRUE)) # multiplies regMatrix by nodes present
-    regMatrices[[i]][1:(dim(regMatrices[[i]])[1] - 1), ][which(apply(regMatrices[[i]][1:(dim(regMatrices[[i]])[1] - 1), ], 1, sum) == 0), ] <- rep(NA, numNodes) # set to NA regimes that have no nodes, except for OU1 model
-    regMatrices[[i]][duplicated(apply(regMatrices[[i]], 1, as.decimal)), ] <- rep(NA, numNodes) ## set to NA non-unique regimes
+    # print(paste('regimeMaker: tree', i))
+	tree <- ouchTrees[[i]]
+    # regMatrices[[i]] <- regMatrix * as.numeric(matrix(nodeMatrix[i, ], dim(regMatrix)[1], dim(regMatrix)[2], byrow = TRUE)) # multiplies regMatrix by nodes present -- this was the wrong thing to do
+    # 14 mar 11: change to making any regime that has a node not present in the tree a row of NAs
+    regMatrices[[i]] <- regMatrix
+	nodesPresentMat <- regMatrix * as.numeric(matrix(nodeMatrix[i, ], nregs, numNodes, byrow = TRUE))
+    allNodesVector <- sapply(seq(nregs), function(x) all(nodesPresentMat[x,] == regMatrices[[i]][x, ])) # T if all nodes in the model are present, F if not   
+ 	regMatrices[[i]][!allNodesVector, ] <- rep(NA, numNodes)
+    # 14 mar 11: following two lines are now redundant
+	# regMatrices[[i]][1:(dim(regMatrices[[i]])[1] - 1), ][which(apply(regMatrices[[i]][1:(dim(regMatrices[[i]])[1] - 1), ], 1, sum) == 0), ] <- rep(NA, numNodes) # set to NA regimes that have no nodes, except for OU1 model
+    # regMatrices[[i]][duplicated(apply(regMatrices[[i]], 1, as.decimal)), ] <- rep(NA, numNodes) ## set to NA non-unique regimes
     dimnames(regMatrices[[i]]) <- list(seq(dim(regMatrices[[i]])[1]), dimnames(regMatrices[[i]])[[2]])
     numTreeRegs <- dim(regMatrices[[i]])[1]
-    treeRegs <- list(numTreeRegs) # this will be assigned to regList[[i]]
+    # print(numTreeRegs)
+	treeRegs <- vector('list', numTreeRegs) # this will be assigned to regList[[i]]
     nodesVector <- unlist(lapply(nodeMembers, mrcaOUCH, tree = ouchTrees[[i]])) # as written, gets the MRCA for even invalid nodes just so indexing stays right
-    for(j in seq(numTreeRegs)) {
-      if(any(is.na(regMatrices[[i]][j, ]))) treeRegs[[j]] <- NA
+	for(j in seq(numTreeRegs)) {
+    # print(paste('regimeMaker: regime', j))  
+	  if(any(is.na(regMatrices[[i]][j, ]))) treeRegs[[j]] <- NA
       else {
-        treeRegs[[j]] <- as.factor(paintBranches(c("1", nodesVector[as.logical(regMatrices[[i]][j, ])]), tree))
+		treeRegs[[j]] <- as.factor(paintBranches(c("1", nodesVector[as.logical(regMatrices[[i]][j, ])]), tree))
         names(treeRegs[[j]]) <- tree@nodes
       }
     }
