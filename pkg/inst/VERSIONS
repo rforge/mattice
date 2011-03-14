@@ -1,3 +1,9 @@
+v1.0-1  14 March 2011
+- Fixed tallying error that affected the case when a node was not present in all nodes. 
+  Previously, regimeMaker did not return an NA where a node is missing, but a 0. regimeMaker now works correctly.
+- Vectorized a few loops
+- Updated documentation
+
 v0.9-4	9 February 2010
 - changed "alpha" to "sqrt.alpha" throughout for compatibility with updated ouch
 
