@@ -83,7 +83,7 @@ function(ouchTrees, characterStates, cladeMembersList, filePrefix = NULL, di = N
     thetas[[i]] <- hb$thetas
     message(paste("Tree",i,"of",length(ouchTrees),"complete", "\n-----------------------------"))
   }
-  outdata <- list(hansens = hansenBatch, thetas = thetas, regList = ar$regList, regMatrix = ar$regMatrix, nodeMatrix = ar$nodeMatrix, brown = brown, N = ouchTrees[[i]]@nterm, analysisDate = date(), call = match.call())
+  outdata <- list(hansens = hansenBatch, thetas = thetas, regList = ar$regList, regMatrix = ar$regMatrix, nodeMatrix = ar$nodeMatrix, brown = brown, N = ouchTrees[[i]]@nterm, nodeNames = nodeNames, analysisDate = date(), call = match.call())
   class(outdata) <- 'hansenBatch'
   return(outdata)}
 

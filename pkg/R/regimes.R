@@ -5,7 +5,7 @@
 # Initially written for ouch v 1.2-4
 # updated to ouch >= 2.4-2 Nov 2008
 # updated to accommodate multiple trees Nov 2008
-# updated to correct scoring of NAs in regimeMaker, 14 mar 2011
+# updated to correct scoring of NAs in regimeMaker and fixed use of alpha vs. sqrt.alpha (ouch2), 14 mar 2011
 
 regimeVectors <-
 # This is the basic call to get the full range of regimes over a set of trees
