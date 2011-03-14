@@ -78,6 +78,7 @@ function(ouchTrees, characterStates, cladeMembersList, filePrefix = NULL, di = N
     ##   so there should be some option here to just hang onto the coefficients for each run (i.e., hang onto 'coef(hansen(...))' rather than 'hansen(...)')
     ##   there could also be an option to save the entire object as a series of files in addition to hanging onto 
     hb <- batchHansen(tree, dataIn, ar$regList[[i]], regimeTitles, brown, fP, sqrt.alpha, sigma, ...)
+	# return(hb) ### ONLY FOR DEBUGGING
     hansenBatch[[i]] <- hb$treeData
     thetas[[i]] <- hb$thetas
     message(paste("Tree",i,"of",length(ouchTrees),"complete", "\n-----------------------------"))
@@ -98,9 +99,9 @@ function(tree, data, regimesList, regimeTitles, brown, filePrefix = NULL, sqrt.a
   ## set up a matrix that returns lnL, K, sigmasq, theta0, and sqrt.alpha for every model
   ## thetas go into a models-by-branch matrix
   hansenOptima <- list(length(regimeTitles))
-  variables <- c("loglik", "dof", "sigma.squared", "theta / sqrt.alpha") # only display variables... set the selecting variables in the next two lines
+  variables <- c("loglik", "dof", "sigma.squared", "theta / alpha") # only display variables... set the selecting variables in the next two lines
   brVars <- c("loglik", "dof", "sigma.squared", "theta")
-  haVars <- c("loglik", "dof", "sigma.squared", "sqrt.alpha")
+  haVars <- c("loglik", "dof", "sigma.squared", "alpha")
   if(brown) thetaModels <- regimeTitles[1: (length(regimeTitles) - 1)]
   else thetaModels <- regimeTitles
   thetas <- matrix(NA, 
@@ -122,6 +123,7 @@ function(tree, data, regimesList, regimeTitles, brown, filePrefix = NULL, sqrt.a
       message(paste("Running regime",i))
       ## at this point, the user has to give an initial sqrt.alpha and sigma for hansen to search on... this should be relaxed
       ha = hansen(data = data, tree = tree, regimes = regimesList[[i]], sqrt.alpha = sqrt.alpha, sigma = sigma, ...)
+	  # return(ha) # ONLY FOR DEBUGGING
       treeData[i, ] <- unlist(summary(ha)[haVars])
       thetas[i, ] <- ha@theta$data[ha@regimes[[1]]]
       if(!identical(filePrefix, NULL)) save(ha, file = paste(filePrefix, 'r', i, '.Rdata', sep = ""))
