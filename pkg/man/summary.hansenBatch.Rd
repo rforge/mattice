@@ -7,12 +7,15 @@
   \code{print.hansenSummary} is a print method for a \code{hansenSummary} object.
 }
 \usage{
-  \method{summary}{hansenBatch}(object, ...)
+  \method{summary}{hansenBatch}(object, ic = 'aicc', ...)
   \method{print}{hansenSummary}(x, ...)
 }
 \arguments{
   \item{object}{
   Output from \code{runBatchHansen}.
+  }
+  \item{ic}{
+  Choice of information criterion to use in model-averaging of parameters. Choices are \code{aicc} (default), \code{aic}, or \code{bic}.
   }
   \item{x}{
   Output from \code{summary.hansenBatch}.
