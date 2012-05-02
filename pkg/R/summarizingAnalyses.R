@@ -17,7 +17,7 @@ summary.hansenBatch <- function(object, ic = 'AICc', ...){
   nnodes <- length(nodeSums) # number of nodes being studied
   nodes <- dimnames(hansenBatch$regMatrix$overall)[[2]] # grab the overall regMatrix, which includes all possible nodes
   sigmaSqVector <- numeric(ntrees) # vector to capture model-averaged sigma^2 for each tree
-  alphaVector <- numeric(ntrees) # vector to capture model-averaged alpha for each tree
+  alphaVector <- numeric(ntrees) # vector to capture model-averaged sqrt.alpha for each tree # s/b sqrt.alpha
   modelsMatrix <- vector('list', ntrees) # list of matrices, indexed by tree, holding the weight for each model
   matrixRows <- c('AICwi', 'AICcwi', 'BICwi') # rows in the matrix
   nodeWeightsSummed <- matrix(0, nrow = length(matrixRows), ncol = nnodes, dimnames = list(matrixRows, nodes)) # holds node weights summed; zero-filled b/c it is a sum?

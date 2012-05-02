@@ -48,11 +48,10 @@ function(ouchTrees, characterStates, cladeMembersList, filePrefix = NULL, di = N
     if(stopFlag) stop("Correct discrepancies between trees and data and try again!")
     }
   if(!identical(di, NULL)) dir.create(di)
-  if(class(try(sqrt.alpha, silent = TRUE)) == 'try-error') sqrt.alpha = 1
-  if(class(try(sigma, silent = TRUE)) == 'try-error') sigma = 1
+  if(class(try(sqrt.alpha, silent = TRUE)) == 'try-error') sqrt.alpha = 1 # sets sqrt.alpha to 1 if it has not been assigned already
+  if(class(try(sigma, silent = TRUE)) == 'try-error') sigma = 1 # sets sigma to 1 if it has not been assigned already
   ar = regimeVectors(ouchTrees, cladeMembersList, maxNodes)
-  hansenBatch <- list(length(ouchTrees))
-  thetas <- list(length(ouchTrees))
+  hansenBatch <- thetas <- vector('list',length(ouchTrees))
   for (i in 1:length(ouchTrees)) {
     fP <- NULL
     if(!identical(filePrefix, NULL)) fP <- paste(filePrefix, ".t", i, ".", sep = "")
@@ -81,7 +80,8 @@ function(ouchTrees, characterStates, cladeMembersList, filePrefix = NULL, di = N
 	# return(hb) ### ONLY FOR DEBUGGING
     hansenBatch[[i]] <- hb$treeData
     thetas[[i]] <- hb$thetas
-    message(paste("Tree",i,"of",length(ouchTrees),"complete", "\n-----------------------------"))
+    # thetas[[i]] <- coef(hb)$theta[[1]] ## assumes only a univariate case... maticce is not currently set up for multivariate datasets
+	message(paste("Tree",i,"of",length(ouchTrees),"complete", "\n-----------------------------"))
   }
   outdata <- list(hansens = hansenBatch, thetas = thetas, regList = ar$regList, regMatrix = ar$regMatrix, nodeMatrix = ar$nodeMatrix, brown = brown, N = ouchTrees[[i]]@nterm, nodeNames = nodeNames, analysisDate = date(), call = match.call())
   class(outdata) <- 'hansenBatch'
@@ -123,7 +123,7 @@ function(tree, data, regimesList, regimeTitles, brown, filePrefix = NULL, sqrt.a
       message(paste("Running regime",i))
       ## at this point, the user has to give an initial sqrt.alpha and sigma for hansen to search on... this should be relaxed
       ha = hansen(data = data, tree = tree, regimes = regimesList[[i]], sqrt.alpha = sqrt.alpha, sigma = sigma, ...)
-	  # return(ha) # ONLY FOR DEBUGGING
+	  #return(ha) # ONLY FOR DEBUGGING
       treeData[i, ] <- unlist(summary(ha)[haVars])
       thetas[i, ] <- ha@theta$data[ha@regimes[[1]]]
       if(!identical(filePrefix, NULL)) save(ha, file = paste(filePrefix, 'r', i, '.Rdata', sep = ""))
