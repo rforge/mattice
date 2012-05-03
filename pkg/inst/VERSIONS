@@ -1,3 +1,6 @@
+v1.0-2  02 May 2012
+- Fixed alpha errors with ouSim
+
 v1.0-1  14 March 2011
 - Fixed tallying error that affected the case when a node was not present in all nodes. 
   Previously, regimeMaker did not return an NA where a node is missing, but a 0. regimeMaker now works correctly.
