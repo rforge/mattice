@@ -3,7 +3,7 @@ ouSim.hansenSummary <- function(object, tree, treeNum = 1, rootState = NULL, ...
   analysis <- object
   # if(class(analysis) == "hansenBatch") analysis <- summary(analysis)
   if(identical(rootState, NULL)) rootState <- analysis$thetaMatrix[treeNum, ][tree@root] # rootstate taken to be the optimum at the root
-  outdata <- ouSim(tree, rootState, sqrt.alpha = analysis$modelAvgAlpha, variance = analysis$modelAvgSigmaSq, theta = analysis$thetaMatrix[treeNum, ], ...)
+  outdata <- ouSim(tree, rootState, sqrt.alpha = analysis$modelAvgAlpha['mean'], variance = analysis$modelAvgSigmaSq['mean'], theta = analysis$thetaMatrix[treeNum, ], ...)
   class(outdata) <- "ouSim"
   return(outdata)
 }
