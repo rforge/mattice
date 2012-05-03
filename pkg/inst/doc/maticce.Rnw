@@ -39,7 +39,7 @@ Functions in the first two categories will be of general utility to \pkg{ouch} u
 In case you aren't familiar with \code{R}, the following commands will get you started.
 
 <<startAnalysis, fig=FALSE>>=
-library(maticce) # load maticce and required packages
+# library(maticce) # load maticce and required packages
 data(carex) # load dataset
 attach(carex) # attach dataset to search path
 # convert the Bayes consensus to an ouchtree object...
@@ -123,16 +123,16 @@ The goal of \pkg{maticce} is to make regime-definition and batch analyses of mul
 <<runBatch, fig=FALSE, echo=TRUE>>=
 # First, analyze with maxNodes set to 2
 ha.4.2 <- runBatchHansen(ovales.tree, ovales.data, 
-          ovales.nodes[1:4], maxNodes = 2, brown = T)
+          ovales.nodes[1:4], maxNodes = 2)
 print(summary(ha.4.2))
 # Then, analyze with maxNodes set to 4
 ha.4.4 <- runBatchHansen(ovales.tree, ovales.data, 
-          ovales.nodes[1:4], maxNodes = 4, brown = T)
+          ovales.nodes[1:4], maxNodes = 4)
 print(summary(ha.4.4))
 # Then, assess the effects of phylogenetic uncertainty by 
 #   analyzing over a set of trees
 ha.4.2.multi <- runBatchHansen(trees, ovales.data, 
-                ovales.nodes[1:4], maxNodes = 2, brown = T)
+                ovales.nodes[1:4], maxNodes = 2)
 print(summary(ha.4.2.multi))
 @
 
@@ -156,13 +156,15 @@ ha.4.2[['regMatrix']][['overall']]
 Then we can find the likelihood and parameter estimates of these models on a given tree:
 
 <<haLnl, fig = FALSE, echo = TRUE>>=
-ha.4.2[['hansens']][[1]][c(7, 11, 'brown'), ]
+# ha.4.2[['hansens']][[1]][c(7, 11, 'brown'), ]
+ha.4.2[['hansens']][[1]][c(7, 11), ]
 @
 
 or the information criterion weights:
 
 <<haWeights, fig=FALSE, echo=TRUE>>=
-summary(ha.4.2)[['modelsMatrix']][[1]][c(7, 11, 'brown'), ]
+# summary(ha.4.2)[['modelsMatrix']][[1]][c(7, 11, 'brown'), ]
+summary(ha.4.2)[['modelsMatrix']][[1]][c(7, 11), ]
 @
 
 Considering just these models, model 7 is not overwhelmingly supported (BIC weight = 0.530, AICc weight = 0.369), but it is much more strongly supported than the Brownian motion model or the OU model with no change. This points to the utility of model-averaging as a means of localizing character transitions on a phylogenetic tree. Moreover, the fact that a character transition is strongly supported only for node 2 tells us little about whether each node, analyzed on its own, would support a character transition model over a no-transition model. In fact, in the sample data, nodes 1, 2, 3, 4, and 7 all support a transition over no-transition model. You can investigate this node-by-node using the \code{multiModel} function.

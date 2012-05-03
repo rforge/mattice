@@ -95,6 +95,7 @@ batchHansen <-
 #  "scalingFactor" = factor to multiply against (times / max(times)) -- choose based on trial analyses
 # Value: a matrix with nrow = regimes (+ 1 if brownian model is included) and columns for u, d.f., all estimated parameters, LRvsBM, AIC, and AIC weight
 function(tree, data, regimesList, regimeTitles, brown, filePrefix = NULL, sqrt.alpha, sigma, ...) {
+  if(brown) stop("Including the Brownian motion model has been discontinued in batchHansen")
   n <- tree@nterm
   ## set up a matrix that returns lnL, K, sigmasq, theta0, and sqrt.alpha for every model
   ## thetas go into a models-by-branch matrix
