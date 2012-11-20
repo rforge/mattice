@@ -39,7 +39,7 @@ Functions in the first two categories will be of general utility to \pkg{ouch} u
 In case you aren't familiar with \code{R}, the following commands will get you started.
 
 <<startAnalysis, fig=FALSE>>=
-# library(maticce) # load maticce and required packages
+library(maticce) # load maticce and required packages
 data(carex) # load dataset
 attach(carex) # attach dataset to search path
 # convert the Bayes consensus to an ouchtree object...
