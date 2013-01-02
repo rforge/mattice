@@ -13,8 +13,8 @@
 }
 \usage{
   ouSim(object, ...)
-  \method{ouSim}{phylo}(object, rootState = 0, shiftBranches = NULL, shiftStates = NULL, alpha = 0, variance = 1, theta = rootState, model = "OU", branchMeans = NULL, steps = 1000, ...)
-  \method{ouSim}{ouchtree}(object, rootState = 0, alpha = 0, variance = 1, theta = rootState, steps = 1000, ...)
+  \method{ouSim}{phylo}(object, rootState = 0, shiftBranches = NULL, shiftStates = NULL, sqrt.alpha = 0, variance = 1, theta = rootState, model = "OU", branchMeans = NULL, steps = 1000, ...)
+  \method{ouSim}{ouchtree}(object, rootState = 0, sqrt.alpha = 0, variance = 1, theta = rootState, steps = 1000, ...)
   \method{ouSim}{browntree}(object, ...)
   \method{ouSim}{hansentree}(object, ...)
   \method{ouSim}{hansenBatch}(object, ...)
@@ -77,12 +77,12 @@
     For a \code{phylo} tree only. An optional vector of length = \code{length(shiftStates)} indicating 
     the ancestral states for the branches at which the state shifts.
     }
-  \item{alpha}{
+  \item{sqrt.alpha}{
     The rate of evolution toward an equilibrium or optimum. This term is refered to as the rate of evolution by Hansen (1997)
     and the strength of selection by Butler and King (2004). It is a multiplier by the difference between the character state and the
     character state optimum. Alpha can be submitted as a single value applied to all branches or as a vector corresponding to branches
-    in the \code{phylo} object. At \code{alpha = 0}, the simulation approximates a Brownian motion process.
-    This parameter is taken from the analysis results for \code{browntree} (\code{alpha} = 0), \code{hansentree} (point estimate), 
+    in the \code{phylo} object. At \code{sqrt.alpha = 0}, the simulation approximates a Brownian motion process.
+    This parameter is taken from the analysis results for \code{browntree} (\code{sqrt.alpha} = 0), \code{hansentree} (point estimate), 
     \code{hansenBatch} or \code{hansenSummary} (model-averaged).
     }
   \item{variance}{
