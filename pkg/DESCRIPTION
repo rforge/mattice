@@ -1,7 +1,7 @@
 Package: maticce
 Type: Package
 Title: Mapping Transitions in Continuous Character Evolution
-Version: 1.0-2
+Version: 1.0-3
 Date: 2011-3-14
 Depends: ouch, ape
 Enhances: ouch
