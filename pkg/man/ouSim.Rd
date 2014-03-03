@@ -13,8 +13,11 @@
 }
 \usage{
   ouSim(object, ...)
-  \method{ouSim}{phylo}(object, rootState = 0, shiftBranches = NULL, shiftStates = NULL, sqrt.alpha = 0, variance = 1, theta = rootState, model = "OU", branchMeans = NULL, steps = 1000, ...)
-  \method{ouSim}{ouchtree}(object, rootState = 0, sqrt.alpha = 0, variance = 1, theta = rootState, steps = 1000, ...)
+  \method{ouSim}{phylo}(object, rootState = 0, shiftBranches = NULL, shiftStates = NULL, 
+                        sqrt.alpha = 0, variance = 1, theta = rootState, model = "OU", 
+						branchMeans = NULL, steps = 1000, ...)
+  \method{ouSim}{ouchtree}(object, rootState = 0, sqrt.alpha = 0, variance = 1, 
+                           theta = rootState, steps = 1000, ...)
   \method{ouSim}{browntree}(object, ...)
   \method{ouSim}{hansentree}(object, ...)
   \method{ouSim}{hansenBatch}(object, ...)

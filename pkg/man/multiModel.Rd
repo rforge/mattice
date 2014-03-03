@@ -8,7 +8,8 @@
   discussion below).
 }
 \usage{
-multiModel(phy, dat, node, models = c("whole.brown", "whole.ou1", "whole.ou2", "part.brown", "part.ou"))
+multiModel(phy, dat, node, 
+           models = c("whole.brown", "whole.ou1", "whole.ou2", "part.brown", "part.ou"))
 }
 \arguments{
   \item{phy}{ An \pkg{ape}-style tree }
@@ -45,16 +46,17 @@ multiModel(phy, dat, node, models = c("whole.brown", "whole.ou1", "whole.ou2", "
   library(maticce)
   data(carex)
   attach(carex)
-  mm2 <- multiModel(carex$ovales.tree, ovales.data, ovales.nodes[[2]]) # compares five different models of character change at node 2
+  # compare five different models of character change at node 2:
+  mm2 <- multiModel(carex$ovales.tree, ovales.data, ovales.nodes[[2]]) 
   mm2
   layout(matrix(1:4,2,2))
-  pie(mm2$IC$AICwi, labels = mm2$IC$name, col = rainbow(length(mm2$IC$name)), main = "AIC weights")
-  pie(mm2$IC$AICcwi, labels = mm2$IC$name, col = rainbow(length(mm2$IC$name)), main = "AICc weights")
-  pie(mm2$IC$BICwi, labels = mm2$IC$name, col = rainbow(length(mm2$IC$name)), main = "BIC weights")
+  pie(mm2$IC$AICwi, labels = mm2$IC$name, col = rainbow(length(mm2$IC$name)), main="AIC weights")
+  pie(mm2$IC$AICcwi, labels = mm2$IC$name, col = rainbow(length(mm2$IC$name)), main="AICc weights")
+  pie(mm2$IC$BICwi, labels = mm2$IC$name, col = rainbow(length(mm2$IC$name)), main="BIC weights")
   noChangeAICwi <- sum(mm2$IC$AICwi[1:2])
   changeAICwi <- sum(mm2$IC$AICwi[3:5])
-  barplot(c(noChangeAICwi, changeAICwi), ylim = c(0,1), names.arg = c('no transition', 'transition'), 
-    main = 'Transition vs. no-transition')
+  barplot(c(noChangeAICwi, changeAICwi), ylim = c(0,1), 
+          names.arg = c('no transition', 'transition'), main = 'Transition vs. no-transition')
 }
 \author{Andrew L. Hipp \email{ahipp@mortonarb.org}}
 \note{

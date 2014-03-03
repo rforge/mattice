@@ -41,9 +41,10 @@
   \code{\link{regimeMaker}}, \code{\link{paintBranches}}
   }
 \examples{
-  # evaluating a set of models allowing all possible permutations of changes at 15 nodes will be quite time-consuming:
+  # allowing all possible permutations of changes at 15 nodes will be quite time-consuming:
   print(paste("Number of models =", dim(regimeMatrix(15,15))[1]))
-  # paring that down to all possible permutations of changes at 15 nodes, up to a maximum of 5 changes, is much more manageable:
+  # paring that down to all possible permutations of changes at 15 nodes, 
+  # up to a maximum of 5 changes, is much more manageable:
   print(paste("Number of models =", dim(regimeMatrix(15,5))[1]))
   }
 \keyword{models}

@@ -5,7 +5,9 @@
   \code{runBatchHansen} estimates the support for character change on taxon-defined nodes, integrating over uncertainty in the phylogeny and the model of trait evolution.
 }
 \usage{
-runBatchHansen(ouchTrees, characterStates, cladeMembersList, filePrefix = NULL, di = NULL, nodeNames = NULL, maxNodes = length(cladeMembersList), regimeTitles = NULL, brown = FALSE, ...)  
+runBatchHansen(ouchTrees, characterStates, cladeMembersList, filePrefix = NULL, 
+               di = NULL, nodeNames = NULL, maxNodes = length(cladeMembersList), 
+			   regimeTitles = NULL, brown = FALSE, ...)  
 }
 \arguments{
   \item{ouchTrees}{

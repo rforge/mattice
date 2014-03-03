@@ -54,7 +54,8 @@ regimeMaker(ouchTrees, regMatrix, nodeMembers)
   data(carex)
   # tree comes in in phylo format, but we need an ouchtree object
   trees <- lapply(carex$ovales.bayesTrees[1:10], ape2ouch) 
-  # if we are interested in comparing the single-change models that allow changes only at nodes 1, 2, 4, 5, and 8, as well as the no-change model, we could do:
+  # if we are interested in comparing the single-change models that allow changes only at nodes 
+  # 1, 2, 4, 5, and 8, as well as the no-change model, we could do:
   mat <- regimeMatrix(n = 8, maxNodes = 1)[c(1,2,4,5,8,9), ] # the 9th row is the no-change model
   #... then we make regimes based on that regime matrix...
   regs <- regimeMaker(trees, mat, carex$ovales.nodes)

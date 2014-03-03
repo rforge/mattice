@@ -51,11 +51,14 @@
   # tree comes in in phylo format, but we need an ouchtree object
   trees <- lapply(carex$ovales.bayesTrees[1:2], ape2ouch) 
   contree <- ape2ouch(carex$ovales.tree)
-  # for expedience, only tests for changes at up to 2 of the first 4 nodes on 2 trees visited in the MCMC phylogenetic analysis
+  # for expedience, only tests for changes at up to 2 of the first 4 nodes 
+  # on 2 trees visited in the MCMC phylogenetic analysis:
   trialBayesTrees <- runBatchHansen(trees, carex$ovales.data, carex$ovales.nodes[1:4], maxNodes = 2) 
-  summary(trialBayesTrees) # summarizes results using summary.hansenBatch and displays the results using print.hansenSummary
+  summary(trialBayesTrees) # summarizes results using summary.hansenBatch 
+                           # and displays the results using print.hansenSummary
   # same analysis as above, but on a single tree
-  trialBayesConsensus <- runBatchHansen(contree, carex$ovales.data, carex$ovales.nodes[1:4], maxNodes = 2)
+  trialBayesConsensus <- runBatchHansen(contree, carex$ovales.data, 
+                                        carex$ovales.nodes[1:4], maxNodes = 2)
   # compares five different models of character change at node 2
   multiModel(carex$ovales.tree, carex$ovales.data, carex$ovales.nodes[[2]])
   # simulates the evolution of the chromosome number under the model-averaged values
