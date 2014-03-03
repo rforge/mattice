@@ -53,7 +53,8 @@
   contree <- ape2ouch(carex$ovales.tree)
   # for expedience, only tests for changes at up to 2 of the first 4 nodes 
   # on 2 trees visited in the MCMC phylogenetic analysis:
-  trialBayesTrees <- runBatchHansen(trees, carex$ovales.data, carex$ovales.nodes[1:4], maxNodes = 2) 
+  trialBayesTrees <- runBatchHansen(trees, carex$ovales.data, carex$ovales.nodes[1:4], 
+                                    maxNodes = 2) 
   summary(trialBayesTrees) # summarizes results using summary.hansenBatch 
                            # and displays the results using print.hansenSummary
   # same analysis as above, but on a single tree
