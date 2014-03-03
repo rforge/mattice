@@ -1,3 +1,7 @@
+v1.0-4  03 March 2014
+- Moved vignette source to 'vignettes' directory
+- removed OUCH from Enhances field in DESCRIPTION
+
 v1.0-2  02 May 2012
 - Fixed alpha errors with ouSim
 
