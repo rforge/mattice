@@ -1,10 +1,9 @@
 Package: maticce
 Type: Package
 Title: Mapping Transitions in Continuous Character Evolution
-Version: 1.0-3
-Date: 2011-3-14
+Version: 1.0-4
+Date: 2014-3-3
 Depends: ouch, ape
-Enhances: ouch
 Suggests: geiger
 Author: Andrew Hipp <ahipp@mortonarb.org>, with contributions from Marcial Escudero
 Maintainer: Andrew Hipp <ahipp@mortonarb.org>
